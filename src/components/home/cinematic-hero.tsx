@@ -1,113 +1,125 @@
 import { useLayoutEffect, useRef, type CSSProperties } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, ArrowUpRight, Phone } from "lucide-react";
+import { ArrowRight, Briefcase, Phone, Plane, Wine } from "lucide-react";
 import { IMAGES } from "@/lib/image-map";
 import { CONTACT } from "@/lib/site-data";
 import { EASE, ensureGsap, prefersReducedMotion } from "@/lib/motion";
-import { shouldUse3D } from "@/lib/three/capability";
-
-const SESSION_KEY = "lct-driveby";
+import { typeHeadline } from "@/lib/typing";
 
 const PATHS = [
-  { to: "/airport", title: "Airport transfers", line: "DFW and Love Field, flights tracked" },
-  { to: "/corporate", title: "Corporate accounts", line: "Roadshows, VIP guests, one invoice" },
-  { to: "/events", title: "Events & hourly", line: "Galas, stadium nights, weddings" },
+  { to: "/airport", title: "Airport transfers", line: "DFW and Love Field", Icon: Plane },
+  { to: "/corporate", title: "Corporate accounts", line: "Roadshows, VIP guests", Icon: Briefcase },
+  { to: "/events", title: "Events & hourly", line: "Galas, stadiums, weddings", Icon: Wine },
 ] as const;
 
+/** The intro plays once per full page load (not on in-site navigation back home). */
+let introPlayed = false;
+
+function canRunIntro() {
+  if (introPlayed || prefersReducedMotion()) return false;
+  const conn = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+  return !conn?.saveData;
+}
+
 /**
- * Cinematic hero. On the first visit of a session a black SUV, built in
- * three.js (src/lib/three/drive-by.ts), drives across from right to left
- * and the fleet photograph is revealed in its wake; then the headline
- * settles and the quick paths rise in. Later visits, reduced motion and
- * devices without capable WebGL get the finished hero straight away.
+ * Cinematic hero. When the site opens, the fleet's real black Escalade (a
+ * studio photograph with the background removed, src/lib/drive-by-photo.ts)
+ * drives fast across the page itself from right to left; as it clears the
+ * middle, the headline types in (caret, then letter by letter) in the
+ * logo's gold. The quick paths are styled as car key fobs. Reduced motion
+ * and Save-Data get the finished hero straight away.
  */
 export function CinematicHero() {
   const rootRef = useRef<HTMLElement>(null);
-  const photoRef = useRef<HTMLDivElement>(null);
-  const stageRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
   const hero = IMAGES.hero;
   const heroMobile = IMAGES.heroMobile;
 
   useLayoutEffect(() => {
     const root = rootRef.current;
-    const photo = photoRef.current;
-    const stage = stageRef.current;
-    if (!root || !photo || !stage || prefersReducedMotion()) return;
+    const title = titleRef.current;
+    if (!root || !title) return;
+    if (prefersReducedMotion()) {
+      void typeHeadline(title);
+      return;
+    }
     const { gsap } = ensureGsap();
     let cancelDrive: (() => void) | null = null;
+    let layer: HTMLDivElement | null = null;
     let fallback = 0;
+    let typeTimer = 0;
     let disposed = false;
+    let started = false;
 
     const ctx = gsap.context(() => {
-      gsap.set(".hero-word", { autoAlpha: 0, y: 40, letterSpacing: "0.01em" });
+      gsap.set(title, { autoAlpha: 0 });
       gsap.set(".hero-rise", { autoAlpha: 0, y: 24 });
+      gsap.fromTo(
+        ".hero-photo-img",
+        { scale: 1.08 },
+        { scale: 1, duration: 6, ease: "power1.out" },
+      );
     }, root);
 
-    const settle = () =>
+    const begin = () => {
+      if (started || disposed) return;
+      started = true;
+      introPlayed = true;
+      gsap.set(title, { autoAlpha: 1 });
+      void typeHeadline(title);
       ctx.add(() => {
-        gsap
-          .timeline({ defaults: { ease: EASE } })
-          .to(".hero-word", {
-            autoAlpha: 1,
-            y: 0,
-            letterSpacing: "-0.05em",
-            duration: 1.4,
-            stagger: 0.12,
-          })
-          .to(".hero-rise", { autoAlpha: 1, y: 0, duration: 1, stagger: 0.07 }, 0.35)
-          .fromTo(
-            ".hero-photo-img",
-            { scale: 1.08 },
-            { scale: 1, duration: 6, ease: "power1.out" },
-            0,
-          );
+        gsap.to(".hero-rise", {
+          autoAlpha: 1,
+          y: 0,
+          duration: 1,
+          stagger: 0.08,
+          delay: 0.5,
+          ease: EASE,
+        });
       });
-
-    const reveal = () => {
-      photo.style.clipPath = "";
-      settle();
     };
 
-    let played = false;
-    try {
-      played = sessionStorage.getItem(SESSION_KEY) === "1";
-    } catch {
-      /* storage blocked */
-    }
+    const dropLayer = () => {
+      layer?.parentNode?.removeChild(layer);
+      layer = null;
+    };
 
-    if (played || !shouldUse3D()) {
-      reveal();
+    if (!canRunIntro()) {
+      begin();
     } else {
-      try {
-        sessionStorage.setItem(SESSION_KEY, "1");
-      } catch {
-        /* storage blocked */
-      }
-      photo.style.clipPath = "inset(0 0 0 100%)";
-      // Never hold the hero back: if the 3D code is slow to arrive, skip it.
-      fallback = window.setTimeout(() => {
-        if (!cancelDrive) reveal();
-      }, 2500);
-      import("@/lib/three/drive-by")
-        .then(({ runDriveBy }) => {
-          if (disposed || photo.style.clipPath === "") return;
+      // Never hold the hero back: if the photo is slow to arrive, skip the car.
+      fallback = window.setTimeout(begin, 3000);
+      import("@/lib/drive-by-photo")
+        .then(async ({ preloadDriveByCar, runPhotoDriveBy }) => {
+          const ready = await preloadDriveByCar(2500);
+          if (disposed || started) return;
+          if (!ready) return begin();
           window.clearTimeout(fallback);
-          cancelDrive = runDriveBy(stage, {
-            onProgress: (rearX) => {
-              photo.style.clipPath = `inset(0 0 0 ${(rearX * 100).toFixed(2)}%)`;
-            },
+          // Marked only once the car really starts (dev StrictMode runs this
+          // effect twice; the first, cancelled run must not use up the intro).
+          introPlayed = true;
+          layer = document.createElement("div");
+          layer.setAttribute("aria-hidden", "true");
+          layer.style.cssText = "position:fixed;inset:0;z-index:45;pointer-events:none";
+          document.body.appendChild(layer);
+          // The headline starts typing as the car clears the middle.
+          typeTimer = window.setTimeout(begin, 1000);
+          cancelDrive = runPhotoDriveBy(layer, {
             onDone: () => {
-              if (!disposed) reveal();
+              dropLayer();
+              begin();
             },
           });
         })
-        .catch(reveal);
+        .catch(begin);
     }
 
     return () => {
       disposed = true;
       window.clearTimeout(fallback);
+      window.clearTimeout(typeTimer);
       cancelDrive?.();
+      dropLayer();
       ctx.revert();
     };
   }, []);
@@ -118,7 +130,7 @@ export function CinematicHero() {
       id="hero"
       className="band-dark relative isolate min-h-[100svh] overflow-hidden bg-[color:var(--band)]"
     >
-      <div ref={photoRef} className="absolute inset-0">
+      <div className="absolute inset-0">
         <picture>
           <source media="(max-width: 767px)" srcSet={heroMobile.src} />
           <img
@@ -145,15 +157,18 @@ export function CinematicHero() {
         />
       </div>
 
-      <div ref={stageRef} className="pointer-events-none absolute inset-0 z-[1]" aria-hidden />
-
       <div className="relative z-[2] mx-auto flex min-h-[100svh] max-w-[var(--container-max)] flex-col justify-end px-[var(--page-gutter)] pb-8 pt-32 md:pb-12">
         <p className="hero-rise text-xs font-semibold uppercase tracking-[0.18em] text-white/70">
           Executive chauffeured transportation · Dallas–Fort Worth
         </p>
-        <h1 className="mt-5 font-display text-[clamp(3.2rem,9.5vw,9.5rem)] leading-[0.86] tracking-[-0.05em] text-white">
-          <span className="hero-word block">One fleet.</span>
-          <span className="hero-word block text-[color:var(--gold-light)]">Every occasion.</span>
+        <h1
+          ref={titleRef}
+          data-no-type
+          className="mt-5 max-w-5xl font-display text-[clamp(3.2rem,9.5vw,9.5rem)] leading-[0.88] tracking-[-0.05em]"
+        >
+          One fleet.
+          <br />
+          Every occasion.
         </h1>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
@@ -179,22 +194,29 @@ export function CinematicHero() {
           </div>
         </div>
 
-        <ul className="mt-10 grid border-t border-white/15 sm:grid-cols-3">
-          {PATHS.map((p, i) => (
-            <li key={p.to} className="hero-rise">
+        {/* Quick paths as car key fobs: a pressable button, an engraved
+            label and an LED that lights amber on hover. */}
+        <ul className="mt-10 grid gap-3 sm:grid-cols-3">
+          {PATHS.map(({ to, title, line, Icon }, i) => (
+            <li key={to} className="hero-rise">
               <Link
-                to={p.to}
-                className={`group flex items-center justify-between gap-4 border-white/15 py-5 transition-colors duration-200 hover:bg-white/[0.04] sm:px-5 ${
-                  i < PATHS.length - 1 ? "border-b sm:border-b-0 sm:border-r" : ""
-                } ${i === 0 ? "sm:pl-0" : ""}`}
+                to={to}
+                className="fob group relative flex items-center gap-4 rounded-[28px] py-3 pl-3 pr-5 ring-1 ring-[color:var(--gold-light)]/30 transition-transform duration-300 hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold-light)]"
               >
-                <span>
-                  <span className="text-xs font-semibold text-white/50">0{i + 1}</span>
-                  <span className="mt-1 block text-lg font-semibold text-white">{p.title}</span>
-                  <span className="block text-sm text-white/60">{p.line}</span>
+                <span className="fob-btn grid h-14 w-14 shrink-0 place-items-center rounded-full ring-1 ring-white/10">
+                  <Icon className="h-5 w-5 text-[color:var(--gold-light)]" aria-hidden />
                 </span>
-                <ArrowUpRight
-                  className="h-5 w-5 shrink-0 text-white/60 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[color:var(--gold-light)]"
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-white/40">
+                    LCT · 0{i + 1}
+                  </span>
+                  <span className="block truncate text-base font-semibold text-white">{title}</span>
+                  <span className="block truncate text-xs text-white/55">{line}</span>
+                </span>
+                <span className="fob-led h-2 w-2 shrink-0 rounded-full" aria-hidden />
+                {/* Key ring */}
+                <span
+                  className="absolute -right-2 top-1/2 h-5 w-3 -translate-y-1/2 rounded-r-full border-2 border-l-0 border-[color:var(--gold-light)]/50"
                   aria-hidden
                 />
               </Link>

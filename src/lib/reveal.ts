@@ -2,8 +2,8 @@
  * Shared reveal presets for the editorial redesign, one implementation per
  * technique so every page moves the same way:
  *
- * - Headings "settle": they fade in while their tracking tightens to its
- *   final value, like type being set — no masks, no line wipes.
+ * - Headings are typed in sitewide by src/lib/typing.ts (caret, then the
+ *   line letter by letter); revealLines() is kept as a no-op for callers.
  * - Images open like a film still: a slow fade with a gentle zoom-out of the
  *   photo inside its frame. No clip wipes, no parallax.
  * - Lists rise a short distance in sequence.
@@ -39,23 +39,10 @@ export function revealLines(
   el: Element | null,
   opts: { type?: "lines" | "words" | "chars"; stagger?: number; start?: string } = {},
 ): { revert: () => void } | null {
-  if (!el || prefersReducedMotion()) return null;
-  const { gsap } = ensureGsap();
-  const finalTracking = getComputedStyle(el).letterSpacing;
-  gsap.fromTo(
-    el,
-    { autoAlpha: 0, y: 18, letterSpacing: "0.02em" },
-    {
-      autoAlpha: 1,
-      y: 0,
-      letterSpacing: finalTracking === "normal" ? "0em" : finalTracking,
-      duration: 1.25,
-      ease: EASE,
-      clearProps: "letterSpacing",
-      scrollTrigger: { trigger: el, start: opts.start ?? "top 85%", once: true },
-    },
-  );
-  return { revert: () => {} };
+  // Headings now type in sitewide (src/lib/typing.ts); kept as a no-op so
+  // existing callers need no changes.
+  void el;
+  return null;
 }
 
 /**

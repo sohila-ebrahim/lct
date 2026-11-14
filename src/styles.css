@@ -1249,3 +1249,151 @@ html.theme-switching * {
     animation: none;
   }
 }
+
+/*
+ * Headlines in the logo's metallic gold. The gradient repeats every 10em
+ * (symmetric stops, so the repeat is seamless) to keep the metallic sweep
+ * visible on short and long lines alike. Darker golds on light surfaces,
+ * brighter golds on dark ones.
+ */
+:root,
+.band-light {
+  --logo-gradient: linear-gradient(
+    100deg,
+    #5e4720 0%,
+    #8a6a2f 22%,
+    #b8913f 50%,
+    #8a6a2f 78%,
+    #5e4720 100%
+  );
+  --caret: #9c7a3a;
+}
+:root[data-theme="dark"],
+.band-dark,
+.bg-onyx,
+[class*="bg-[color:var(--surface-black)]"],
+[class*="bg-[color:var(--surface-elevated)]"],
+[class*="bg-[color:var(--onyx)]"] {
+  --logo-gradient: linear-gradient(
+    100deg,
+    #a88a5c 0%,
+    #e3cf9f 26%,
+    #fff3d6 50%,
+    #e3cf9f 74%,
+    #a88a5c 100%
+  );
+  --caret: #e3cf9f;
+}
+:root[data-theme="dark"] .band-light {
+  --logo-gradient: linear-gradient(100deg, #5e4720 0%, #8a6a2f 22%, #b8913f 50%, #8a6a2f 78%, #5e4720 100%);
+  --caret: #9c7a3a;
+}
+main h1,
+main h2,
+.type-clone {
+  background-image: var(--logo-gradient);
+  background-size: 10em 100%;
+  background-repeat: repeat-x;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/*
+ * Headline typing (src/lib/typing.ts): a caret blinks, then the line types
+ * letter by letter on a positioned copy; the real heading stays in place
+ * (and readable to assistive tech) underneath. html.lct-type is only set
+ * when motion is allowed, so without it headings simply show.
+ */
+html.lct-type main :is(h1, h2):not([data-no-type]):not(.typed) {
+  opacity: 0;
+}
+main :is(h1, h2).is-typing {
+  position: relative;
+  background-image: none;
+}
+main :is(h1, h2).is-typing > :not(.type-clone) {
+  visibility: hidden;
+}
+.type-clone {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.type-clone .tc {
+  visibility: hidden;
+}
+.type-clone .tc.on {
+  visibility: visible;
+}
+.type-caret {
+  display: inline-block;
+  width: 0.06em;
+  height: 0.9em;
+  margin-right: -0.06em;
+  vertical-align: -0.06em;
+  background: var(--caret);
+  -webkit-text-fill-color: initial;
+  animation: caret-blink 0.9s steps(1, end) infinite;
+}
+@keyframes caret-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Turn-signal light: amber lamps with a glow, and a wash of light at each edge. */
+.turn-signal::before,
+.turn-signal::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 22vw;
+  max-width: 260px;
+  animation: signal-blink 0.66s steps(1, end) infinite;
+  pointer-events: none;
+}
+.turn-signal::before {
+  left: 0;
+  background: radial-gradient(60% 45% at 0% 50%, rgb(255 176 32 / 0.38), transparent 70%);
+}
+.turn-signal::after {
+  right: 0;
+  background: radial-gradient(60% 45% at 100% 50%, rgb(255 176 32 / 0.38), transparent 70%);
+}
+.turn-signal i {
+  background: #ffb020 !important;
+  filter: drop-shadow(0 0 10px rgb(255 176 32 / 0.95)) drop-shadow(0 0 22px rgb(255 140 0 / 0.6));
+}
+
+/* Hero quick paths as car key fobs. */
+.fob {
+  background: linear-gradient(180deg, #1d1e22 0%, #0d0e10 100%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.1),
+    inset 0 -1px 0 rgb(0 0 0 / 0.6),
+    0 14px 30px -14px rgb(0 0 0 / 0.7);
+}
+.fob-btn {
+  background: radial-gradient(circle at 50% 35%, #34353b 0%, #17181b 70%);
+  box-shadow:
+    inset 0 1px 1px rgb(255 255 255 / 0.18),
+    inset 0 -3px 6px rgb(0 0 0 / 0.7),
+    0 1px 0 rgb(255 255 255 / 0.05);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.fob:active .fob-btn {
+  transform: scale(0.92);
+  box-shadow: inset 0 3px 8px rgb(0 0 0 / 0.8);
+}
+.fob-led {
+  background: rgb(255 255 255 / 0.18);
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+.fob:hover .fob-led,
+.fob:focus-visible .fob-led {
+  background: #ffb020;
+  box-shadow: 0 0 10px 2px rgb(255 176 32 / 0.85);
+  animation: signal-blink 0.66s steps(1, end) 3;
+}

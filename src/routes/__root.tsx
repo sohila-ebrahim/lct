@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-router";
 import { RouteTransition } from "@/components/route-transition";
 import { TurnSignal } from "@/components/turn-signal";
+import { HeadlineTyping } from "@/components/headline-typing";
 import { MyLimoBizWidgetHost } from "@/components/booking/mylimobiz-widget";
 import { Analytics } from "@/components/analytics";
 import { ROOT_JSON_LD, ROOT_META } from "@/lib/site-head";
@@ -137,6 +138,7 @@ function RootComponent() {
       <HeadContent />
       <RouteTransition />
       <TurnSignal />
+      <HeadlineTyping />
       <MyLimoBizWidgetHost />
       <Analytics />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
