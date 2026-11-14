@@ -9,10 +9,11 @@ import { useRouter } from "@tanstack/react-router";
  * page sound before the visitor interacts, so a reload shows the arrows
  * only (index.html has the same arrows for the first load).
  *
- * One full blink (0.66s) always plays, so a fast page change still reads as
- * a deliberate beat rather than a flicker.
+ * At least three full blinks (about 2s) always play, like a turn signal,
+ * so even a fast page change reads as a deliberate beat.
  */
 const CYCLE_MS = 660;
+const MIN_MS = CYCLE_MS * 3;
 
 let audio: AudioContext | null = null;
 
@@ -80,7 +81,7 @@ export function TurnSignal() {
 
     const stop = () => {
       if (!active) return;
-      const wait = Math.max(0, CYCLE_MS - (performance.now() - startedAt));
+      const wait = Math.max(0, MIN_MS - (performance.now() - startedAt));
       off = window.setTimeout(() => {
         active = false;
         window.clearInterval(beat);

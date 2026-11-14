@@ -17,6 +17,8 @@ import { ensureGsap, prefersReducedMotion } from "@/lib/motion";
 import { revealClipImage } from "@/lib/reveal";
 import { pageMeta } from "@/lib/seo";
 import { track } from "@/lib/tracking";
+import { StatsBand } from "@/components/home/editorial";
+import { FLEET_STATS } from "@/lib/page-editorial";
 
 /**
  * Fleet's wheel accent — was a continuously-rendering Three.js scene
@@ -528,6 +530,7 @@ function Fleet() {
         <FleetWheelAccent />
       </div>
 
+      <StatsBand stats={FLEET_STATS} />
       <MobileFleetShowcase vehicles={FLEET_VEHICLES} />
 
       <div ref={rootRef}>

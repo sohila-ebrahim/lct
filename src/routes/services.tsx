@@ -8,6 +8,7 @@ import { LeadForm } from "@/components/lead-form";
 import { ensureGsap, prefersReducedMotion } from "@/lib/motion";
 import { pageMeta } from "@/lib/seo";
 import { CONTACT } from "@/lib/site-data";
+import { ServiceStories, StatsBand } from "@/components/home/editorial";
 
 type ServiceChapter = {
   id: string;
@@ -268,6 +269,8 @@ function Services() {
         </div>
       </section>
 
+      <ServiceStories />
+      <StatsBand />
       <section className="border-t border-border bg-onyx py-24">
         <div className="mx-auto max-w-3xl px-6 lg:px-10">
           <SectionHeading

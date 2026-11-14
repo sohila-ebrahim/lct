@@ -41,7 +41,7 @@ const CREDENTIALS = [
 
 const CHARCOAL = "oklch(0.14 0.005 60)";
 const CHARCOAL_SOFT = "oklch(0.34 0.01 60)";
-const IVORY = "var(--bone)";
+const IVORY = "#F6F3EA";
 const DIVIDER = "oklch(0.55 0.03 80 / 0.28)";
 
 /**
@@ -122,7 +122,7 @@ export function TrustStrip() {
   return (
     <section
       ref={rootRef}
-      className="relative overflow-hidden py-8 md:py-9"
+      className="band-light relative overflow-hidden py-8 md:py-9"
       style={{ backgroundColor: IVORY }}
     >
       {/* Hero (black) → ivory band seam — a solid hairline reads on both sides. */}

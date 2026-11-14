@@ -9,6 +9,8 @@ import { ensureGsap, prefersReducedMotion } from "@/lib/motion";
 import { pageMeta } from "@/lib/seo";
 import { CONTACT } from "@/lib/site-data";
 import { PartnersBoard } from "@/components/partners-board";
+import { ServiceStories, StatsBand } from "@/components/home/editorial";
+import { CORPORATE_STORIES } from "@/lib/page-editorial";
 
 const chauffeurImg = IMAGES.corporate;
 
@@ -172,6 +174,8 @@ function Corporate() {
         </div>
       </section>
 
+      <ServiceStories stories={CORPORATE_STORIES} eyebrow="Corporate travel" id="corporate-uses" />
+      <StatsBand />
       <PartnersBoard tone="black" />
 
       <section

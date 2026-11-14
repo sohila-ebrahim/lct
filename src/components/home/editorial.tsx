@@ -72,14 +72,17 @@ export function PartnersMarquee() {
 }
 
 const CITY_COUNT = SERVICE_AREA_GROUPS.reduce((n, g) => n + g.cities.length, 0);
-const STATS = [
+export type Stat = { value: number; suffix?: string; prefix?: string; label: string };
+
+const STATS: Stat[] = [
   { value: 24, suffix: "/7", label: "Dispatch, every day of the year" },
   { value: FLEET_VEHICLES.length, suffix: "", label: "Vehicle classes, sedan to motor coach" },
   { value: CITY_COUNT, suffix: "", label: "Dallas–Fort Worth communities served" },
   { value: PARTNERS.length, suffix: "", label: "Airline and corporate partners" },
 ];
 
-export function StatsBand() {
+/** Count-up figures. Pages pass their own real numbers; the home set is the default. */
+export function StatsBand({ stats = STATS }: { stats?: Stat[] }) {
   const rootRef = useRef<HTMLElement>(null);
 
   useLayoutEffect(() => {
@@ -109,10 +112,11 @@ export function StatsBand() {
   return (
     <section ref={rootRef} className="bg-[color:var(--bone)] py-[var(--section-space)]">
       <dl className="mx-auto grid max-w-[var(--container-max)] gap-x-10 gap-y-12 px-[var(--page-gutter)] sm:grid-cols-2 lg:grid-cols-4">
-        {STATS.map((s) => (
+        {stats.map((s) => (
           <div key={s.label} className="border-t border-foreground pt-5">
             <dt className="sr-only">{s.label}</dt>
             <dd className="font-display text-[clamp(3.5rem,7vw,6.5rem)] leading-[0.9] tracking-[-0.05em] text-foreground">
+              {s.prefix}
               <span data-count={s.value}>{s.value}</span>
               {s.suffix}
             </dd>
@@ -258,7 +262,9 @@ export function FleetStack() {
   );
 }
 
-const STORIES: { title: string; copy: string; imageKey: ImageKey; to: string }[] = [
+export type Story = { title: string; copy: string; imageKey: ImageKey; to?: string };
+
+const STORIES: Story[] = [
   {
     title: "Airport transfers",
     copy: `Flight monitoring, luggage assistance and calm arrivals across ${CONTACT.serviceRegion}. Curbside or meet-and-greet, ready when you land.`,
@@ -285,7 +291,16 @@ const STORIES: { title: string; copy: string; imageKey: ImageKey; to: string }[]
   },
 ];
 
-export function ServiceStories() {
+/** Sticky photo beside scrolling text. Pages pass their own steps or use cases. */
+export function ServiceStories({
+  stories = STORIES,
+  eyebrow = "What we do",
+  id = "stories",
+}: {
+  stories?: Story[];
+  eyebrow?: string;
+  id?: string;
+}) {
   const rootRef = useRef<HTMLElement>(null);
   const [active, setActive] = useState(0);
 
@@ -307,12 +322,12 @@ export function ServiceStories() {
   }, []);
 
   return (
-    <section ref={rootRef} id="stories" className="bg-background py-[var(--section-space)]">
+    <section ref={rootRef} id={id} className="bg-background py-[var(--section-space)]">
       <div className="mx-auto max-w-[var(--container-max)] px-[var(--page-gutter)]">
-        <p className="eyebrow">What we do</p>
+        <p className="eyebrow">{eyebrow}</p>
         <div className="mt-6 grid gap-12 lg:grid-cols-2 lg:gap-16">
           <div>
-            {STORIES.map((s, i) => {
+            {stories.map((s, i) => {
               const img = IMAGES[s.imageKey];
               return (
                 <article
@@ -328,13 +343,15 @@ export function ServiceStories() {
                   <p className="mt-5 max-w-md text-lg leading-[1.6] text-muted-foreground">
                     {s.copy}
                   </p>
-                  <Link
-                    to={s.to}
-                    className="group mt-6 inline-flex items-center gap-2 font-semibold text-foreground"
-                  >
-                    Learn more
-                    <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
-                  </Link>
+                  {s.to && (
+                    <Link
+                      to={s.to}
+                      className="group mt-6 inline-flex items-center gap-2 font-semibold text-foreground"
+                    >
+                      Learn more
+                      <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
+                    </Link>
+                  )}
                   {/* Phones: the photo sits with its story. */}
                   <div className="relative mt-8 aspect-[4/3] overflow-hidden lg:hidden">
                     <img
@@ -354,7 +371,7 @@ export function ServiceStories() {
           {/* Desktop: one sticky frame; photos cross-fade with the story in view. */}
           <div className="hidden lg:block">
             <div className="sticky top-[calc(var(--header-height)+2rem)] h-[calc(100svh-var(--header-height)-4rem)] overflow-hidden">
-              {STORIES.map((s, i) => {
+              {stories.map((s, i) => {
                 const img = IMAGES[s.imageKey];
                 const on = active === i;
                 return (

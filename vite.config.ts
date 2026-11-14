@@ -31,6 +31,9 @@ export default defineConfig({
     staticCrawlerContent(),
   ],
   server: { host: "0.0.0.0", port: 5173 },
+  // Pre-bundle the lazily imported 3D helpers so the dev server never serves
+  // a stale optimized copy when the hero intro first loads them.
+  optimizeDeps: { include: ["three", "three/examples/jsm/environments/RoomEnvironment.js"] },
   build: {
     // Oldest browsers the site must still render in: Chrome/Edge 109 (the
     // last release on Windows 7/8.1, still common on office PCs), Firefox 115

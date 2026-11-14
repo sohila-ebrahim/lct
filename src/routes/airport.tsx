@@ -9,6 +9,8 @@ import { PartnersBoard } from "@/components/partners-board";
 import { IMAGES } from "@/lib/image-map";
 import { ensureGsap, prefersReducedMotion } from "@/lib/motion";
 import { pageMeta } from "@/lib/seo";
+import { ServiceStories, StatsBand } from "@/components/home/editorial";
+import { AIRPORT_STATS, AIRPORT_STEPS } from "@/lib/page-editorial";
 
 export const Route = createFileRoute("/airport")({
   head: () => ({
@@ -147,6 +149,12 @@ function Airport() {
         </div>
       </section>
 
+      <StatsBand stats={AIRPORT_STATS} />
+      <ServiceStories
+        stories={AIRPORT_STEPS}
+        eyebrow="How an airport pickup works"
+        id="airport-steps"
+      />
       <PartnersBoard kinds={AIRLINE_PARTNER_KINDS} tone="black" />
 
       <section className="border-t border-border bg-onyx py-24">

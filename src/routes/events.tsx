@@ -7,6 +7,8 @@ import { IMAGES } from "@/lib/image-map";
 import { LeadForm } from "@/components/lead-form";
 import { ensureGsap, prefersReducedMotion } from "@/lib/motion";
 import { pageMeta } from "@/lib/seo";
+import { ServiceStories } from "@/components/home/editorial";
+import { EVENT_STORIES } from "@/lib/page-editorial";
 
 const heroImg = IMAGES.events;
 
@@ -135,6 +137,7 @@ function Events() {
         </div>
       </section>
 
+      <ServiceStories stories={EVENT_STORIES} eyebrow="Occasions" id="event-types" />
       <section className="border-t border-border bg-onyx py-24">
         <div className="mx-auto max-w-3xl px-6 lg:px-10">
           <SectionHeading

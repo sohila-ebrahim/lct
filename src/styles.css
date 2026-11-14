@@ -1150,3 +1150,102 @@
     display: none;
   }
 }
+
+/*
+ * Dark mode (html[data-theme="dark"], set before first paint by the inline
+ * script in index.html and by <ThemeToggle>). The page becomes near-black;
+ * dark bands become a step lighter so sections still alternate.
+ */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #0b0c0e;
+  --bone: #141518;
+  --ash: #a3a5ab;
+  --ash-soft: #8a8c93;
+  --hairline: rgb(255 255 255 / 0.12);
+  --band: #15161a;
+  --band-raised: #1c1d21;
+  --champagne: var(--gold-light);
+  --gold: var(--gold-light);
+  --gold-soft: #e3d2b0;
+  --gold-deep: #a88a5c;
+  --headline-soft: var(--ash-soft);
+  --btn-bg: var(--off-white);
+  --btn-fg: var(--ink);
+
+  --background: var(--paper);
+  --foreground: var(--off-white);
+  --card: #141518;
+  --card-foreground: var(--off-white);
+  --popover: #141518;
+  --popover-foreground: var(--off-white);
+  --primary: var(--off-white);
+  --primary-foreground: var(--ink);
+  --secondary: #1c1d21;
+  --secondary-foreground: var(--off-white);
+  --muted: #17181b;
+  --muted-foreground: var(--ash);
+  --accent: #1c1d21;
+  --accent-foreground: var(--off-white);
+  --border: var(--hairline);
+  --input: #34353a;
+  --ring: var(--gold-light);
+}
+
+/* Blocks that must stay light in both themes (logo plates, badge strips). */
+.band-light {
+  --bone: #f4f2ed;
+  --champagne: #85662f;
+  --gold: #8f6f37;
+  --gold-deep: #85662f;
+  --headline-soft: #85878e;
+  --btn-bg: #0d0e10;
+  --btn-fg: #ffffff;
+  --background: #ffffff;
+  --foreground: #0d0e10;
+  --card: #ffffff;
+  --card-foreground: #0d0e10;
+  --muted: #f4f2ed;
+  --muted-foreground: #5f6168;
+  --border: #dddad4;
+  --ring: #0d0e10;
+  color: var(--foreground);
+}
+
+/* Colour changes follow the theme switch smoothly, without animating layout. */
+html.theme-switching,
+html.theme-switching * {
+  transition:
+    background-color 0.35s ease,
+    color 0.35s ease,
+    border-color 0.35s ease !important;
+}
+
+/* Full-screen menu (site-nav.tsx): drops from the top, links rise in turn. */
+.site-menu:not([hidden]) {
+  animation: menu-open 0.7s cubic-bezier(0.625, 0.05, 0, 1) both;
+}
+.site-menu:not([hidden]) .site-menu-list > li {
+  animation: menu-item 0.8s cubic-bezier(0.625, 0.05, 0, 1) both;
+  animation-delay: calc(0.15s + var(--i) * 0.05s);
+}
+@keyframes menu-open {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes menu-item {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-menu:not([hidden]),
+  .site-menu:not([hidden]) .site-menu-list > li {
+    animation: none;
+  }
+}
