@@ -23,8 +23,8 @@ export const COMPANY = {
 export const CONTACT = {
   phoneDisplay: "+1 (888) 615-4065",
   email: "reservations@lctuniversal.com",
-  locationLine: "Grapevine, Texas 76051",
-  serviceRegion: "Dallas–Fort Worth and Grapevine, Texas",
+  locationLine: "800 West Airport Freeway, 10th Floor, Suite 1050, Irving, Texas 75062",
+  serviceRegion: "Dallas–Fort Worth, Texas",
   dispatchHours: "24 hours a day, 7 days a week",
   managementHours: "9:00 AM – 4:00 PM, Monday–Saturday",
   managementClosed: "Closed Sundays",
@@ -52,7 +52,7 @@ export const RATES = {
 export const SERVICE_AREA_GROUPS = [
   {
     title: "Dallas & Surrounding Communities",
-    cities: ["Dallas", "Highland Park", "University Park", "Addison", "Farmers Branch", "Garland", "Richardson", "Mesquite", "Balch Springs", "Sunnyvale", "Rowlett", "Sachse", "Seagoville", "Hutchins", "Wilmer", "Lancaster", "DeSoto", "Duncanville", "Cedar Hill", "Red Oak", "Glenn Heights", "Ovilla"],
+    cities: ["Dallas", "Irving", "Highland Park", "University Park", "Addison", "Farmers Branch", "Garland", "Richardson", "Mesquite", "Balch Springs", "Sunnyvale", "Rowlett", "Sachse", "Seagoville", "Hutchins", "Wilmer", "Lancaster", "DeSoto", "Duncanville", "Cedar Hill", "Red Oak", "Glenn Heights", "Ovilla"],
   },
   {
     title: "Fort Worth & Southwest Metro",
@@ -110,7 +110,7 @@ ${fleetLines}
 RATES: ${RATES.disclaimer} ${RATES.pricingCaveat} ${RATES.airportNote}
 Published rates above are "From" starting figures for the bookable classes, not guaranteed final quotes. Quote-only classes have no published starting rate.
 
-SERVICE AREAS — Dallas–Fort Worth Metroplex, dispatched from Grapevine:
+SERVICE AREAS — Dallas–Fort Worth Metroplex, served from our Irving office:
 ${areaLines}
 If a requested city is not listed, do not claim service there — offer to have dispatch confirm via the Contact page instead of guessing.
 

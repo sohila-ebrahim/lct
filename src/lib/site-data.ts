@@ -20,12 +20,19 @@ export const CONTACT = {
   whatsappUrl: "https://wa.me/18886154065",
   email: "reservations@lctuniversal.com",
   emailMailto: "mailto:reservations@lctuniversal.com",
-  locationLine: "Grapevine, Texas 76051",
-  city: "Grapevine",
+  /** Office address — client-supplied 2026-11-14 (replaces "Grapevine, Texas 76051"). City/ZIP verified against building listings for 800 W Airport Fwy. */
+  streetAddress: "800 West Airport Freeway",
+  addressLine2: "10th Floor, Suite 1050",
+  locationLine: "Irving, Texas 75062",
+  fullAddress: "800 West Airport Freeway, 10th Floor, Suite 1050, Irving, Texas 75062",
+  city: "Irving",
   state: "Texas",
-  zip: "76051",
+  stateCode: "TX",
+  zip: "75062",
+  mapsUrl:
+    "https://www.google.com/maps/search/?api=1&query=800+West+Airport+Freeway+Suite+1050+Irving+TX+75062",
   /** Primary verified service region — do not expand without verified source */
-  serviceRegion: "Dallas–Fort Worth and Grapevine, Texas",
+  serviceRegion: "Dallas–Fort Worth, Texas",
   serviceRegionShort: "Dallas–Fort Worth",
   dispatchHours: "24 hours a day, 7 days a week",
   managementHours: "9:00 AM – 4:00 PM, Monday–Saturday",
@@ -337,6 +344,7 @@ export const SERVICE_AREA_GROUPS = [
       "Downtown Dallas, the Park Cities, and the close-in suburbs across the eastern and southern Metroplex.",
     cities: [
       "Dallas",
+      "Irving",
       "Highland Park",
       "University Park",
       "Addison",
@@ -547,3 +555,73 @@ export const TRUST_BADGES = [
   { name: "GNET Member", src: "/assets/official/badge-gnet.png" },
   { name: "NLA Member", src: "/assets/official/badge-nla-transparent.png" },
 ] as const;
+
+/**
+ * Corporate & airline partners — client-supplied logos (WhatsApp zip,
+ * 2026-11-14), shown in their own colours on ivory tiles: the white JPEG
+ * backgrounds were made transparent (colour-to-alpha), not recoloured.
+ * `w`/`h` are the processed files' pixel sizes (for optical sizing + CLS).
+ * `board` is the split-flap spelling (A–Z, 0–9, space, "-", "&" only).
+ */
+export type PartnerKind = "airline" | "corporate";
+/** Stable `kinds` presets for <PartnersBoard> (keep arrays module-level). */
+export const ALL_PARTNER_KINDS: readonly PartnerKind[] = ["airline", "corporate"];
+export const AIRLINE_PARTNER_KINDS: readonly PartnerKind[] = ["airline"];
+
+export const PARTNERS = [
+  {
+    name: "Air France",
+    board: "AIR FRANCE",
+    kind: "airline",
+    logo: "/assets/partners/air-france.webp",
+    w: 440,
+    h: 40,
+  },
+  {
+    name: "Cathay Pacific",
+    board: "CATHAY PACIFIC",
+    kind: "airline",
+    logo: "/assets/partners/cathay-pacific.webp",
+    w: 440,
+    h: 63,
+  },
+  {
+    name: "Japan Airlines",
+    board: "JAPAN AIRLINES",
+    kind: "airline",
+    logo: "/assets/partners/japan-airlines.webp",
+    w: 301,
+    h: 160,
+  },
+  {
+    name: "FedEx",
+    board: "FEDEX",
+    kind: "corporate",
+    logo: "/assets/partners/fedex.webp",
+    w: 440,
+    h: 137,
+  },
+  {
+    name: "Sherwin-Williams",
+    board: "SHERWIN-WILLIAMS",
+    kind: "corporate",
+    logo: "/assets/partners/sherwin-williams.webp",
+    w: 440,
+    h: 127,
+  },
+  {
+    name: "Texas Lottery",
+    board: "TEXAS LOTTERY",
+    kind: "corporate",
+    logo: "/assets/partners/texas-lottery.webp",
+    w: 126,
+    h: 160,
+  },
+] as const satisfies ReadonlyArray<{
+  name: string;
+  board: string;
+  kind: PartnerKind;
+  logo: string;
+  w: number;
+  h: number;
+}>;

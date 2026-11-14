@@ -13,9 +13,9 @@ export const Route = createFileRoute("/book")({
     pageMeta({
       title: "Book Your Ride — LCT Universal Executive Transports",
       description:
-        "Reserve executive chauffeured transportation in Dallas–Fort Worth and Grapevine, Texas. Secure online booking, available 24/7.",
+        "Reserve executive chauffeured transportation across Dallas–Fort Worth, Texas. Secure online booking, available 24/7.",
       ogTitle: "Book Your Ride — LCT Universal",
-      ogDescription: "Reserve executive chauffeured transportation in Dallas–Fort Worth and Grapevine, Texas.",
+      ogDescription: "Reserve executive chauffeured transportation across Dallas–Fort Worth, Texas.",
       path: "/book",
     }),
   component: BookPage,

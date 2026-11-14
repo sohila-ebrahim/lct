@@ -971,3 +971,74 @@ html.cursor-none iframe {
 .mylimobiz-login-frame iframe.ores4iframe:not([style*="height"]) {
   min-height: 300px;
 }
+
+/*
+ * Partners departures board (src/components/partners-board.tsx).
+ * Flat two-tone split-flap cells: lighter upper half, darker lower half,
+ * a hinge line through the middle. Letter size follows the strip width
+ * (container query units), so 16 cells fit any column.
+ */
+.flap-strip {
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  gap: 2px;
+}
+.flap-cell {
+  position: relative;
+  aspect-ratio: 5 / 7;
+  overflow: hidden;
+  border-radius: 2px;
+  background: #1c1a17;
+}
+.flap-cell::after {
+  content: "";
+  position: absolute;
+  inset: 50% 0 0 0;
+  background: #161411;
+}
+.flap-cell::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(50% - 0.5px);
+  height: 1px;
+  background: #050403;
+  z-index: 2;
+}
+.flap-char {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: calc(100cqw / var(--cols) * 0.66);
+  line-height: 1;
+  color: #efe8d8;
+  transform-origin: 50% 50%;
+}
+.flap-tile {
+  position: relative;
+  display: flex;
+  aspect-ratio: 2 / 1;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px;
+  background: #f6f3ea;
+  box-shadow: inset 0 -1px 0 rgb(0 0 0 / 0.12);
+  transform-origin: 50% 0;
+  backface-visibility: hidden;
+}
+.flap-tile::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(50% - 0.5px);
+  height: 1px;
+  background: rgb(20 18 16 / 0.1);
+}

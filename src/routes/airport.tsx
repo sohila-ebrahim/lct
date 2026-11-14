@@ -4,7 +4,8 @@ import { ArrowRight, Plane, UserCheck, Luggage, DoorOpen } from "lucide-react";
 import { SiteLayout, PageHero } from "@/components/site-layout";
 import { SectionHeading } from "@/components/section-heading";
 import { LeadForm } from "@/components/lead-form";
-import { BOOKING_VEHICLE_OPTIONS, CONTACT } from "@/lib/site-data";
+import { AIRLINE_PARTNER_KINDS, BOOKING_VEHICLE_OPTIONS, CONTACT } from "@/lib/site-data";
+import { PartnersBoard } from "@/components/partners-board";
 import { IMAGES } from "@/lib/image-map";
 import { ensureGsap, prefersReducedMotion } from "@/lib/motion";
 import { pageMeta } from "@/lib/seo";
@@ -37,10 +38,26 @@ export const Route = createFileRoute("/airport")({
 });
 
 const STAGES = [
-  { icon: Plane, label: "Arrival", d: "Your flight lands — we track it in real time and adjust the pickup." },
-  { icon: UserCheck, label: "Meet", d: "A uniformed chauffeur waits with a signed placard at baggage claim or curbside." },
-  { icon: Luggage, label: "Assist", d: "Luggage handled, cabin temperature set, water ready before you sit down." },
-  { icon: DoorOpen, label: "Depart", d: "Straight to your destination — no queues, no ride-share app, no waiting." },
+  {
+    icon: Plane,
+    label: "Arrival",
+    d: "Your flight lands — we track it in real time and adjust the pickup.",
+  },
+  {
+    icon: UserCheck,
+    label: "Meet",
+    d: "A uniformed chauffeur waits with a signed placard at baggage claim or curbside.",
+  },
+  {
+    icon: Luggage,
+    label: "Assist",
+    d: "Luggage handled, cabin temperature set, water ready before you sit down.",
+  },
+  {
+    icon: DoorOpen,
+    label: "Depart",
+    d: "Straight to your destination — no queues, no ride-share app, no waiting.",
+  },
 ] as const;
 
 function Airport() {
@@ -113,17 +130,24 @@ function Airport() {
               aria-hidden
             />
             {STAGES.map(({ icon: Icon, label, d }) => (
-              <div key={label} className="airport-stage relative flex flex-col items-start md:items-center md:text-center">
+              <div
+                key={label}
+                className="airport-stage relative flex flex-col items-start md:items-center md:text-center"
+              >
                 <div className="airport-stage-marker relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-full border border-gold/50 bg-background text-gold shadow-[var(--shadow-gold)]">
                   <Icon className="h-6 w-6" aria-hidden />
                 </div>
                 <h3 className="mt-5 font-display text-2xl text-foreground">{label}</h3>
-                <p className="mt-2 max-w-[22ch] text-sm leading-relaxed text-muted-foreground">{d}</p>
+                <p className="mt-2 max-w-[22ch] text-sm leading-relaxed text-muted-foreground">
+                  {d}
+                </p>
               </div>
             ))}
           </div>
         </div>
       </section>
+
+      <PartnersBoard kinds={AIRLINE_PARTNER_KINDS} tone="black" />
 
       <section className="border-t border-border bg-onyx py-24">
         <div className="mx-auto max-w-3xl px-[var(--page-gutter)]">

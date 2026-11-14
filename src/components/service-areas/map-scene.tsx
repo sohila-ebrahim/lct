@@ -15,12 +15,14 @@ export const AREAS = [
   { name: "Fort Worth", x: 60, y: 130 },
   { name: "DFW Airport", x: 190, y: 60 },
   { name: "Grapevine", x: 210, y: 30 },
+  { name: "Irving", x: 262, y: 100 },
 ] as const;
 
 export const ROUTES: [number, number][] = [
   [1, 2],
   [2, 3],
-  [2, 0],
+  [2, 4],
+  [4, 0],
   [3, 0],
 ];
 

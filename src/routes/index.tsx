@@ -10,6 +10,7 @@ import { PinnedStories } from "@/components/home/pinned-stories";
 import { VehicleObjectJourney } from "@/components/home/vehicle-object";
 import { TrustStrip } from "@/components/home/trust-strip";
 import { FinalCta } from "@/components/home/booking-experience";
+import { PartnersBoard } from "@/components/partners-board";
 import { IMAGES } from "@/lib/image-map";
 import { CONTACT } from "@/lib/site-data";
 import { ensureGsap, prefersReducedMotion, refreshScrollTriggers } from "@/lib/motion";
@@ -72,6 +73,7 @@ function Home() {
       <HorizontalJourney />
       <VehicleObjectJourney />
       <PinnedStories />
+      <PartnersBoard />
       <ChauffeurSection />
       <FinalCta />
     </SiteLayout>

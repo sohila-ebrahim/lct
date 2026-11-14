@@ -79,7 +79,10 @@ export function SiteFooter() {
               className="group inline-flex items-center gap-3 rounded-full bg-gold-gradient px-7 py-3.5 text-sm font-semibold uppercase tracking-widest text-onyx shadow-[var(--shadow-gold)] transition hover:scale-[1.02] hover:brightness-110"
             >
               Book Your Ride
-              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1.5" aria-hidden />
+              <ArrowRight
+                className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1.5"
+                aria-hidden
+              />
             </Link>
             <a
               href={CONTACT.phoneTel}
@@ -128,12 +131,18 @@ export function SiteFooter() {
                   </a>
                 </li>
                 <li>
-                  <a href={CONTACT.emailMailto} className="break-all transition hover:text-champagne">
+                  <a
+                    href={CONTACT.emailMailto}
+                    className="break-all transition hover:text-champagne"
+                  >
                     {CONTACT.email}
                   </a>
                 </li>
                 <li>
-                  <MyLimoBizLoginPopover panelAlign="left" triggerClassName="inline-flex items-center gap-1.5 transition hover:text-champagne" />
+                  <MyLimoBizLoginPopover
+                    panelAlign="left"
+                    triggerClassName="inline-flex items-center gap-1.5 transition hover:text-champagne"
+                  />
                 </li>
               </ul>
             </div>
@@ -147,7 +156,10 @@ export function SiteFooter() {
         <div className="mt-16 grid gap-8 border-t border-border/60 pt-10 sm:grid-cols-2 lg:grid-cols-4">
           <div>
             <div className="eyebrow text-[0.6rem]">Phone</div>
-            <a href={CONTACT.phoneTel} className="mt-2 block text-base text-foreground transition hover:text-champagne">
+            <a
+              href={CONTACT.phoneTel}
+              className="mt-2 block text-base text-foreground transition hover:text-champagne"
+            >
               {CONTACT.phoneDisplay}
             </a>
           </div>
@@ -162,7 +174,18 @@ export function SiteFooter() {
           </div>
           <div>
             <div className="eyebrow text-[0.6rem]">Location</div>
-            <div className="mt-2 text-base text-foreground">{CONTACT.locationLine}</div>
+            <address className="mt-2 text-base not-italic text-foreground">
+              <a
+                href={CONTACT.mapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="transition hover:text-champagne"
+              >
+                {CONTACT.streetAddress}
+                <span className="block text-sm text-muted-foreground">{CONTACT.addressLine2}</span>
+                <span className="block text-sm text-muted-foreground">{CONTACT.locationLine}</span>
+              </a>
+            </address>
           </div>
           <div>
             <div className="eyebrow text-[0.6rem]">Hours</div>

@@ -1,7 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import logoAsset from "@/assets/lct-universal-logo-transparent.png.asset.json";
-
-export const LOGO_URL = logoAsset.url;
+export const LOGO_URL = "/assets/favicon.png";
 export const LOGO_ALT = "LCT Universal Executive Transports";
 
 type LogoProps = {

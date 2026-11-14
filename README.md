@@ -1,29 +1,28 @@
-# Welcome to your Lovable project
+# LCT Universal — website
 
-This project was built with [Lovable](https://lovable.dev).
-
-## Build with Lovable
-
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
+Source for [lctuniversal.com](https://lctuniversal.com), the website of LCT Universal Executive Transports (chauffeured transportation across Dallas–Fort Worth; office in Irving, Texas).
 
 ## Development
 
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
+Requires Node.js and npm.
 
 ```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
+npm install
+npm run dev        # local dev server on http://localhost:5173
+npm run build      # production build into dist/
+npm run preview    # serve the production build
+npm test           # unit tests
+npm run typecheck
 ```
+
+## Deployment
+
+Netlify builds and publishes `main` automatically (`netlify.toml`). Netlify Functions live in `netlify/functions/`; secrets such as `GEMINI_API_KEY` are set in the Netlify dashboard, never committed.
 
 ## Built with
 
-- TanStack Start
-- TypeScript
-- React
+- Vite, React, TypeScript
+- TanStack Router
 - Tailwind CSS
+- Supabase (lead forms)
+- MyLimoBiz (online reservations and client login)

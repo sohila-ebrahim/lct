@@ -5,7 +5,8 @@
  * on a map rather than floating in an empty void. The composition is
  * deliberately abstract (a stylized road network, not a surveyed street
  * grid) — same standard already used by the Service Areas diagram: real
- * verified places (Grapevine, DFW Airport), stylized positions.
+ * verified places (Irving office on Airport Fwy / Hwy 183, DFW Airport),
+ * stylized positions.
  *
  * The main intersection sits at the exact center of the 400x240 viewBox,
  * which is where the 3D pin's camera naturally renders it — no pixel
@@ -47,7 +48,17 @@ export function ContactMapBackdrop() {
         <path d="M200,0 C196,80 204,160 200,240" />
       </g>
 
-      {/* Primary route — the one subtle champagne-gold connector, airport → Grapevine */}
+      {/* Airport Freeway (Hwy 183) — the horizontal primary road the office sits on */}
+      <text
+        x="392"
+        y="112"
+        textAnchor="end"
+        style={{ fill: "#a89a7c", fontSize: 7.5, letterSpacing: "0.14em" }}
+      >
+        AIRPORT FWY · 183
+      </text>
+
+      {/* Primary route — the one subtle champagne-gold connector, airport → Irving office */}
       <path
         d="M92,52 C130,70 165,95 200,120"
         fill="none"
@@ -72,7 +83,7 @@ export function ContactMapBackdrop() {
         DFW AIRPORT
       </text>
 
-      {/* Grapevine label — offset below the pin's tip (the pin itself marks
+      {/* Irving label — offset below the pin's tip (the pin itself marks
           the intersection at center; the label sits clear of it rather
           than behind it) */}
       <text
@@ -82,7 +93,7 @@ export function ContactMapBackdrop() {
         className="font-display"
         style={{ fill: "#e8ddc4", fontSize: 13, letterSpacing: "0.08em" }}
       >
-        GRAPEVINE
+        IRVING
       </text>
 
       {/* Vignette so the roads/labels stay restrained and the pin remains the focal point */}

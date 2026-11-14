@@ -193,7 +193,7 @@ export function CinematicHero() {
       <div className="hero-content relative z-[2] mx-auto w-full max-w-[var(--container-max)] px-[var(--page-gutter)] pb-[calc(140px+env(safe-area-inset-bottom))] pt-36 sm:pb-16 md:pb-24 lg:pb-28">
         <div className="hero-line mb-6 flex items-center gap-3">
           <span className="h-px w-10 bg-champagne/70" />
-          <span className="eyebrow text-champagne">Dallas–Fort Worth · Grapevine</span>
+          <span className="eyebrow text-champagne">Dallas–Fort Worth · Irving</span>
         </div>
 
         <h1 className="max-w-4xl font-display text-[clamp(2.75rem,7vw,6.25rem)] leading-[0.92] tracking-[-0.03em] text-off-white">
