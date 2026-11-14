@@ -1,6 +1,7 @@
 import { useRouterState } from "@tanstack/react-router";
 import { useSyncExternalStore } from "react";
-import { IoCall, IoLogoWhatsapp } from "react-icons/io5";
+import { IoCall } from "react-icons/io5";
+import { SiWhatsapp } from "react-icons/si";
 import { CONTACT } from "@/lib/site-data";
 import {
   getMobileMenuOpenServerSnapshot,
@@ -9,10 +10,10 @@ import {
 } from "@/lib/mobile-menu-state";
 
 /**
- * Floating WhatsApp and call actions, icon only: the official WhatsApp mark
- * in WhatsApp green, and a gold handset that gives a small ring every few
- * seconds. Icons from react-icons (Ionicons). Uses centralized CONTACT
- * numbers only.
+ * Floating WhatsApp and call actions: the standard WhatsApp chat button
+ * (official mark from simple-icons, white on WhatsApp green), and a gold
+ * handset alone that gives a small ring every few seconds (Ionicons). Icons
+ * via react-icons. Uses centralized CONTACT numbers only.
  */
 export function FloatingActions() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
@@ -42,8 +43,7 @@ export function FloatingActions() {
         data-track-label="floating_whatsapp_button"
         className="fab fab-wa"
       >
-        <span aria-hidden className="fab-wa-fill" />
-        <IoLogoWhatsapp aria-hidden className="relative h-full w-full" />
+        <SiWhatsapp aria-hidden className="h-[54%] w-[54%]" />
       </a>
       <a
         href={CONTACT.phoneTel}

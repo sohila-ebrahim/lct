@@ -1450,15 +1450,14 @@ main h2,
   outline-offset: 4px;
   border-radius: 9999px;
 }
+/* The standard WhatsApp chat button: white mark on WhatsApp green. */
 .fab-wa {
-  color: #25d366;
-}
-/* White behind the mark so its handset reads white, as in the official logo. */
-.fab-wa-fill {
-  position: absolute;
-  inset: 22%;
   border-radius: 9999px;
-  background: #ffffff;
+  background: #25d366;
+  color: #ffffff;
+}
+.fab-wa:hover {
+  background: #1ebe5b;
 }
 .fab-call {
   width: 52px;
@@ -1490,6 +1489,113 @@ main h2,
 }
 @media (prefers-reduced-motion: reduce) {
   .fab-call {
+    animation: none;
+  }
+}
+
+/*
+ * Partner ribbons (partner-ribbons.tsx): two ribbons crossing in an X.
+ * Gold ribbon of partner logos runs left, black ribbon of badges and names
+ * runs right. Wider than the page so the tilted ends never show.
+ */
+.ribbons {
+  position: relative;
+  height: clamp(230px, 28vw, 340px);
+  overflow: hidden;
+  background: var(--background);
+}
+.ribbon {
+  position: absolute;
+  left: -10%;
+  width: 120%;
+  top: 50%;
+  overflow: hidden;
+  box-shadow: 0 14px 30px -14px rgb(0 0 0 / 0.45);
+}
+.ribbon-a {
+  z-index: 1;
+  padding-block: 12px;
+  background: linear-gradient(100deg, #b8862b 0%, #e6c677 50%, #b8862b 100%);
+  transform: translateY(-50%) rotate(-4deg);
+}
+.ribbon-b {
+  z-index: 2;
+  padding-block: 14px;
+  background: #0d0e10;
+  border-block: 1px solid rgb(226 191 116 / 0.35);
+  transform: translateY(-50%) rotate(4deg);
+}
+.ribbon-track {
+  display: flex;
+  width: max-content;
+  animation: ribbon-left 18s linear infinite;
+}
+.ribbon-track--right {
+  animation: ribbon-right 22s linear infinite;
+}
+.ribbons:hover .ribbon-track {
+  animation-play-state: paused;
+}
+@keyframes ribbon-left {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes ribbon-right {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+.ribbon-plate {
+  display: grid;
+  place-items: center;
+  height: 56px;
+  min-width: 150px;
+  padding: 0 18px;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 1px 0 rgb(0 0 0 / 0.08);
+}
+.ribbon-badge {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  margin-right: 10px;
+  padding: 3px;
+  border-radius: 9999px;
+  background: #ffffff;
+}
+.ribbon-word {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(0.85rem, 1.6vw, 1.15rem);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  background: linear-gradient(100deg, #c39436, #f6dd94 50%, #c39436);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.ribbon-star {
+  margin: 0 22px;
+  color: #e2bf74;
+  font-size: 0.9rem;
+}
+@media (max-width: 639px) {
+  .ribbon-plate {
+    height: 46px;
+    min-width: 120px;
+    padding: 0 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ribbon-track,
+  .ribbon-track--right {
     animation: none;
   }
 }

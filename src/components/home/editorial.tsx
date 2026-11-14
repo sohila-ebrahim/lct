@@ -9,7 +9,6 @@ import { EASE, ensureGsap, prefersReducedMotion } from "@/lib/motion";
  * Home page scroll sections for the 2026-11 editorial redesign. Native
  * scrolling throughout (no pinning, no smooth-scroll library):
  *
- * - PartnersMarquee: one slow 45s logo loop (CSS, pauses on hover).
  * - StatsBand: real figures count up once when they enter the view.
  * - FleetStack: vehicle cards are sticky and stack; each new card slides
  *   over the previous one, which recedes and dims.
@@ -19,57 +18,6 @@ import { EASE, ensureGsap, prefersReducedMotion } from "@/lib/motion";
  * Everything renders complete and readable without JavaScript or with
  * reduced motion; the effects only add movement.
  */
-
-/** Equal visual weight: wide wordmarks and tall emblems get the same area. */
-function logoWidth(w: number, h: number) {
-  const ar = w / h;
-  const lw = Math.sqrt(3400 * ar);
-  return Math.round(lw * Math.min(1, 168 / lw, 60 / (lw / ar)));
-}
-
-function MarqueeRow({ duplicate = false }: { duplicate?: boolean }) {
-  return (
-    <ul className={`flex ${duplicate ? "marquee-dup" : ""}`} aria-hidden={duplicate || undefined}>
-      {PARTNERS.map((p) => (
-        <li
-          key={p.name}
-          className="flex h-20 w-48 shrink-0 items-center justify-center px-6 md:w-60"
-        >
-          <img
-            src={p.logo}
-            alt={duplicate ? "" : p.name}
-            width={p.w}
-            height={p.h}
-            loading="lazy"
-            decoding="async"
-            className="h-auto max-w-full object-contain"
-            style={{ width: logoWidth(p.w, p.h) }}
-          />
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-export function PartnersMarquee() {
-  return (
-    <section
-      aria-label="Airline and corporate partners"
-      className="border-b border-border bg-background py-10"
-    >
-      <div className="mx-auto max-w-[var(--container-max)] px-[var(--page-gutter)]">
-        <p className="eyebrow">Trusted by airline and corporate partners</p>
-      </div>
-      <div className="marquee mt-6 overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)]">
-        <div className="marquee-track">
-          <MarqueeRow />
-          {/* Second copy for the seamless loop; hidden from assistive tech. */}
-          <MarqueeRow duplicate />
-        </div>
-      </div>
-    </section>
-  );
-}
 
 const CITY_COUNT = SERVICE_AREA_GROUPS.reduce((n, g) => n + g.cities.length, 0);
 export type Stat = { value: number; suffix?: string; prefix?: string; label: string };

@@ -4,13 +4,8 @@ import { SiteLayout } from "@/components/site-layout";
 import { CinematicHero } from "@/components/home/cinematic-hero";
 import { ValueEditorial, ChauffeurSection } from "@/components/home/value-chauffeur";
 import { ServiceAvailability } from "@/components/home/service-availability";
-import {
-  FleetStack,
-  PartnersMarquee,
-  ServiceStories,
-  StatsBand,
-} from "@/components/home/editorial";
-import { TrustStrip } from "@/components/home/trust-strip";
+import { FleetStack, ServiceStories, StatsBand } from "@/components/home/editorial";
+import { PartnerRibbons } from "@/components/partner-ribbons";
 import { FinalCta } from "@/components/home/booking-experience";
 import { PartnersBoard } from "@/components/partners-board";
 import { IMAGES } from "@/lib/image-map";
@@ -68,8 +63,7 @@ function Home() {
   return (
     <SiteLayout>
       <CinematicHero />
-      <PartnersMarquee />
-      <TrustStrip />
+      <PartnerRibbons />
       <ValueEditorial />
       <ServiceAvailability />
       <StatsBand />
