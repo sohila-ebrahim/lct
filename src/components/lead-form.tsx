@@ -195,7 +195,7 @@ export function LeadForm({
         className={variant === "bare" ? "border border-champagne/25 p-6 md:p-8" : shell}
       >
         <div className="flex items-start gap-4">
-          <div className="mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gold-gradient text-onyx">
+          <div className="mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gold-gradient font-semibold">
             <CheckCircle2 className="h-6 w-6" />
           </div>
           <div>
@@ -293,7 +293,7 @@ export function LeadForm({
             type="submit"
             disabled={state === "submitting"}
             aria-busy={state === "submitting"}
-            className="group flex w-full items-center justify-center gap-2 rounded-md bg-gold-gradient px-6 py-4 text-sm font-semibold uppercase tracking-widest text-onyx transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70"
+            className="group flex w-full items-center justify-center gap-2 rounded-md bg-gold-gradient px-6 py-4 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-70"
           >
             {state === "submitting" ? (
               <>

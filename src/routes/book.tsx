@@ -15,7 +15,8 @@ export const Route = createFileRoute("/book")({
       description:
         "Reserve executive chauffeured transportation across Dallas–Fort Worth, Texas. Secure online booking, available 24/7.",
       ogTitle: "Book Your Ride — LCT Universal",
-      ogDescription: "Reserve executive chauffeured transportation across Dallas–Fort Worth, Texas.",
+      ogDescription:
+        "Reserve executive chauffeured transportation across Dallas–Fort Worth, Texas.",
       path: "/book",
     }),
   component: BookPage,
@@ -51,7 +52,10 @@ function BookPage() {
 
   return (
     <SiteLayout>
-      <section ref={rootRef} className="mx-auto max-w-4xl px-[var(--page-gutter)] pt-28 pb-24 sm:pt-36 md:pt-44">
+      <section
+        ref={rootRef}
+        className="mx-auto max-w-4xl px-[var(--page-gutter)] pt-28 pb-24 sm:pt-36 md:pt-44"
+      >
         <div className="book-intro text-center">
           {/* Smaller + tighter margin on mobile only: on a short viewport
               (e.g. iPhone SE, 667px) the full-size intro pushed the panel's
@@ -69,9 +73,7 @@ function BookPage() {
             />
           </div>
           <div className="mb-5 flex items-center justify-center gap-3">
-            <span className="h-px w-8 bg-gold/60" />
             <span className="eyebrow">Reservations</span>
-            <span className="h-px w-8 bg-gold/60" />
           </div>
           <h1 className="font-display text-4xl leading-[1.05] text-foreground md:text-6xl">
             Reserve your ride.
@@ -124,14 +126,14 @@ function BookPage() {
                     href={BOOKING.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-2 rounded-sm bg-gold-gradient px-6 py-3 text-xs font-semibold uppercase tracking-widest text-onyx shadow-[var(--shadow-gold)]"
+                    className="inline-flex items-center gap-2 rounded-full bg-gold-gradient px-6 py-3 text-sm font-semibold"
                   >
                     Open Reservation System
                     <ExternalLink className="h-4 w-4" aria-hidden />
                   </a>
                   <a
                     href={CONTACT.phoneTel}
-                    className="inline-flex items-center gap-2 rounded-sm border border-champagne/35 px-6 py-3 text-xs font-semibold uppercase tracking-widest text-foreground transition hover:border-champagne hover:text-champagne"
+                    className="inline-flex items-center gap-2 rounded-full border border-champagne/35 px-6 py-3 text-sm font-semibold text-foreground transition hover:border-champagne hover:text-champagne"
                   >
                     Call {CONTACT.phoneDisplay}
                   </a>

@@ -1,9 +1,14 @@
 import { useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Outlet, Link, HeadContent, createRootRouteWithContext, useRouter } from "@tanstack/react-router";
-import { BrandLoader } from "@/components/luxury/brand-loader";
+import {
+  Outlet,
+  Link,
+  HeadContent,
+  createRootRouteWithContext,
+  useRouter,
+} from "@tanstack/react-router";
 import { RouteTransition } from "@/components/route-transition";
-import { Cursor } from "@/components/luxury/cursor";
+import { TurnSignal } from "@/components/turn-signal";
 import { MyLimoBizWidgetHost } from "@/components/booking/mylimobiz-widget";
 import { Analytics } from "@/components/analytics";
 import { ROOT_JSON_LD, ROOT_META } from "@/lib/site-head";
@@ -130,9 +135,8 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <HeadContent />
-      <BrandLoader />
       <RouteTransition />
-      <Cursor />
+      <TurnSignal />
       <MyLimoBizWidgetHost />
       <Analytics />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}

@@ -41,10 +41,10 @@ export function ServiceAvailability() {
   return (
     <section
       ref={rootRef}
-      className="relative overflow-hidden bg-[color:var(--surface-black)] py-[var(--section-space)]"
+      className="relative overflow-hidden bg-background py-[var(--section-space)]"
     >
       <div className="relative mx-auto grid max-w-[var(--container-max)] items-center gap-12 px-[var(--page-gutter)] lg:grid-cols-[0.8fr_1.2fr]">
-        <div className="relative mx-auto aspect-square w-40 overflow-hidden rounded-full ring-1 ring-champagne/40 shadow-[var(--shadow-luxe)] md:w-52 lg:mx-0">
+        <div className="relative mx-auto aspect-[4/5] w-full max-w-sm overflow-hidden lg:mx-0">
           <img
             src={poster.src}
             alt={poster.alt}
@@ -52,20 +52,19 @@ export function ServiceAvailability() {
             className="absolute inset-0 h-full w-full object-cover"
             style={{ objectPosition: poster.objectPositionDesktop }}
           />
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
         </div>
 
         <div>
-          <div className="eyebrow text-champagne">Always Available</div>
-          <h2 className="avail-title mt-4 max-w-xl font-display text-[clamp(2rem,3.6vw,3.25rem)] leading-[1.05] text-off-white">
+          <div className="eyebrow">Always Available</div>
+          <h2 className="avail-title mt-4 max-w-xl font-display text-[clamp(2rem,3.6vw,3.25rem)] leading-[1.05] text-foreground">
             Around the clock,
-            <span className="block italic text-champagne">every mile of the way.</span>
+            <span className="block text-gold-gradient">every mile of the way.</span>
           </h2>
           <div className="mt-9 grid gap-6 sm:grid-cols-3">
             {POINTS.map((p) => (
-              <div key={p.t} className="avail-point">
-                <h3 className="font-display text-base text-off-white">{p.t}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-off-white/65">{p.d}</p>
+              <div key={p.t} className="avail-point border-t border-border pt-4">
+                <h3 className="font-display text-base text-foreground">{p.t}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{p.d}</p>
               </div>
             ))}
           </div>

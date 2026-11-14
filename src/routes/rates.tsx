@@ -29,7 +29,12 @@ function Rates() {
     if (!grid || prefersReducedMotion()) return;
     const { gsap } = ensureGsap();
     const ctx = gsap.context(() => {
-      revealStagger(Array.from(grid.children), { from: "up", amount: 0.06, start: "top 85%", trigger: grid });
+      revealStagger(Array.from(grid.children), {
+        from: "up",
+        amount: 0.06,
+        start: "top 85%",
+        trigger: grid,
+      });
     }, grid);
     return () => ctx.revert();
   }, []);
@@ -47,7 +52,8 @@ function Rates() {
           eyebrow="Vehicle Classes"
           title={
             <>
-              Verified classes, <span className="italic text-gold-gradient">live availability.</span>
+              Verified classes,{" "}
+              <span className="italic text-gold-gradient">live availability.</span>
             </>
           }
           description="Every class below is confirmed directly from our live reservation system — not an estimate. Passenger capacity and current live rate are shown; your exact fare depends on the specifics of your trip."
@@ -57,7 +63,7 @@ function Rates() {
           {VERIFIED_LIVE_VEHICLE_CLASSES.map((v) => (
             <div
               key={v.name}
-              className="rounded-sm border border-border/60 bg-[color:var(--surface-elevated)]/40 p-6"
+              className="rounded-sm border border-border/60 bg-muted p-6"
             >
               <div className="font-display text-xl text-foreground">{v.name}</div>
               <div className="mt-4 flex items-center gap-4 text-sm text-muted-foreground">
@@ -83,13 +89,13 @@ function Rates() {
         <div className="grid gap-10 border-y border-border py-12 lg:grid-cols-2">
           <div>
             <h2 className="font-display text-2xl text-foreground">How pricing works</h2>
-            <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-              {RATES.disclaimer}
-            </p>
+            <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{RATES.disclaimer}</p>
           </div>
           <div>
             <h2 className="font-display text-2xl text-foreground">Airport transfers</h2>
-            <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{RATES.airportNote}</p>
+            <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+              {RATES.airportNote}
+            </p>
           </div>
         </div>
       </section>
@@ -100,21 +106,24 @@ function Rates() {
             Get your exact rate.
           </h2>
           <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-off-white/70 md:text-base">
-            Enter your pickup, drop-off, and vehicle preference — our live booking system returns
-            a confirmed fare in seconds.
+            Enter your pickup, drop-off, and vehicle preference — our live booking system returns a
+            confirmed fare in seconds.
           </p>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
             <Link
               to="/book"
               data-cursor="book"
-              className="group inline-flex items-center gap-3 rounded-full bg-gold-gradient px-8 py-4 text-sm font-semibold uppercase tracking-widest text-onyx shadow-[var(--shadow-gold)] transition hover:scale-[1.02] hover:brightness-110"
+              className="group inline-flex items-center gap-3 rounded-full bg-gold-gradient px-8 py-4 text-sm font-semibold transition"
             >
               Check Live Rates
-              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1.5" aria-hidden />
+              <ArrowRight
+                className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1.5"
+                aria-hidden
+              />
             </Link>
             <a
               href={CONTACT.phoneTel}
-              className="inline-flex items-center gap-2 rounded-sm border border-champagne/40 px-6 py-3.5 text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-off-white transition hover:border-champagne hover:text-champagne"
+              className="inline-flex items-center gap-2 rounded-full border border-champagne/40 px-6 py-3.5 text-sm font-semibold text-off-white transition hover:border-champagne hover:text-champagne"
             >
               {CONTACT.phoneDisplay}
             </a>

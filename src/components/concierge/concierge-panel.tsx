@@ -1,7 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { X, Send, Loader2, ArrowRight } from "lucide-react";
-import { sendConciergeMessage, type ConciergeMessage, type ConciergeAction } from "@/lib/concierge/client";
+import {
+  sendConciergeMessage,
+  type ConciergeMessage,
+  type ConciergeAction,
+} from "@/lib/concierge/client";
 import { track } from "@/lib/tracking";
 
 type DisplayMessage = ConciergeMessage & { actions?: ConciergeAction[]; escalate?: boolean };
@@ -20,10 +24,13 @@ const QUICK_ACTIONS = [
 /** Page-aware opening suggestion — matches the current route to a relevant first prompt, per explicit context-awareness requirement. */
 function suggestionForPath(pathname: string): string | null {
   if (pathname === "/fleet") return "Looking at our fleet? Ask me which vehicle fits your trip.";
-  if (pathname === "/airport") return "Ask me about airport pickup, meet-and-greet, or waiting time.";
+  if (pathname === "/airport")
+    return "Ask me about airport pickup, meet-and-greet, or waiting time.";
   if (pathname === "/service-areas") return "Ask me whether we serve a specific city.";
-  if (pathname === "/join-our-team") return "Ask me about the Driver, Company Partner, or Referral Partner pathway.";
-  if (pathname.startsWith("/blog")) return "Have a question about this article? I can also point you to the right service page.";
+  if (pathname === "/join-our-team")
+    return "Ask me about the Driver, Company Partner, or Referral Partner pathway.";
+  if (pathname.startsWith("/blog"))
+    return "Have a question about this article? I can also point you to the right service page.";
   if (pathname === "/corporate") return "Ask me about corporate accounts and executive travel.";
   return null;
 }
@@ -31,7 +38,13 @@ function suggestionForPath(pathname: string): string | null {
 const SESSION_KEY = "lct-concierge-history";
 const RATE_LIMIT_MS = 2000;
 
-export default function ConciergePanel({ onClose, dialogId }: { onClose: () => void; dialogId: string }) {
+export default function ConciergePanel({
+  onClose,
+  dialogId,
+}: {
+  onClose: () => void;
+  dialogId: string;
+}) {
   const [messages, setMessages] = useState<DisplayMessage[]>([]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
@@ -94,7 +107,15 @@ export default function ConciergePanel({ onClose, dialogId }: { onClose: () => v
       pathname,
     );
 
-    setMessages((prev) => [...prev, { role: "assistant", content: result.message, actions: result.actions, escalate: result.escalate }]);
+    setMessages((prev) => [
+      ...prev,
+      {
+        role: "assistant",
+        content: result.message,
+        actions: result.actions,
+        escalate: result.escalate,
+      },
+    ]);
     setSending(false);
   };
 
@@ -111,7 +132,9 @@ export default function ConciergePanel({ onClose, dialogId }: { onClose: () => v
       <div className="flex items-center justify-between border-b border-border/60 px-5 py-4">
         <div>
           <div className="eyebrow text-gold">AI Concierge</div>
-          <div className="text-xs text-muted-foreground">LCT Universal Executive Transportation</div>
+          <div className="text-xs text-muted-foreground">
+            LCT Universal Executive Transportation
+          </div>
         </div>
         <button
           type="button"
@@ -127,7 +150,8 @@ export default function ConciergePanel({ onClose, dialogId }: { onClose: () => v
         {messages.length === 0 && (
           <div className="space-y-4">
             <p className="text-sm leading-relaxed text-muted-foreground">
-              {suggestion ?? "Ask about vehicles, service areas, airport transfers, or how to book."}
+              {suggestion ??
+                "Ask about vehicles, service areas, airport transfers, or how to book."}
             </p>
             <div className="flex flex-wrap gap-2">
               {QUICK_ACTIONS.map((qa) => (
@@ -148,7 +172,9 @@ export default function ConciergePanel({ onClose, dialogId }: { onClose: () => v
           <div key={i} className={m.role === "user" ? "flex justify-end" : "flex justify-start"}>
             <div
               className={`max-w-[85%] rounded-sm px-4 py-2.5 text-sm leading-relaxed ${
-                m.role === "user" ? "bg-gold-gradient text-onyx" : "bg-[color:var(--surface-elevated)] text-foreground/90"
+                m.role === "user"
+                  ? "bg-gold-gradient text-onyx"
+                  : "bg-[color:var(--surface-elevated)] text-foreground/90"
               }`}
             >
               <p>{m.content}</p>
@@ -205,7 +231,7 @@ export default function ConciergePanel({ onClose, dialogId }: { onClose: () => v
           type="submit"
           disabled={sending || !input.trim()}
           aria-label="Send"
-          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-sm bg-gold-gradient text-onyx transition disabled:opacity-40"
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gold-gradient transition disabled:opacity-40 font-semibold"
         >
           <Send className="h-4 w-4" aria-hidden />
         </button>

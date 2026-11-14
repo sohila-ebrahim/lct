@@ -5,8 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-display: "Cormorant Garamond", ui-serif, Georgia, "Times New Roman", serif;
-  --font-sans: "Manrope Variable", "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Inter Tight Variable", "Inter Tight", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
 
   /* Proportional, not subtractive — with the site's deliberately tiny 0.2rem
      base radius (a sharp, architectural look, not a bubbly one), the
@@ -53,7 +53,8 @@
 }
 
 :root {
-  --radius: 0.2rem;
+  /* Hard-edged panels and cards; buttons are full pills (see bg-gold-gradient). */
+  --radius: 0rem;
 
   /* Layout */
   --container-max: 80rem;
@@ -76,54 +77,102 @@
   --z-modal: 60;
   --z-toast: 70;
 
-  /* Luxury palette — near black, charcoal, champagne gold accent */
-  --surface-black: oklch(0.08 0.004 60);
-  --surface-elevated: oklch(0.11 0.005 60);
-  --onyx: oklch(0.14 0.005 60);
-  --charcoal: oklch(0.22 0.005 60);
-  --champagne: oklch(0.82 0.08 88);
-  --gold: oklch(0.78 0.11 84);
-  --gold-soft: oklch(0.88 0.07 90);
-  --gold-deep: oklch(0.58 0.11 72);
-  --off-white: oklch(0.96 0.01 90);
+  /*
+   * Editorial palette (2026-11 redesign): ink type on a white canvas, dark
+   * bands for contrast sections, and LCT gold as the single warm accent.
+   * Light values live here; `.band-dark` (and any dark-surface section, see
+   * below) re-declares the same names for dark backgrounds, so every
+   * component reads the right colour for the band it sits in.
+   */
+  --paper: #ffffff;
+  --bone: #f4f2ed;
+  --ink: #0d0e10;
+  --ash: #5f6168;
+  --ash-soft: #85878e;
+  --hairline: #dddad4;
+  --band: #0d0e10;
+  --band-raised: #17181b;
+  --gold-light: #c8ad86;
 
-  --background: var(--surface-black);
+  /* Legacy names, kept so existing components follow the new palette. */
+  --surface-black: var(--band);
+  --surface-elevated: var(--band-raised);
+  --onyx: var(--band-raised);
+  --charcoal: #232428;
+  --champagne: #85662f;
+  --gold: #8f6f37;
+  --gold-soft: #6c5226;
+  --gold-deep: #85662f;
+  --off-white: #f6f4ef;
+  --headline-soft: var(--ash-soft);
+  --btn-bg: var(--ink);
+  --btn-fg: #ffffff;
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+
+  --card: var(--paper);
+  --card-foreground: var(--ink);
+  --popover: var(--paper);
+  --popover-foreground: var(--ink);
+
+  --primary: var(--ink);
+  --primary-foreground: #ffffff;
+  --secondary: var(--bone);
+  --secondary-foreground: var(--ink);
+  --muted: var(--bone);
+  --muted-foreground: var(--ash);
+  --accent: var(--bone);
+  --accent-foreground: var(--ink);
+  --destructive: #b42318;
+  --destructive-foreground: #ffffff;
+  --border: var(--hairline);
+  --input: #cfccc5;
+  --ring: var(--ink);
+
+  /* Flat by design: no gradients, glows or drop shadows. */
+  --gradient-gold: linear-gradient(var(--gold), var(--gold));
+  --gradient-onyx: linear-gradient(var(--surface-black), var(--surface-black));
+  --gradient-surface: linear-gradient(var(--surface-black), var(--surface-black));
+  --shadow-luxe: none;
+  --shadow-gold: none;
+}
+
+/*
+ * Dark bands. Sections already painted with the dark surface colours pick
+ * these up automatically; `.band-dark` marks any other dark block.
+ */
+.band-dark,
+.bg-onyx,
+[class*="bg-[color:var(--surface-black)]"],
+[class*="bg-[color:var(--surface-elevated)]"],
+[class*="bg-[color:var(--onyx)]"] {
+  --champagne: var(--gold-light);
+  --gold: var(--gold-light);
+  --gold-soft: #e3d2b0;
+  --gold-deep: #a88a5c;
+  --headline-soft: var(--gold-light);
+  --btn-bg: var(--gold-light);
+  --btn-fg: var(--ink);
+
+  --background: var(--band);
   --foreground: var(--off-white);
-
-  --card: var(--onyx);
+  --card: var(--band-raised);
   --card-foreground: var(--off-white);
-  --popover: var(--onyx);
+  --popover: var(--band-raised);
   --popover-foreground: var(--off-white);
-
-  --primary: var(--gold);
-  --primary-foreground: oklch(0.12 0.005 60);
-  --secondary: var(--charcoal);
+  --primary: var(--off-white);
+  --primary-foreground: var(--ink);
+  --secondary: #1d1e22;
   --secondary-foreground: var(--off-white);
-  --muted: oklch(0.18 0.005 60);
-  --muted-foreground: oklch(0.68 0.015 75);
-  --accent: oklch(0.2 0.01 80);
-  --accent-foreground: var(--champagne);
-  --destructive: oklch(0.6 0.22 25);
-  --destructive-foreground: oklch(0.98 0.005 80);
-  --border: oklch(0.3 0.01 75 / 0.45);
-  --input: var(--charcoal);
-  --ring: var(--champagne);
-
-  --gradient-gold: linear-gradient(
-    135deg,
-    oklch(0.9 0.06 92) 0%,
-    oklch(0.78 0.11 84) 48%,
-    oklch(0.55 0.1 72) 100%
-  );
-  --gradient-onyx: linear-gradient(180deg, var(--surface-black) 0%, var(--onyx) 100%);
-  --gradient-surface: linear-gradient(
-    165deg,
-    oklch(0.14 0.008 70 / 0.9) 0%,
-    oklch(0.09 0.004 60) 55%,
-    oklch(0.11 0.01 80 / 0.55) 100%
-  );
-  --shadow-luxe: 0 30px 80px -20px oklch(0 0 0 / 0.65), 0 8px 24px -8px oklch(0.78 0.11 84 / 0.12);
-  --shadow-gold: 0 18px 48px -18px oklch(0.78 0.11 84 / 0.32);
+  --muted: #1d1e22;
+  --muted-foreground: #a9abb1;
+  --accent: #1d1e22;
+  --accent-foreground: var(--off-white);
+  --border: rgb(255 255 255 / 0.14);
+  --input: #34353a;
+  --ring: var(--gold-light);
+  color: var(--foreground);
 }
 
 @layer base {
@@ -138,69 +187,45 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
-    font-feature-settings: "ss01", "cv11";
+    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     overflow-x: clip;
   }
+  /* Display voice: bold and tight. Explicit weight/tracking/leading
+     utilities on an element still win (utilities outrank this layer). */
   h1, h2, h3, h4, .font-display {
     font-family: var(--font-display);
-    font-weight: 400;
-    letter-spacing: -0.015em;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1;
   }
   :focus-visible {
     outline: 2px solid var(--ring);
     outline-offset: 3px;
   }
   ::selection {
-    background: var(--champagne);
-    color: var(--onyx);
+    background: var(--ink);
+    color: #ffffff;
   }
 }
 
-/*
- * Deliberately UNLAYERED (not inside @layer base/components/utilities):
- * Tailwind v4's cascade layers give `@layer utilities` (where `cursor-pointer`
- * and friends live, used throughout the shadcn/Radix components) higher
- * precedence than `@layer base` REGARDLESS of selector specificity — so a
- * same-layer or lower-layer `cursor: none` rule can never fully win against
- * every `cursor-pointer` in the app. Unlayered CSS always beats every layer,
- * which is what "no native cursor flashes, anywhere, ever" actually requires.
- */
-html.cursor-none,
-html.cursor-none body,
-html.cursor-none * {
-  cursor: none !important;
-}
-
-/*
- * Native cursor exceptions: text entry, editable content and third-party
- * embeds are where the OS cursor (I-beam, iframe-native pointer) genuinely
- * communicates more than our decorative pin — the Cursor component also
- * fades its visuals out over these targets (see the text-zone check in
- * cursor.tsx) so the native cursor is never fighting a hidden custom one.
- */
-html.cursor-none input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
-html.cursor-none textarea,
-html.cursor-none select,
-html.cursor-none [contenteditable="true"],
-html.cursor-none iframe {
-  cursor: auto !important;
-}
 
 @utility text-measure {
   max-width: var(--text-measure);
 }
 
+/* Second voice in a headline: soft grey on light, LCT gold on dark bands. */
 @utility text-gold-gradient {
-  background: var(--gradient-gold);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--headline-soft);
+  font-style: normal !important;
 }
 
+/* The primary action: ink pill on light, gold pill on dark bands. */
 @utility bg-gold-gradient {
-  background: var(--gradient-gold);
+  background: var(--btn-bg);
+  color: var(--btn-fg) !important;
+  border-radius: 9999px !important;
 }
 
 @utility hairline {
@@ -218,23 +243,20 @@ html.cursor-none iframe {
 @utility eyebrow {
   font-family: var(--font-sans);
   font-size: 0.72rem;
-  letter-spacing: 0.28em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--gold);
-  font-weight: 500;
+  color: var(--muted-foreground);
+  font-weight: 600;
 }
 
 @utility luxe-card {
-  background: linear-gradient(180deg, oklch(0.16 0.005 60 / 0.9), oklch(0.11 0.005 60 / 0.9));
-  border: 1px solid oklch(0.78 0.13 82 / 0.15);
-  backdrop-filter: blur(20px);
-  box-shadow: var(--shadow-luxe);
+  background: var(--card);
+  border: 1px solid var(--border);
 }
 
 @utility glass {
-  background: oklch(0.14 0.005 60 / 0.65);
-  border: 1px solid oklch(0.78 0.13 82 / 0.2);
-  backdrop-filter: blur(24px) saturate(140%);
+  background: var(--card);
+  border: 1px solid var(--border);
 }
 
 @keyframes shimmer {
@@ -390,7 +412,6 @@ html.cursor-none iframe {
   [style*="fadeRise"] { animation: none !important; opacity: 1 !important; transform: none !important; filter: none !important; }
 }
 
-/* Brand loader — cinematic automotive intro */
 @keyframes heroLightSweep {
   0%,
   100% {
@@ -409,32 +430,6 @@ html.cursor-none iframe {
   }
 }
 
-@keyframes loaderRoad {
-  0%   { opacity: 0; transform: translateY(-50%) scaleX(0.4); }
-  40%  { opacity: 1; }
-  100% { opacity: 0.9; transform: translateY(-50%) scaleX(1); }
-}
-@keyframes loaderLamp {
-  0%   { opacity: 0; transform: translateY(-50%) scale(0.4); }
-  60%  { opacity: 1; transform: translateY(-50%) scale(1.05); }
-  100% { opacity: 1; transform: translateY(-50%) scale(1); }
-}
-@keyframes loaderDrive {
-  0%   { transform: translate(-140%, -50%); }
-  55%  { transform: translate(-50%, -50%); }
-  100% { transform: translate(75%, -50%); opacity: 0; }
-}
-@keyframes loaderTrail {
-  0%   { transform: scaleX(0); opacity: 0; }
-  35%  { opacity: 1; }
-  70%  { transform: scaleX(1); opacity: 1; }
-  100% { transform: scaleX(1); opacity: 0; }
-}
-@keyframes loaderLogo {
-  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.94); filter: blur(6px); }
-  60%  { opacity: 1; filter: blur(0); }
-  100% { opacity: 1; transform: translate(-50%, -50%) scale(1); filter: blur(0); }
-}
 
 /* Light sweep — polished-metal reflection, plays once on enter */
 @keyframes lightSweep {
@@ -1041,4 +1036,117 @@ html.cursor-none iframe {
   top: calc(50% - 0.5px);
   height: 1px;
   background: rgb(20 18 16 / 0.1);
+}
+
+/*
+ * Page transitions (View Transitions API, router `defaultViewTransition`).
+ * The outgoing page dims and recedes slightly; the new one rises in on the
+ * house curve. The header has its own name, so it stays put while the
+ * content changes.
+ */
+.site-header {
+  view-transition-name: site-header;
+}
+::view-transition-old(root) {
+  animation: vt-out 240ms cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+::view-transition-new(root) {
+  animation: vt-in 720ms cubic-bezier(0.625, 0.05, 0, 1) both;
+}
+@keyframes vt-out {
+  to {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+}
+@keyframes vt-in {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+}
+
+/*
+ * Logo marquee: one slow linear loop (45s) for partner strips. The track
+ * holds the list twice and moves by half its width, so the loop is seamless.
+ */
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 45s linear infinite;
+}
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+  .marquee-track {
+    animation: none;
+    width: auto;
+    justify-content: center;
+  }
+  .marquee-track > ul {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .marquee-dup {
+    display: none;
+  }
+}
+
+/*
+ * Turn-signal "waiting" arrows (src/components/turn-signal.tsx; the first
+ * load uses the #boot-signal copy inlined in index.html). Gold block arrows
+ * at both screen edges blink on the relay beat (0.66s).
+ */
+.turn-signal {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  visibility: hidden;
+  view-transition-name: turn-signal;
+}
+.turn-signal[data-on] {
+  visibility: visible;
+}
+.turn-signal i {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  width: 44px;
+  height: 36px;
+  margin-top: -18px;
+  background: #b8862b;
+  clip-path: polygon(0 50%, 55% 0, 55% 28%, 100% 28%, 100% 72%, 55% 72%, 55% 100%);
+  animation: signal-blink 0.66s steps(1, end) infinite;
+}
+.turn-signal i + i {
+  left: auto;
+  right: 14px;
+  transform: scaleX(-1);
+}
+@keyframes signal-blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.12;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .turn-signal {
+    display: none;
+  }
 }

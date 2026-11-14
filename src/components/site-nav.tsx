@@ -5,7 +5,6 @@ import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu";
 import { Logo } from "@/components/logo";
 import { CONTACT } from "@/lib/site-data";
 import { setMobileMenuOpen } from "@/lib/mobile-menu-state";
-import { startLenis, stopLenis } from "@/lib/lenis-instance";
 import { MyLimoBizLoginPopover } from "@/components/booking/mylimobiz-login-popover";
 
 type NavLeaf = { to: string; label: string };
@@ -75,9 +74,9 @@ const NAV_ENTRIES: NavEntry[] = [
 ];
 
 const navLinkClass =
-  "rounded-sm px-3 py-2 text-[0.8125rem] font-medium tracking-wide text-foreground/65 transition-colors hover:text-champagne focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
+  "rounded-sm px-3 py-2 text-[0.8125rem] font-medium tracking-wide text-foreground/70 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
 const navTriggerClass =
-  "group flex items-center gap-1 rounded-sm bg-transparent px-3 py-2 text-[0.8125rem] font-medium tracking-wide text-foreground/65 transition-colors hover:text-champagne focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background data-[state=open]:text-champagne";
+  "group flex items-center gap-1 rounded-sm bg-transparent px-3 py-2 text-[0.8125rem] font-medium tracking-wide text-foreground/70 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background data-[state=open]:text-foreground";
 
 export function SiteNav() {
   const [scrolled, setScrolled] = useState(false);
@@ -120,11 +119,6 @@ export function SiteNav() {
     document.body.style.overflow = "hidden";
     document.documentElement.style.overflow = "hidden";
     if (scrollbar > 0) document.body.style.paddingRight = `${scrollbar}px`;
-    // The CSS overflow lock above only stops native scroll — this site's
-    // Lenis smooth-scroll drives scroll itself via its own rAF loop and
-    // ignores `overflow`, so without this the page behind the menu kept
-    // scrolling on wheel/touch input (confirmed via Playwright wheel test).
-    stopLenis();
 
     // Trap Tab focus inside the open menu panel — without this, tabbing past
     // the last link falls through to <main> content that's hidden behind the
@@ -159,7 +153,6 @@ export function SiteNav() {
       document.body.style.overflow = prevOverflow;
       document.body.style.paddingRight = prevPadding;
       document.documentElement.style.overflow = prevHtmlOverflow;
-      startLenis();
       window.removeEventListener("keydown", onKey);
     };
   }, [open, closeMenu]);
@@ -167,8 +160,6 @@ export function SiteNav() {
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
-
-  const headerSolid = scrolled || open;
 
   const isEntryActive = (entry: NavEntry) =>
     isGroup(entry)
@@ -179,13 +170,7 @@ export function SiteNav() {
 
   return (
     <>
-      <header
-        className={`fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-500 ${
-          headerSolid
-            ? "border-b border-border/80 bg-[color:var(--surface-elevated)]/92 backdrop-blur-xl"
-            : "border-b border-transparent bg-transparent"
-        }`}
-      >
+      <header className="site-header fixed inset-x-0 top-0 z-50 border-b border-border bg-background/95 backdrop-blur-md">
         <div className="mx-auto flex h-[var(--header-height)] max-w-[var(--container-max)] items-center justify-between gap-4 px-[var(--page-gutter)]">
           <Logo
             priority
@@ -221,14 +206,14 @@ export function SiteNav() {
                       className="absolute left-0 top-full pt-2 data-[state=closed]:pointer-events-none data-[state=closed]:-translate-y-1 data-[state=closed]:opacity-0 data-[state=open]:translate-y-0 data-[state=open]:opacity-100"
                       style={{ transition: "opacity 180ms ease, transform 180ms ease" }}
                     >
-                      <ul className="min-w-[15rem] rounded-sm border border-border/60 bg-[color:var(--surface-elevated)]/97 p-2 shadow-[var(--shadow-luxe)] backdrop-blur-xl">
+                      <ul className="min-w-[15rem] rounded-sm border border-border/60 bg-background p-2">
                         {entry.items.map((item) => (
                           <li key={item.to + item.label}>
                             <NavigationMenuPrimitive.Link asChild>
                               <Link
                                 to={item.to}
                                 data-cursor="explore"
-                                className="block rounded-sm px-4 py-2.5 text-sm text-foreground/75 transition-colors hover:bg-champagne/[0.06] hover:text-champagne focus-visible:outline-none focus-visible:bg-champagne/[0.06] focus-visible:text-champagne"
+                                className="block rounded-sm px-4 py-2.5 text-sm text-foreground/75 transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:bg-muted focus-visible:text-foreground"
                                 activeProps={{ className: "!text-champagne" }}
                               >
                                 {item.label}
@@ -262,19 +247,19 @@ export function SiteNav() {
             <a
               href={CONTACT.phoneTel}
               data-track-label="header_phone"
-              className="flex items-center gap-2 text-sm text-foreground/75 transition-colors hover:text-champagne focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="flex items-center gap-2 text-sm text-foreground/75 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               <Phone className="h-4 w-4" aria-hidden />
               <span>{CONTACT.phoneDisplay}</span>
             </a>
             <MyLimoBizLoginPopover
               panelAlign="right"
-              triggerClassName="inline-flex items-center gap-1.5 rounded-sm border border-champagne/40 px-4 py-2.5 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-off-white transition hover:border-champagne hover:text-champagne focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              triggerClassName="inline-flex items-center gap-1.5 rounded-full border border-foreground/20 px-4 py-2.5 text-sm font-semibold text-foreground transition hover:border-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             />
             <Link
               to="/book"
               data-cursor="book"
-              className="inline-flex items-center justify-center rounded-sm bg-gold-gradient px-5 py-2.5 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-onyx shadow-[var(--shadow-gold)] transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="inline-flex items-center justify-center rounded-full bg-gold-gradient px-5 py-2.5 text-sm font-semibold transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               Book Now
             </Link>
@@ -284,7 +269,7 @@ export function SiteNav() {
             ref={menuButtonRef}
             type="button"
             onClick={() => setOpen((o) => !o)}
-            className="relative z-[60] rounded-sm p-2 text-foreground transition-colors hover:text-champagne focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring lg:hidden"
+            className="relative z-[60] rounded-sm p-2 text-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring lg:hidden"
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             aria-controls={menuId}
@@ -309,17 +294,9 @@ export function SiteNav() {
       >
         {
           <>
-            <div className="absolute inset-0 bg-[color:var(--surface-black)]/98 backdrop-blur-2xl" />
-            <div
-              className="pointer-events-none absolute inset-0 opacity-60"
-              style={{
-                background:
-                  "radial-gradient(55% 40% at 85% 10%, color-mix(in oklab, var(--champagne) 22%, transparent), transparent 70%), radial-gradient(45% 35% at 10% 90%, color-mix(in oklab, var(--gold-deep) 18%, transparent), transparent 65%)",
-              }}
-            />
+            <div className="absolute inset-0 bg-background" />
             <div className="relative flex h-full flex-col overflow-y-auto px-8 pt-28 pb-10">
               <div className="mb-6 flex items-center gap-3">
-                <span className="h-px w-6 bg-champagne/60" aria-hidden />
                 <span className="eyebrow">Menu</span>
               </div>
 
@@ -327,7 +304,7 @@ export function SiteNav() {
                 {NAV_ENTRIES.map((entry, i) =>
                   isGroup(entry) ? (
                     <details key={entry.label} className="group border-b border-border/40 py-2">
-                      <summary className="flex cursor-pointer list-none items-center justify-between py-2 font-display text-3xl text-foreground transition-colors marker:content-none hover:text-champagne focus-visible:outline-none focus-visible:text-champagne">
+                      <summary className="flex cursor-pointer list-none items-center justify-between py-2 font-display text-3xl text-foreground transition-colors marker:content-none hover:text-foreground focus-visible:outline-none focus-visible:text-foreground">
                         <span className={isEntryActive(entry) ? "text-champagne" : undefined}>
                           {entry.label}
                         </span>
@@ -342,7 +319,7 @@ export function SiteNav() {
                             key={item.to + item.label}
                             to={item.to}
                             onClick={closeMenu}
-                            className="py-3 text-lg text-foreground/70 transition-colors hover:text-champagne focus-visible:outline-none focus-visible:text-champagne"
+                            className="py-3 text-lg text-foreground/70 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:text-foreground"
                             activeProps={{ className: "!text-champagne" }}
                           >
                             {item.label}
@@ -356,7 +333,7 @@ export function SiteNav() {
                       ref={i === 0 ? firstLinkRef : undefined}
                       to={entry.to}
                       onClick={closeMenu}
-                      className="group flex items-baseline justify-between border-b border-border/40 py-4 font-display text-3xl text-foreground transition-colors hover:text-champagne focus-visible:outline-none focus-visible:text-champagne"
+                      className="group flex items-baseline justify-between border-b border-border/40 py-4 font-display text-3xl text-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:text-foreground"
                       activeProps={{ className: "text-champagne" }}
                       activeOptions={{ exact: entry.to === "/" }}
                     >
@@ -366,23 +343,20 @@ export function SiteNav() {
                 )}
               </nav>
 
-              <div
-                className="mt-8 h-px w-full bg-linear-to-r from-champagne/50 via-champagne/15 to-transparent"
-                aria-hidden
-              />
+              <div className="mt-8 h-px w-full bg-border" aria-hidden />
 
               <div className="mt-8 space-y-4">
                 <a
                   href={CONTACT.phoneTel}
                   data-track-label="header_phone"
-                  className="flex items-center gap-3 text-base text-foreground/85 transition hover:text-champagne focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="flex items-center gap-3 text-base text-foreground/85 transition hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   <Phone className="h-4 w-4 text-champagne" aria-hidden />
                   {CONTACT.phoneDisplay}
                 </a>
                 <a
                   href={CONTACT.emailMailto}
-                  className="block text-sm text-foreground/70 transition hover:text-champagne focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="block text-sm text-foreground/70 transition hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
                   {CONTACT.email}
                 </a>
@@ -395,13 +369,13 @@ export function SiteNav() {
 
               <MyLimoBizLoginPopover
                 panelAlign="left"
-                triggerClassName="mt-6 flex min-h-[44px] w-full items-center justify-center gap-2 rounded-sm border border-champagne/40 px-6 py-3 text-center text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-off-white transition hover:border-champagne hover:text-champagne focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                triggerClassName="mt-6 flex min-h-[44px] w-full items-center justify-center gap-2 rounded-sm border border-champagne/40 px-6 py-3 text-center text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-off-white transition hover:border-champagne hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               />
 
               <Link
                 to="/book"
                 onClick={closeMenu}
-                className="mt-4 block rounded-sm bg-gold-gradient px-6 py-4 text-center text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-onyx shadow-[var(--shadow-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                className="mt-4 block rounded-full bg-gold-gradient px-6 py-4 text-center text-base font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
               >
                 Book Now
               </Link>

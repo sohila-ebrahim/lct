@@ -32,16 +32,32 @@ function Reviews() {
       />
       <section className="mx-auto max-w-4xl px-6 pb-24 lg:px-10">
         <div className="luxe-card rounded-lg p-10 text-center">
-          <div className="mx-auto flex justify-center"><Icon3D name="star" size={72} /></div>
+          <div className="mx-auto flex justify-center">
+            <Icon3D name="star" size={72} />
+          </div>
           <SectionHeading
             align="center"
             eyebrow="Coming Soon"
-            title={<>Verified reviews, <span className="italic text-gold-gradient">only.</span></>}
+            title={
+              <>
+                Verified reviews, <span className="italic text-gold-gradient">only.</span>
+              </>
+            }
             description="We are in the process of collecting and verifying client testimonials from real journeys. Rather than publish placeholder quotes, we choose to leave this page honest."
           />
           <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <Link to="/contact" className="rounded-full bg-gold-gradient px-6 py-3 text-xs font-semibold uppercase tracking-widest text-onyx">Share Your Experience</Link>
-            <Link to="/services" className="rounded-full border border-gold/40 px-6 py-3 text-xs font-semibold uppercase tracking-widest text-foreground hover:border-gold hover:text-gold">Explore Services</Link>
+            <Link
+              to="/contact"
+              className="rounded-full bg-gold-gradient px-6 py-3 text-sm font-semibold"
+            >
+              Share Your Experience
+            </Link>
+            <Link
+              to="/services"
+              className="rounded-full border border-gold/40 px-6 py-3 text-xs font-semibold uppercase tracking-widest text-foreground hover:border-gold hover:text-gold"
+            >
+              Explore Services
+            </Link>
           </div>
         </div>
 
@@ -49,8 +65,8 @@ function Reviews() {
           <h2 className="eyebrow mb-3">What to expect</h2>
           <p className="text-sm leading-relaxed text-muted-foreground">
             Uniformed chauffeurs, vehicles inspected before every dispatch, and a 24/7 concierge
-            confirming each reservation directly — the same standard whether it's your first ride
-            or your fiftieth.
+            confirming each reservation directly — the same standard whether it's your first ride or
+            your fiftieth.
           </p>
         </div>
       </section>

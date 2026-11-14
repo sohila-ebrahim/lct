@@ -112,7 +112,7 @@ function Airport() {
         <Link
           to="/book"
           data-cursor="book"
-          className="group inline-flex items-center gap-2 rounded-sm bg-gold-gradient px-7 py-3.5 text-xs font-semibold uppercase tracking-widest text-onyx shadow-[var(--shadow-gold)] transition hover:brightness-110"
+          className="group inline-flex items-center gap-2 rounded-full bg-gold-gradient px-7 py-3.5 text-sm font-semibold transition"
         >
           Book Airport Transfer
           <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1.5" />

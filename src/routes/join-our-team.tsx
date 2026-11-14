@@ -24,7 +24,10 @@ import { ClienityEmbed } from "@/components/applications/clienity-embed";
  * application. Their Supabase migration/tables are untouched (not live,
  * out of scope for a UI-only cleanup).
  */
-const CLIENITY_FORMS: Record<PathwayId, { url: string; minHeightMobile: number; minHeightDesktop: number }> = {
+const CLIENITY_FORMS: Record<
+  PathwayId,
+  { url: string; minHeightMobile: number; minHeightDesktop: number }
+> = {
   driver: {
     url: "https://link.clienity.com/widget/form/90V5AE3Bv0Zc4R3Fz5Gg",
     minHeightMobile: 4200,
@@ -138,7 +141,9 @@ function JoinOurTeam() {
                 onClick={() => setActive(p.id)}
                 aria-pressed={isActive}
                 className={`group relative overflow-hidden rounded-sm border text-left transition ${
-                  isActive ? "border-gold shadow-[var(--shadow-gold)]" : "border-border hover:border-gold/50"
+                  isActive
+                    ? "border-gold shadow-[var(--shadow-gold)]"
+                    : "border-border hover:border-gold/50"
                 }`}
               >
                 <div className="relative aspect-[4/3] w-full overflow-hidden">
@@ -150,7 +155,7 @@ function JoinOurTeam() {
                     style={{ objectPosition: p.image.objectPositionDesktop }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                  <div className="absolute left-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-gold-gradient text-onyx">
+                  <div className="absolute left-4 top-4 flex h-10 w-10 items-center justify-center rounded-full bg-gold-gradient font-semibold">
                     <Icon className="h-5 w-5" aria-hidden />
                   </div>
                 </div>
@@ -168,7 +173,11 @@ function JoinOurTeam() {
       </section>
 
       {active ? (
-        <section ref={formSectionRef} id="application-form" className="border-t border-border bg-onyx py-20 md:py-28 scroll-mt-24">
+        <section
+          ref={formSectionRef}
+          id="application-form"
+          className="border-t border-border bg-onyx py-20 md:py-28 scroll-mt-24"
+        >
           <div className="mx-auto max-w-4xl px-[var(--page-gutter)]">
             <SectionHeading
               align="center"

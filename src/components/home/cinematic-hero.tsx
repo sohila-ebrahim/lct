@@ -1,13 +1,19 @@
 import { useLayoutEffect, useRef, type CSSProperties } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Phone } from "lucide-react";
 import { IMAGES } from "@/lib/image-map";
 import { CONTACT } from "@/lib/site-data";
-import { ensureGsap, isDesktopMotion, prefersReducedMotion } from "@/lib/motion";
-import { MagneticButton } from "@/components/home/magnetic-button";
-import { LoopVideo } from "@/components/media/loop-video";
-import heroDrivingVideo from "@/assets/video/hero-driving.mp4";
+import { EASE, ensureGsap, prefersReducedMotion } from "@/lib/motion";
 
+/**
+ * Editorial hero: a very large two-line headline in ink on the white canvas,
+ * copy and actions beside it, and the fleet photograph below as a
+ * hard-edged panel that opens to the full width as the page scrolls.
+ *
+ * Motion: the headline settles on load (fades in as its tracking tightens)
+ * and the panel fades up; on scroll the panel's side margins close and the
+ * photo eases out of a slight zoom. Reduced motion shows the final state.
+ */
 export function CinematicHero() {
   const rootRef = useRef<HTMLElement>(null);
   const hero = IMAGES.hero;
@@ -15,117 +21,50 @@ export function CinematicHero() {
 
   useLayoutEffect(() => {
     const root = rootRef.current;
-    if (!root) return;
+    if (!root || prefersReducedMotion()) return;
     const { gsap, ScrollTrigger } = ensureGsap();
-    const reduce = prefersReducedMotion();
-    let onMove: ((e: MouseEvent) => void) | null = null;
 
     const ctx = gsap.context(() => {
-      if (reduce) {
-        gsap.set(
-          [".hero-media", ".hero-line", ".hero-word", ".hero-copy", ".hero-cta", ".hero-scroll"],
-          { clearProps: "all", autoAlpha: 1 },
-        );
-        return;
-      }
+      // Load: the headline settles (fades in while its tracking tightens),
+      // copy and actions follow, and the photo panel fades up.
+      gsap.set(".hero-word", { autoAlpha: 0, y: 24, letterSpacing: "0.01em" });
+      gsap.set([".hero-copy", ".hero-cta"], { autoAlpha: 0, y: 16 });
+      gsap.set(".hero-reveal", { autoAlpha: 0 });
+      // The outer panel keeps a side margin until the page scrolls.
+      const side = Math.round(Math.min(40, Math.max(20, window.innerWidth * 0.04)));
+      gsap.set(".hero-panel", { clipPath: `inset(0px ${side}px 0px ${side}px)` });
+      gsap.set(".hero-photo", { scale: 1.12 });
 
-      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-      gsap.set(".hero-media", { clipPath: "inset(12% 18% 12% 18%)", scale: 1.12, xPercent: 8 });
-      gsap.set(".hero-grad", { autoAlpha: 0 });
-      gsap.set(".hero-word", { yPercent: 110, autoAlpha: 0 });
-      gsap.set([".hero-copy", ".hero-cta", ".hero-scroll", ".hero-line"], { autoAlpha: 0, y: 24 });
-
-      tl.to(".hero-grad", { autoAlpha: 1, duration: 0.6 }, 0)
-        .to(
-          ".hero-media",
-          {
-            clipPath: "inset(0% 0% 0% 0%)",
-            scale: 1,
-            xPercent: 0,
-            duration: 1.45,
-            ease: "power3.inOut",
-          },
-          0.15,
-        )
-        .to(".hero-line", { autoAlpha: 1, y: 0, duration: 0.5 }, 0.85)
+      gsap
+        .timeline({ defaults: { ease: EASE } })
         .to(
           ".hero-word",
-          { yPercent: 0, autoAlpha: 1, duration: 0.85, stagger: 0.12, ease: "power4.out" },
-          0.95,
+          { autoAlpha: 1, y: 0, letterSpacing: "-0.05em", duration: 1.4, stagger: 0.12 },
+          0.1,
         )
-        .to(".hero-copy", { autoAlpha: 1, y: 0, duration: 0.7 }, 1.55)
-        .to(".hero-cta", { autoAlpha: 1, y: 0, duration: 0.65, stagger: 0.08 }, 1.75)
-        .to(".hero-scroll", { autoAlpha: 1, y: 0, duration: 0.5 }, 2.05);
+        .to(".hero-copy", { autoAlpha: 1, y: 0, duration: 1, stagger: 0.06 }, 0.5)
+        .to(".hero-cta", { autoAlpha: 1, y: 0, duration: 1, stagger: 0.06 }, 0.65)
+        .to(".hero-reveal", { autoAlpha: 1, duration: 1.2, ease: "none" }, 0.4);
 
-      gsap.to(".hero-media-visual", {
-        yPercent: 12,
-        ease: "none",
-        scrollTrigger: {
-          trigger: root,
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-        },
-      });
-
-      gsap.to(".hero-content", {
-        yPercent: -8,
-        autoAlpha: 0.35,
-        ease: "none",
-        scrollTrigger: {
-          trigger: root,
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-        },
-      });
-
-      // Hand off into ValueEditorial: hero's divider line fades and a dark
-      // wipe rises as the section scrolls out, dissolving into the next one.
-      // (Hero is exactly viewport-height, so these must span from "bottom
-      // bottom" — true rest, progress 0 — through "bottom top" — fully
-      // scrolled past — not a "bottom X%" that's already satisfied at rest.)
-      gsap.to(".hero-line", {
-        autoAlpha: 0,
-        y: -12,
-        ease: "none",
-        scrollTrigger: { trigger: root, start: "bottom bottom", end: "bottom 45%", scrub: true },
-      });
-      // Compressed into the final ~20% of the exit (not the full "bottom
-      // bottom" -> "bottom top" range) — matching the HorizontalJourney/
-      // VehicleObjectJourney handoffs, which only activate over their last
-      // 14-15%. The uncompressed version was darkening the Hero for its
-      // entire scroll-out, which then ran straight into ValueEditorial's
-      // own near-identical near-black top padding — together reading as
-      // one long dead "black gap" with nothing legible on screen.
-      gsap.to(".hero-handoff", {
-        autoAlpha: 1,
-        ease: "none",
-        scrollTrigger: { trigger: root, start: "bottom 20%", end: "bottom top", scrub: true },
-      });
-
-      // Desktop-only pointer-parallax tilt on the hero image, layered on
-      // top of the scroll parallax above.
-      if (isDesktopMotion()) {
-        const media = root.querySelector(".hero-media-visual") as HTMLElement | null;
-        if (media) {
-          const moveX = gsap.quickTo(media, "x", { duration: 0.9, ease: "power3.out" });
-          const tiltY = gsap.quickTo(media, "rotateY", { duration: 0.9, ease: "power3.out" });
-          onMove = (e: MouseEvent) => {
-            const nx = e.clientX / window.innerWidth - 0.5;
-            moveX(nx * 16);
-            tiltY(nx * -1.4);
-          };
-          root.addEventListener("mousemove", onMove);
-        }
-      }
+      // Scroll: the panel opens to full bleed while the photo eases out of
+      // its zoom, like a slow pull-back on a film still.
+      gsap
+        .timeline({
+          scrollTrigger: {
+            trigger: ".hero-panel",
+            start: "top 85%",
+            end: "bottom 35%",
+            scrub: true,
+          },
+        })
+        .to(".hero-panel", { clipPath: "inset(0px 0px 0px 0px)", ease: "none" }, 0)
+        .to(".hero-photo", { scale: 1, ease: "none" }, 0);
     }, root);
 
     const onLoad = () => ScrollTrigger.refresh();
     window.addEventListener("load", onLoad);
     return () => {
       window.removeEventListener("load", onLoad);
-      if (onMove) root.removeEventListener("mousemove", onMove);
       ctx.revert();
     };
   }, []);
@@ -134,146 +73,82 @@ export function CinematicHero() {
     <section
       ref={rootRef}
       id="hero"
-      className="relative flex min-h-[100svh] items-end overflow-hidden bg-black"
+      className="relative bg-background pt-[calc(var(--header-height)+2.5rem)] md:pt-[calc(var(--header-height)+4rem)]"
     >
-      <div className="hero-grad absolute inset-0 z-[1]">
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(70% 55% at 72% 42%, color-mix(in oklab, var(--champagne) 16%, transparent), transparent 65%), linear-gradient(115deg, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.35) 42%, rgba(0,0,0,0.72) 100%)",
-          }}
-        />
-        <div
-          className="pointer-events-none absolute inset-0 opacity-40"
-          style={{
-            background:
-              "linear-gradient(105deg, transparent 30%, color-mix(in oklab, var(--champagne) 12%, transparent) 48%, transparent 62%)",
-            animation: prefersReducedMotion()
-              ? undefined
-              : "heroLightSweep 9s ease-in-out infinite",
-          }}
-        />
-      </div>
-
-      <div className="hero-media absolute inset-0" style={{ perspective: "1400px" }}>
-        <picture>
-          {/* Below `md`: a real cropped derivative, not just a repositioned
-              desktop frame — see `heroMobile` in image-map.ts for why a
-              position tweak alone can't fix this source on a portrait
-              viewport. */}
-          <source media="(max-width: 767px)" srcSet={heroMobile.src} />
-          <img
-            src={hero.src}
-            alt={hero.alt}
-            className="hero-media-visual absolute inset-0 h-full w-full object-cover [object-position:var(--hero-pos-m)] md:[object-position:var(--hero-pos-d)]"
-            style={
-              {
-                "--hero-pos-m": heroMobile.objectPositionMobile,
-                "--hero-pos-d": hero.objectPositionDesktop,
-              } as CSSProperties
-            }
-            fetchPriority="high"
-            decoding="async"
-          />
-        </picture>
-      </div>
-
-      <div
-        className="hero-handoff pointer-events-none absolute inset-x-0 bottom-0 z-[3] h-[45vh] opacity-0"
-        style={{ background: "linear-gradient(to bottom, transparent, var(--surface-black))" }}
-      />
-
-      {/* Below `sm`, the two CTA buttons wrap onto two lines (see the
-          flex-wrap row below), pushing "Explore Our Fleet" down into the
-          same bottom-left band the fixed AI Concierge launcher occupies —
-          confirmed via screenshot the launcher covered the button's first
-          few letters. `sm:` and up the buttons fit on one line and never
-          reach that low, so the extra clearance is mobile-only. */}
-      <div className="hero-content relative z-[2] mx-auto w-full max-w-[var(--container-max)] px-[var(--page-gutter)] pb-[calc(140px+env(safe-area-inset-bottom))] pt-36 sm:pb-16 md:pb-24 lg:pb-28">
-        <div className="hero-line mb-6 flex items-center gap-3">
-          <span className="h-px w-10 bg-champagne/70" />
-          <span className="eyebrow text-champagne">Dallas–Fort Worth · Irving</span>
-        </div>
-
-        <h1 className="max-w-4xl font-display text-[clamp(2.75rem,7vw,6.25rem)] leading-[0.92] tracking-[-0.03em] text-off-white">
-          <span className="block overflow-hidden">
-            <span className="hero-word inline-block">
-              <span className="sr-only">O</span>
-              <span
-                aria-hidden
-                className="hero-o-slot relative -mb-1 mr-[0.02em] inline-block overflow-hidden rounded-full align-middle ring-1 ring-champagne/70"
-                style={{
-                  width: "0.62em",
-                  height: "0.62em",
-                  background:
-                    "radial-gradient(circle at 35% 30%, var(--gold-soft), var(--gold-deep) 75%)",
-                }}
-              >
-                <LoopVideo src={heroDrivingVideo} eager className="absolute inset-0 h-full w-full" />
-                <span className="absolute inset-0 bg-black/10" />
-              </span>
-              ne Fleet,
-            </span>
+      <div className="mx-auto grid max-w-[var(--container-max)] gap-8 px-[var(--page-gutter)] lg:grid-cols-12 lg:items-end lg:gap-10">
+        <h1 className="font-display text-[clamp(3.1rem,7.4vw,7.75rem)] leading-[0.86] tracking-[-0.05em] text-foreground lg:col-span-8">
+          <span className="block overflow-hidden pb-[0.06em]">
+            <span className="hero-word inline-block">One fleet.</span>
           </span>
-          <span className="block overflow-hidden pb-1">
-            <span className="hero-word inline-block italic text-champagne">
-              Every Occasion.
-            </span>
+          <span className="block overflow-hidden pb-[0.06em]">
+            <span className="hero-word inline-block text-gold-gradient">Every occasion.</span>
           </span>
         </h1>
 
-        <p className="hero-copy mt-7 max-w-xl text-base leading-relaxed text-off-white/75 md:text-lg">
-          Executive sedans, SUVs, sprinters, and coach transportation — airport transfers,
-          corporate travel, events, and group logistics across {CONTACT.serviceRegion}.
-        </p>
-
-        <div className="mt-10 flex flex-wrap items-center gap-4">
-          <div className="hero-cta">
-            <Link
-              to="/book"
-              data-cursor="book"
-              className="group inline-flex items-center gap-3 rounded-full bg-gold-gradient px-7 py-3.5 text-sm font-semibold uppercase tracking-widest text-onyx shadow-[var(--shadow-gold)] transition-all duration-300 hover:scale-[1.02] hover:brightness-110"
-            >
-              Book Your Ride
-              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1.5" />
-            </Link>
-          </div>
-          <div className="hero-cta">
-            <MagneticButton
-              className="inline-flex items-center gap-2 rounded-sm border border-champagne/35 bg-black/30 px-6 py-3.5 text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-off-white backdrop-blur-sm transition hover:border-champagne hover:text-champagne"
-              onClick={() =>
-                document.getElementById("fleet-journey")?.scrollIntoView({ behavior: "smooth" })
-              }
-              data-cursor="explore"
-            >
-              Explore Our Fleet
-              <ArrowRight className="h-4 w-4" aria-hidden />
-            </MagneticButton>
+        <div className="lg:col-span-4 lg:pb-3">
+          <p className="hero-copy eyebrow">Dallas–Fort Worth · Irving, Texas</p>
+          <p className="hero-copy mt-4 max-w-md text-lg leading-[1.6] text-muted-foreground">
+            Executive sedans, SUVs, Sprinters and coaches for airport transfers, corporate travel,
+            events and groups across Dallas–Fort Worth. Available 24/7.
+          </p>
+          <div className="mt-7 flex flex-wrap items-center gap-3">
+            <div className="hero-cta">
+              <Link
+                to="/book"
+                className="group inline-flex min-h-[48px] items-center gap-2.5 rounded-full bg-gold-gradient px-6 py-3 text-[0.95rem] font-semibold transition hover:opacity-90"
+              >
+                Book your ride
+                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+              </Link>
+            </div>
+            <div className="hero-cta">
+              <button
+                type="button"
+                className="inline-flex min-h-[48px] items-center gap-2 rounded-full border border-foreground/20 px-6 py-3 text-[0.95rem] font-semibold text-foreground transition duration-200 hover:border-foreground hover:bg-foreground hover:text-background"
+                onClick={() =>
+                  document.getElementById("fleet-journey")?.scrollIntoView({ behavior: "smooth" })
+                }
+              >
+                Explore the fleet
+              </button>
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* Hidden below `lg`: this row sits at the same bottom-of-viewport
-            band as the fixed WhatsApp/phone FABs (bottom-right) and the AI
-            Concierge launcher (bottom-left), which only move to their
-            desktop position at `lg:bottom-6` (1024px) — an earlier `sm:flex`
-            (640px) reveal left a 640-1023px gap where this row and the FABs
-            both rendered in the same spot (confirmed via screenshot: the
-            phone/WhatsApp icons overlapped "Request a Quote"/"Scroll" on a
-            768px tablet). The row's own info (phone, "request a quote") is
-            already available via those FABs and the header, so below `lg`
-            it's dropped rather than squeezed into a shrinking FAB gap. */}
-        <div className="hero-scroll mt-16 hidden items-center gap-6 text-xs uppercase tracking-[0.28em] text-off-white/45 lg:flex">
-          <a href={CONTACT.phoneTel} className="transition hover:text-champagne">
-            {CONTACT.phoneDisplay}
-          </a>
-          <Link to="/contact" className="transition hover:text-champagne">
-            Request a Quote
-          </Link>
-          <span className="hidden items-center gap-2 sm:inline-flex">
-            <span className="block h-8 w-px bg-champagne/40" />
-            Scroll
-          </span>
+      <div className="hero-panel relative mt-10 h-[56svh] min-h-[340px] overflow-hidden md:mt-14 md:h-[78svh]">
+        <div className="hero-reveal absolute inset-0">
+          <picture>
+            {/* Below `md`: a real cropped derivative (see `heroMobile` in image-map.ts). */}
+            <source media="(max-width: 767px)" srcSet={heroMobile.src} />
+            <img
+              src={hero.src}
+              alt={hero.alt}
+              className="hero-photo absolute inset-0 h-full w-full object-cover [object-position:var(--hero-pos-m)] md:[object-position:var(--hero-pos-d)]"
+              style={
+                {
+                  "--hero-pos-m": heroMobile.objectPositionMobile,
+                  "--hero-pos-d": hero.objectPositionDesktop,
+                } as CSSProperties
+              }
+              fetchPriority="high"
+              decoding="async"
+            />
+          </picture>
+          <div
+            className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black/55 to-transparent"
+            aria-hidden
+          />
+          <div className="absolute inset-x-0 bottom-0 mx-auto flex max-w-[var(--container-max)] items-end justify-between gap-4 px-[var(--page-gutter)] pb-6 text-sm text-white md:pb-8">
+            <span className="font-semibold">Dispatch 24 hours · 7 days</span>
+            <a
+              href={CONTACT.phoneTel}
+              className="hidden items-center gap-2 font-semibold transition hover:opacity-80 sm:inline-flex"
+            >
+              <Phone className="h-4 w-4" aria-hidden />
+              {CONTACT.phoneDisplay}
+            </a>
+          </div>
         </div>
       </div>
     </section>

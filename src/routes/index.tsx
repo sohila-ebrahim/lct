@@ -1,13 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useLayoutEffect } from "react";
 import { SiteLayout } from "@/components/site-layout";
-import { SmoothScroll } from "@/components/luxury/smooth-scroll";
 import { CinematicHero } from "@/components/home/cinematic-hero";
 import { ValueEditorial, ChauffeurSection } from "@/components/home/value-chauffeur";
 import { ServiceAvailability } from "@/components/home/service-availability";
-import { HorizontalJourney } from "@/components/home/horizontal-journey";
-import { PinnedStories } from "@/components/home/pinned-stories";
-import { VehicleObjectJourney } from "@/components/home/vehicle-object";
+import {
+  FleetStack,
+  PartnersMarquee,
+  ServiceStories,
+  StatsBand,
+} from "@/components/home/editorial";
 import { TrustStrip } from "@/components/home/trust-strip";
 import { FinalCta } from "@/components/home/booking-experience";
 import { PartnersBoard } from "@/components/partners-board";
@@ -65,14 +67,14 @@ function Home() {
 
   return (
     <SiteLayout>
-      <SmoothScroll />
       <CinematicHero />
+      <PartnersMarquee />
       <TrustStrip />
       <ValueEditorial />
       <ServiceAvailability />
-      <HorizontalJourney />
-      <VehicleObjectJourney />
-      <PinnedStories />
+      <StatsBand />
+      <FleetStack />
+      <ServiceStories />
       <PartnersBoard />
       <ChauffeurSection />
       <FinalCta />

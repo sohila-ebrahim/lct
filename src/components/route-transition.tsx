@@ -1,30 +1,38 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useRouter } from "@tanstack/react-router";
-import { ensureGsap, prefersReducedMotion } from "@/lib/motion";
+import { prefersReducedMotion } from "@/lib/motion";
 
 /**
- * Sitewide animated page transitions: intercepts left-clicks on same-origin
- * internal links, plays a dark-wipe "cover", navigates once covered, then
- * "reveals" the new page with the same wipe continuing in the same direction.
- * Browser back/forward (popstate) is intentionally left uncovered so it
- * doesn't fight the router's native scroll restoration.
+ * Page changes cross-fade with the View Transitions API (animation in
+ * styles.css, "Page transitions"). They are enabled here, after the first
+ * render and only while the page is visible: a transition started in a
+ * hidden tab (a link opened in the background) is aborted by the browser,
+ * and on the initial load that held back the first render.
+ *
+ * Also routes plain same-origin <a href> clicks through the router so they
+ * get the same transition and keep ?query and #hash.
+ * Router <Link>s already navigate this way (they prevent the default first,
+ * so this listener skips them); back/forward are left to the browser and the
+ * router's scroll restoration.
  */
 export function RouteTransition() {
   const router = useRouter();
-  const overlayRef = useRef<HTMLDivElement>(null);
-  const navigatingRef = useRef(false);
 
   useEffect(() => {
-    if (prefersReducedMotion()) return;
-    const { gsap } = ensureGsap();
-    const overlay = overlayRef.current;
-    if (!overlay) return;
+    const supported = "startViewTransition" in document;
+    const sync = () =>
+      Object.assign(router.options, {
+        defaultViewTransition: supported && !document.hidden && !prefersReducedMotion(),
+      });
+    sync();
+    document.addEventListener("visibilitychange", sync);
 
     const onClick = (e: MouseEvent) => {
-      if (navigatingRef.current) return;
-      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.defaultPrevented) return;
-
-      const anchor = (e.target as HTMLElement | null)?.closest?.("a[href]") as HTMLAnchorElement | null;
+      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.defaultPrevented)
+        return;
+      const anchor = (e.target as HTMLElement | null)?.closest?.(
+        "a[href]",
+      ) as HTMLAnchorElement | null;
       if (!anchor || anchor.hasAttribute("download")) return;
       if (anchor.target && anchor.target !== "_self") return;
 
@@ -35,45 +43,19 @@ export function RouteTransition() {
         return;
       }
       if (url.origin !== window.location.origin) return;
-      if (url.pathname === window.location.pathname && url.search === window.location.search) return;
+      if (url.pathname === window.location.pathname && url.search === window.location.search)
+        return;
 
       e.preventDefault();
-      navigatingRef.current = true;
-
-      gsap.set(overlay, { scaleY: 0, transformOrigin: "bottom" });
-      gsap.to(overlay, {
-        scaleY: 1,
-        duration: 0.4,
-        ease: "power3.inOut",
-        onComplete: () => {
-          // Keep ?query and #hash (e.g. /corporate#corporate-inquiry); the router
-          // scrolls a #hash target into view after the new page renders.
-          router.navigate({ href: url.pathname + url.search + url.hash });
-          requestAnimationFrame(() => {
-            gsap.set(overlay, { transformOrigin: "top" });
-            gsap.to(overlay, {
-              scaleY: 0,
-              duration: 0.5,
-              ease: "power3.inOut",
-              onComplete: () => {
-                navigatingRef.current = false;
-              },
-            });
-          });
-        },
-      });
+      router.navigate({ href: url.pathname + url.search + url.hash });
     };
 
-    document.addEventListener("click", onClick, true);
-    return () => document.removeEventListener("click", onClick, true);
+    document.addEventListener("click", onClick);
+    return () => {
+      document.removeEventListener("click", onClick);
+      document.removeEventListener("visibilitychange", sync);
+    };
   }, [router]);
 
-  return (
-    <div
-      ref={overlayRef}
-      className="pointer-events-none fixed inset-0 z-[95] bg-[color:var(--surface-black)]"
-      style={{ transform: "scaleY(0)" }}
-      aria-hidden
-    />
-  );
+  return null;
 }

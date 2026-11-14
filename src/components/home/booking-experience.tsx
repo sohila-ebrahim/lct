@@ -51,7 +51,7 @@ export function FinalCta() {
   }, []);
 
   return (
-    <section ref={rootRef} className="relative min-h-[70svh] overflow-hidden">
+    <section ref={rootRef} className="band-dark relative min-h-[70svh] overflow-hidden">
       <img
         src={img.src}
         alt={img.alt}
@@ -86,13 +86,13 @@ export function FinalCta() {
           <Link
             to="/book"
             data-cursor="book"
-            className="inline-flex rounded-sm bg-gold-gradient px-7 py-3.5 text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-onyx"
+            className="inline-flex rounded-full bg-gold-gradient px-7 py-3.5 text-sm font-semibold"
           >
             Book Now
           </Link>
           <a
             href={CONTACT.phoneTel}
-            className="inline-flex rounded-sm border border-champagne/40 px-7 py-3.5 text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-off-white"
+            className="inline-flex rounded-full border border-champagne/40 px-7 py-3.5 text-sm font-semibold text-off-white"
           >
             {CONTACT.phoneDisplay}
           </a>

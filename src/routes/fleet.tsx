@@ -1,5 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type MouseEvent as ReactMouseEvent } from "react";
+import {
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type MouseEvent as ReactMouseEvent,
+} from "react";
 import { SiteLayout, PageHero } from "@/components/site-layout";
 import { SectionHeading } from "@/components/section-heading";
 import { CheckCircle2, ArrowRight, Phone } from "lucide-react";
@@ -46,7 +53,16 @@ function FleetWheelAccent() {
       </defs>
       <circle cx="60" cy="60" r="45" fill="none" stroke="url(#fleetWheelGrad)" strokeWidth="9" />
       {spokes.map((s, i) => (
-        <line key={i} x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke="url(#fleetWheelGrad)" strokeWidth="5" strokeLinecap="round" />
+        <line
+          key={i}
+          x1={s.x1}
+          y1={s.y1}
+          x2={s.x2}
+          y2={s.y2}
+          stroke="url(#fleetWheelGrad)"
+          strokeWidth="5"
+          strokeLinecap="round"
+        />
       ))}
       <circle cx="60" cy="60" r="15" fill="#141210" stroke="url(#fleetWheelGrad)" strokeWidth="2" />
     </svg>
@@ -79,7 +95,9 @@ const VEHICLE_BLURB: Record<string, string> = {
 };
 
 function ctaLabel(v: FleetVehicle) {
-  return CTA_LABEL[v.id] ?? (v.status === "bookable" ? "Book This Vehicle" : `Request a ${v.name} Quote`);
+  return (
+    CTA_LABEL[v.id] ?? (v.status === "bookable" ? "Book This Vehicle" : `Request a ${v.name} Quote`)
+  );
 }
 
 /**
@@ -147,27 +165,33 @@ function VehicleCta({
           to="/book"
           data-cursor="book"
           onMouseDown={trackBookMouseDown(v)}
-          className="group inline-flex w-fit items-center gap-2 rounded-sm bg-gold-gradient px-6 py-3 text-sm font-semibold uppercase tracking-widest text-onyx shadow-[var(--shadow-gold)] transition hover:brightness-110"
+          className="group inline-flex w-fit items-center gap-2 rounded-full bg-gold-gradient px-6 py-3 text-sm font-semibold transition"
         >
           {ctaLabel(v)}
-          <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden />
+          <ArrowRight
+            className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+            aria-hidden
+          />
         </Link>
       ) : (
         <button
           type="button"
           data-cursor="explore"
           onClick={() => onQuote(v)}
-          className="group inline-flex w-fit items-center gap-2 rounded-sm bg-gold-gradient px-6 py-3 text-sm font-semibold uppercase tracking-widest text-onyx shadow-[var(--shadow-gold)] transition hover:brightness-110"
+          className="group inline-flex w-fit items-center gap-2 rounded-full bg-gold-gradient px-6 py-3 text-sm font-semibold transition"
         >
           {ctaLabel(v)}
-          <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden />
+          <ArrowRight
+            className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+            aria-hidden
+          />
         </button>
       )}
       {showDispatchCall && (
         <a
           href={CONTACT.phoneTel}
           onClick={() => track.fleetCallDispatchClick()}
-          className="inline-flex w-fit items-center gap-2 rounded-sm border border-champagne/40 px-6 py-3 text-sm font-semibold uppercase tracking-widest text-foreground transition hover:border-champagne hover:text-champagne"
+          className="inline-flex w-fit items-center gap-2 rounded-full border border-champagne/40 px-6 py-3 text-sm font-semibold text-foreground transition hover:border-champagne hover:text-champagne"
         >
           <Phone className="h-4 w-4" aria-hidden />
           Call Dispatch
@@ -180,7 +204,9 @@ function VehicleCta({
 function SpecRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-baseline justify-between border-b border-border/50 py-3">
-      <span className="text-[0.65rem] uppercase tracking-[0.22em] text-muted-foreground">{label}</span>
+      <span className="text-[0.65rem] uppercase tracking-[0.22em] text-muted-foreground">
+        {label}
+      </span>
       <span className="font-display text-xl text-gold-gradient">{value}</span>
     </div>
   );
@@ -207,12 +233,14 @@ function FleetConversionBar({
 
   return (
     <div
-      className="fixed inset-x-0 bottom-0 z-30 h-16 border-t border-champagne/25 bg-[color:var(--surface-elevated)]/97 backdrop-blur-xl pb-[env(safe-area-inset-bottom)]"
+      className="fixed inset-x-0 bottom-0 z-30 h-16 border-t border-border bg-background/95 backdrop-blur-md pb-[env(safe-area-inset-bottom)]"
       style={{ boxShadow: "0 -8px 24px -8px rgba(0,0,0,0.35)" }}
     >
       <div className="mx-auto flex h-16 max-w-[var(--container-max)] items-center justify-between gap-3 px-4 lg:px-10">
         <div className="min-w-0">
-          <div className="truncate font-display text-sm text-foreground md:text-base">{vehicle.name}</div>
+          <div className="truncate font-display text-sm text-foreground md:text-base">
+            {vehicle.name}
+          </div>
           <div className="truncate text-[0.7rem] text-muted-foreground">
             {vehicle.pax} passengers · {vehicle.priceLabel}
           </div>
@@ -222,7 +250,7 @@ function FleetConversionBar({
             to="/book"
             data-cursor="book"
             onMouseDown={trackBookMouseDown(vehicle)}
-            className="inline-flex min-h-[44px] shrink-0 items-center gap-2 whitespace-nowrap rounded-sm bg-gold-gradient px-4 py-3 text-[0.65rem] font-semibold uppercase tracking-widest text-onyx shadow-[var(--shadow-gold)] transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            className="inline-flex min-h-[44px] shrink-0 items-center gap-2 whitespace-nowrap rounded-full bg-gold-gradient px-4 py-3 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             {label}
           </Link>
@@ -231,7 +259,7 @@ function FleetConversionBar({
             type="button"
             data-cursor="explore"
             onClick={() => onQuote(vehicle)}
-            className="inline-flex min-h-[44px] shrink-0 items-center gap-2 whitespace-nowrap rounded-sm bg-gold-gradient px-4 py-3 text-[0.65rem] font-semibold uppercase tracking-widest text-onyx shadow-[var(--shadow-gold)] transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            className="inline-flex min-h-[44px] shrink-0 items-center gap-2 whitespace-nowrap rounded-full bg-gold-gradient px-4 py-3 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             {label}
           </button>
@@ -320,9 +348,7 @@ function Fleet() {
   // Active-vehicle tracking for the sticky conversion bar — functional, not
   // decorative, so it runs identically regardless of reduced-motion.
   useLayoutEffect(() => {
-    const sections = Array.from(
-      document.querySelectorAll<HTMLElement>("[data-vehicle-chapter]"),
-    );
+    const sections = Array.from(document.querySelectorAll<HTMLElement>("[data-vehicle-chapter]"));
     if (!sections.length) return;
     const io = new IntersectionObserver(
       (entries) => {
@@ -441,7 +467,12 @@ function Fleet() {
       gsap.to(".ch-coach-media img", {
         xPercent: -6,
         ease: "none",
-        scrollTrigger: { trigger: ".ch-coach", start: "top bottom", end: "bottom top", scrub: true },
+        scrollTrigger: {
+          trigger: ".ch-coach",
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true,
+        },
       });
       gsap.from(".ch-coach-copy > *", {
         y: 20,
@@ -459,7 +490,12 @@ function Fleet() {
       gsap.to(".ch-coach-large-media img", {
         xPercent: 6,
         ease: "none",
-        scrollTrigger: { trigger: ".ch-coach-large", start: "top bottom", end: "bottom top", scrub: true },
+        scrollTrigger: {
+          trigger: ".ch-coach-large",
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true,
+        },
       });
       gsap.from(".ch-coach-large-copy > *", {
         y: 20,
@@ -496,7 +532,11 @@ function Fleet() {
 
       <div ref={rootRef}>
         {/* Chapter 1 — Sedan: full-bleed vehicle-first reveal, text in lower-left negative space */}
-        <section id="fleet-sedan" className="ch-sedan relative overflow-hidden" data-vehicle-chapter="sedan">
+        <section
+          id="fleet-sedan"
+          className="ch-sedan relative overflow-hidden"
+          data-vehicle-chapter="sedan"
+        >
           <div className="relative aspect-[16/9] w-full md:aspect-[21/9]">
             <img
               src={IMAGES.fleetSedan.src}
@@ -527,7 +567,9 @@ function Fleet() {
               </div>
               <div className="ml-auto text-right">
                 <div className="eyebrow text-[0.6rem]">Pricing</div>
-                <div className="mt-1 font-display text-2xl text-gold-gradient">{sedan.priceLabel}</div>
+                <div className="mt-1 font-display text-2xl text-gold-gradient">
+                  {sedan.priceLabel}
+                </div>
               </div>
             </div>
             <ul className="mt-6 flex flex-wrap gap-x-8 gap-y-3">
@@ -545,7 +587,11 @@ function Fleet() {
         {/* Chapter 1b — First Class Sedan: same full-bleed template as Sedan
             (same verified S-Class, different real photograph — a white-glove
             chauffeur portrait rather than the exterior valet shot). */}
-        <section id="fleet-firstClassSedan" className="ch-fcs relative overflow-hidden border-t border-border" data-vehicle-chapter="firstClassSedan">
+        <section
+          id="fleet-firstClassSedan"
+          className="ch-fcs relative overflow-hidden border-t border-border"
+          data-vehicle-chapter="firstClassSedan"
+        >
           <div className="relative aspect-[16/9] w-full md:aspect-[21/9]">
             <img
               src={IMAGES.fleetFirstClassSedan.src}
@@ -564,19 +610,27 @@ function Fleet() {
           <div className="ch-fcs-copy mx-auto max-w-[var(--container-max)] px-6 pb-16 pt-8 lg:px-10">
             <div className="eyebrow text-champagne">{firstClassSedan.model}</div>
             <h2 className="mt-3 font-display text-4xl md:text-6xl">{firstClassSedan.name}</h2>
-            <p className="mt-3 max-w-md text-sm text-foreground/80">{VEHICLE_BLURB.firstClassSedan}</p>
+            <p className="mt-3 max-w-md text-sm text-foreground/80">
+              {VEHICLE_BLURB.firstClassSedan}
+            </p>
             <div className="mt-6 flex flex-wrap items-end gap-8 border-y border-border py-4">
               <div>
                 <div className="eyebrow text-[0.6rem]">Passengers</div>
-                <div className="mt-1 font-display text-2xl text-gold-gradient">{firstClassSedan.pax}</div>
+                <div className="mt-1 font-display text-2xl text-gold-gradient">
+                  {firstClassSedan.pax}
+                </div>
               </div>
               <div>
                 <div className="eyebrow text-[0.6rem]">Luggage</div>
-                <div className="mt-1 font-display text-2xl text-gold-gradient">{firstClassSedan.bags}</div>
+                <div className="mt-1 font-display text-2xl text-gold-gradient">
+                  {firstClassSedan.bags}
+                </div>
               </div>
               <div className="ml-auto text-right">
                 <div className="eyebrow text-[0.6rem]">Pricing</div>
-                <div className="mt-1 font-display text-2xl text-gold-gradient">{firstClassSedan.priceLabel}</div>
+                <div className="mt-1 font-display text-2xl text-gold-gradient">
+                  {firstClassSedan.priceLabel}
+                </div>
               </div>
             </div>
             <ul className="mt-6 flex flex-wrap gap-x-8 gap-y-3">
@@ -592,7 +646,11 @@ function Fleet() {
         </section>
 
         {/* Chapter 2 — SUV: split spotlight specification panel */}
-        <section id="fleet-suv" className="ch-suv border-t border-border" data-vehicle-chapter="suv">
+        <section
+          id="fleet-suv"
+          className="ch-suv border-t border-border"
+          data-vehicle-chapter="suv"
+        >
           <div className="mx-auto grid max-w-[var(--container-max)] gap-10 px-6 py-20 lg:grid-cols-2 lg:items-center lg:gap-16 lg:px-10 lg:py-28">
             <div className="ch-suv-media relative overflow-hidden rounded-sm luxe-card">
               <img
@@ -607,9 +665,16 @@ function Fleet() {
                   } as CSSProperties
                 }
               />
-              <div className="ch-suv-sweep pointer-events-none absolute inset-y-0 left-0 w-1/3 opacity-0" style={{ background: "linear-gradient(90deg, transparent, color-mix(in oklab, var(--champagne) 55%, white), transparent)", mixBlendMode: "screen" }} />
+              <div
+                className="ch-suv-sweep pointer-events-none absolute inset-y-0 left-0 w-1/3 opacity-0"
+                style={{
+                  background:
+                    "linear-gradient(90deg, transparent, color-mix(in oklab, var(--champagne) 55%, white), transparent)",
+                  mixBlendMode: "screen",
+                }}
+              />
             </div>
-            <div className="ch-suv-copy rounded-sm border border-border/60 bg-[color:var(--surface-elevated)]/40 p-8">
+            <div className="ch-suv-copy rounded-sm border border-border/60 bg-muted p-8">
               <div className="eyebrow">{suv.model}</div>
               <h2 className="mt-3 font-display text-3xl md:text-4xl">{suv.name}</h2>
               <p className="mt-3 text-sm text-muted-foreground">{VEHICLE_BLURB.suv}</p>
@@ -627,9 +692,13 @@ function Fleet() {
             and copy columns swapped so the adjacent pair doesn't feel
             copy-pasted (same verified Escalade, different real photograph —
             rear 3/4 vs. SUV's front 3/4). */}
-        <section id="fleet-luxurySuv" className="ch-lsuv border-t border-border" data-vehicle-chapter="luxurySuv">
+        <section
+          id="fleet-luxurySuv"
+          className="ch-lsuv border-t border-border"
+          data-vehicle-chapter="luxurySuv"
+        >
           <div className="mx-auto grid max-w-[var(--container-max)] gap-10 px-6 py-20 lg:grid-cols-2 lg:items-center lg:gap-16 lg:px-10 lg:py-28">
-            <div className="ch-lsuv-copy order-2 rounded-sm border border-border/60 bg-[color:var(--surface-elevated)]/40 p-8 lg:order-1">
+            <div className="ch-lsuv-copy order-2 rounded-sm border border-border/60 bg-muted p-8 lg:order-1">
               <div className="eyebrow">{luxurySuv.model}</div>
               <h2 className="mt-3 font-display text-3xl md:text-4xl">{luxurySuv.name}</h2>
               <p className="mt-3 text-sm text-muted-foreground">{VEHICLE_BLURB.luxurySuv}</p>
@@ -653,7 +722,14 @@ function Fleet() {
                   } as CSSProperties
                 }
               />
-              <div className="ch-lsuv-sweep pointer-events-none absolute inset-y-0 right-0 w-1/3 opacity-0" style={{ background: "linear-gradient(90deg, transparent, color-mix(in oklab, var(--champagne) 55%, white), transparent)", mixBlendMode: "screen" }} />
+              <div
+                className="ch-lsuv-sweep pointer-events-none absolute inset-y-0 right-0 w-1/3 opacity-0"
+                style={{
+                  background:
+                    "linear-gradient(90deg, transparent, color-mix(in oklab, var(--champagne) 55%, white), transparent)",
+                  mixBlendMode: "screen",
+                }}
+              />
             </div>
           </div>
         </section>
@@ -673,7 +749,9 @@ function Fleet() {
           <div className="relative mx-auto grid max-w-[var(--container-max)] gap-10 px-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-16 lg:px-10">
             <div className="ch-sprinter-copy order-2 lg:order-1">
               <div className="eyebrow text-champagne">{sprinter.model}</div>
-              <h2 className="mt-3 font-display text-4xl text-off-white md:text-5xl">{sprinter.name}</h2>
+              <h2 className="mt-3 font-display text-4xl text-off-white md:text-5xl">
+                {sprinter.name}
+              </h2>
               <p className="mt-4 max-w-sm text-sm leading-relaxed text-off-white/70">
                 {VEHICLE_BLURB.sprinter}
               </p>
@@ -688,11 +766,15 @@ function Fleet() {
               <div className="mt-8 flex flex-wrap items-end gap-8">
                 <div>
                   <div className="eyebrow text-[0.6rem] text-off-white/50">Passengers</div>
-                  <div className="mt-1 font-display text-2xl text-gold-gradient">{sprinter.pax}</div>
+                  <div className="mt-1 font-display text-2xl text-gold-gradient">
+                    {sprinter.pax}
+                  </div>
                 </div>
                 <div>
                   <div className="eyebrow text-[0.6rem] text-off-white/50">Pricing</div>
-                  <div className="mt-1 font-display text-2xl text-gold-gradient">{sprinter.priceLabel}</div>
+                  <div className="mt-1 font-display text-2xl text-gold-gradient">
+                    {sprinter.priceLabel}
+                  </div>
                 </div>
               </div>
               <VehicleCta v={sprinter} onQuote={handleQuote} />
@@ -715,7 +797,11 @@ function Fleet() {
         </section>
 
         {/* Chapter 4 — Executive Mini Coach: wide panoramic banner */}
-        <section id="fleet-coachMini" className="ch-coach relative overflow-hidden border-t border-border" data-vehicle-chapter="coachMini">
+        <section
+          id="fleet-coachMini"
+          className="ch-coach relative overflow-hidden border-t border-border"
+          data-vehicle-chapter="coachMini"
+        >
           <div className="ch-coach-media relative aspect-[16/9] w-full overflow-hidden md:aspect-[24/9]">
             <img
               src={IMAGES.fleetCoach.src}
@@ -742,7 +828,9 @@ function Fleet() {
               </div>
               <div>
                 <div className="eyebrow text-[0.6rem]">Pricing</div>
-                <div className="mt-1 font-display text-2xl text-gold-gradient">{coachMini.priceLabel}</div>
+                <div className="mt-1 font-display text-2xl text-gold-gradient">
+                  {coachMini.priceLabel}
+                </div>
               </div>
             </div>
             <VehicleCta v={coachMini} onQuote={handleQuote} showDispatchCall />
@@ -773,15 +861,21 @@ function Fleet() {
           <div className="ch-coach-large-copy mx-auto max-w-[var(--container-max)] px-6 pb-16 pt-8 lg:px-10">
             <div className="eyebrow">{coachLarge.model}</div>
             <h2 className="mt-3 font-display text-4xl md:text-5xl">{coachLarge.name}</h2>
-            <p className="mt-3 max-w-md text-sm text-muted-foreground">{VEHICLE_BLURB.coachLarge}</p>
+            <p className="mt-3 max-w-md text-sm text-muted-foreground">
+              {VEHICLE_BLURB.coachLarge}
+            </p>
             <div className="mt-6 flex flex-wrap items-end gap-8">
               <div>
                 <div className="eyebrow text-[0.6rem]">Passengers</div>
-                <div className="mt-1 font-display text-2xl text-gold-gradient">{coachLarge.pax}</div>
+                <div className="mt-1 font-display text-2xl text-gold-gradient">
+                  {coachLarge.pax}
+                </div>
               </div>
               <div>
                 <div className="eyebrow text-[0.6rem]">Pricing</div>
-                <div className="mt-1 font-display text-2xl text-gold-gradient">{coachLarge.priceLabel}</div>
+                <div className="mt-1 font-display text-2xl text-gold-gradient">
+                  {coachLarge.priceLabel}
+                </div>
               </div>
             </div>
             <VehicleCta v={coachLarge} onQuote={handleQuote} showDispatchCall />

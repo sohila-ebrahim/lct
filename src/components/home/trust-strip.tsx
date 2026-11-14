@@ -10,7 +10,8 @@ const CREDENTIALS = [
     label: "BBB",
     sub: "Accredited Business",
     // mobile → tablet → desktop: 72px → 76px → 88px (targets: 70–80 / — / 82–92)
-    sizeClass: "h-[4.5rem] max-w-[184px] sm:h-[4.75rem] sm:max-w-[200px] md:h-[5.5rem] md:max-w-[236px]",
+    sizeClass:
+      "h-[4.5rem] max-w-[184px] sm:h-[4.75rem] sm:max-w-[200px] md:h-[5.5rem] md:max-w-[236px]",
     // Independent drift per badge — different amplitude/duration/phase so
     // the three never move in visible sync.
     drift: { y: 4, x: 2, duration: 6.4, delay: 0 },
@@ -40,7 +41,7 @@ const CREDENTIALS = [
 
 const CHARCOAL = "oklch(0.14 0.005 60)";
 const CHARCOAL_SOFT = "oklch(0.34 0.01 60)";
-const IVORY = "#F6F3EA";
+const IVORY = "var(--bone)";
 const DIVIDER = "oklch(0.55 0.03 80 / 0.28)";
 
 /**
@@ -96,8 +97,17 @@ export function TrustStrip() {
       });
 
       tl.from(headingRef.current, { autoAlpha: 0, y: 10, duration: 0.5, ease: "power2.out" })
-        .fromTo(accentRef.current, { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: "power2.out" }, "-=0.2")
-        .from(logos, { autoAlpha: 0, y: 16, duration: 0.55, ease: "power2.out", stagger: 0.12 }, "-=0.15");
+        .fromTo(
+          accentRef.current,
+          { scaleX: 0 },
+          { scaleX: 1, duration: 0.45, ease: "power2.out" },
+          "-=0.2",
+        )
+        .from(
+          logos,
+          { autoAlpha: 0, y: 16, duration: 0.55, ease: "power2.out", stagger: 0.12 },
+          "-=0.15",
+        );
     }, root);
 
     return () => {
@@ -110,11 +120,21 @@ export function TrustStrip() {
   const resume = (i: number) => driftTweens.current[i]?.play();
 
   return (
-    <section ref={rootRef} className="relative overflow-hidden py-8 md:py-9" style={{ backgroundColor: IVORY }}>
+    <section
+      ref={rootRef}
+      className="relative overflow-hidden py-8 md:py-9"
+      style={{ backgroundColor: IVORY }}
+    >
       {/* Hero (black) → ivory band seam — a solid hairline reads on both sides. */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gold-deep/60" aria-hidden />
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gold-deep/60"
+        aria-hidden
+      />
       {/* Ivory band → next dark section seam. */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gold-deep/45" aria-hidden />
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gold-deep/45"
+        aria-hidden
+      />
 
       <div className="relative mx-auto max-w-[1040px] px-[var(--page-gutter)] text-center">
         <div>
@@ -156,14 +176,6 @@ export function TrustStrip() {
                   }}
                   className="relative flex items-center justify-center"
                 >
-                  <div
-                    className="pointer-events-none absolute -inset-4 rounded-full opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-                    style={{
-                      background:
-                        "radial-gradient(circle, color-mix(in oklab, var(--gold) 26%, transparent), transparent 72%)",
-                    }}
-                    aria-hidden
-                  />
                   <img
                     src={c.badge.src}
                     alt={c.badge.name}
@@ -172,7 +184,9 @@ export function TrustStrip() {
                   />
                 </div>
                 <div className="text-[0.7rem] leading-tight tracking-[0.04em]">
-                  <span className="font-semibold" style={{ color: CHARCOAL }}>{c.label}</span>{" "}
+                  <span className="font-semibold" style={{ color: CHARCOAL }}>
+                    {c.label}
+                  </span>{" "}
                   <span style={{ color: CHARCOAL_SOFT }}>{c.sub}</span>
                 </div>
               </div>
