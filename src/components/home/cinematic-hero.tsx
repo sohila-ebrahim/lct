@@ -1,131 +1,125 @@
 import { useLayoutEffect, useRef, type CSSProperties } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Briefcase, Phone, Plane, Wine } from "lucide-react";
 import { IMAGES } from "@/lib/image-map";
 import { CONTACT } from "@/lib/site-data";
-import { ensureGsap, isDesktopMotion, prefersReducedMotion } from "@/lib/motion";
-import { MagneticButton } from "@/components/home/magnetic-button";
-import { LoopVideo } from "@/components/media/loop-video";
-import heroDrivingVideo from "@/assets/video/hero-driving.mp4";
+import { EASE, ensureGsap, prefersReducedMotion } from "@/lib/motion";
+import { typeHeadline } from "@/lib/typing";
 
+const PATHS = [
+  { to: "/airport", title: "Airport transfers", line: "DFW and Love Field", Icon: Plane },
+  { to: "/corporate", title: "Corporate accounts", line: "Roadshows, VIP guests", Icon: Briefcase },
+  { to: "/events", title: "Events & hourly", line: "Galas, stadiums, weddings", Icon: Wine },
+] as const;
+
+/** The intro plays once per full page load (not on in-site navigation back home). */
+let introPlayed = false;
+
+function canRunIntro() {
+  if (introPlayed || prefersReducedMotion()) return false;
+  const conn = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+  return !conn?.saveData;
+}
+
+/**
+ * Cinematic hero. When the site opens, the fleet's real black Escalade (a
+ * studio photograph with the background removed, src/lib/drive-by-photo.ts)
+ * drives fast across the page itself from right to left; as it clears the
+ * middle, the headline types in (caret, then letter by letter) in the
+ * logo's gold. The quick paths are styled as car key fobs. Reduced motion
+ * and Save-Data get the finished hero straight away.
+ */
 export function CinematicHero() {
   const rootRef = useRef<HTMLElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
   const hero = IMAGES.hero;
   const heroMobile = IMAGES.heroMobile;
 
   useLayoutEffect(() => {
     const root = rootRef.current;
-    if (!root) return;
-    const { gsap, ScrollTrigger } = ensureGsap();
-    const reduce = prefersReducedMotion();
-    let onMove: ((e: MouseEvent) => void) | null = null;
+    const title = titleRef.current;
+    if (!root || !title) return;
+    if (prefersReducedMotion()) {
+      void typeHeadline(title);
+      return;
+    }
+    const { gsap } = ensureGsap();
+    let cancelDrive: (() => void) | null = null;
+    let layer: HTMLDivElement | null = null;
+    let fallback = 0;
+    let typeTimer = 0;
+    let disposed = false;
+    let started = false;
 
     const ctx = gsap.context(() => {
-      if (reduce) {
-        gsap.set(
-          [".hero-media", ".hero-line", ".hero-word", ".hero-copy", ".hero-cta", ".hero-scroll"],
-          { clearProps: "all", autoAlpha: 1 },
-        );
-        return;
-      }
-
-      const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
-      gsap.set(".hero-media", { clipPath: "inset(12% 18% 12% 18%)", scale: 1.12, xPercent: 8 });
-      gsap.set(".hero-grad", { autoAlpha: 0 });
-      gsap.set(".hero-word", { yPercent: 110, autoAlpha: 0 });
-      gsap.set([".hero-copy", ".hero-cta", ".hero-scroll", ".hero-line"], { autoAlpha: 0, y: 24 });
-
-      tl.to(".hero-grad", { autoAlpha: 1, duration: 0.6 }, 0)
-        .to(
-          ".hero-media",
-          {
-            clipPath: "inset(0% 0% 0% 0%)",
-            scale: 1,
-            xPercent: 0,
-            duration: 1.45,
-            ease: "power3.inOut",
-          },
-          0.15,
-        )
-        .to(".hero-line", { autoAlpha: 1, y: 0, duration: 0.5 }, 0.85)
-        .to(
-          ".hero-word",
-          { yPercent: 0, autoAlpha: 1, duration: 0.85, stagger: 0.12, ease: "power4.out" },
-          0.95,
-        )
-        .to(".hero-copy", { autoAlpha: 1, y: 0, duration: 0.7 }, 1.55)
-        .to(".hero-cta", { autoAlpha: 1, y: 0, duration: 0.65, stagger: 0.08 }, 1.75)
-        .to(".hero-scroll", { autoAlpha: 1, y: 0, duration: 0.5 }, 2.05);
-
-      gsap.to(".hero-media-visual", {
-        yPercent: 12,
-        ease: "none",
-        scrollTrigger: {
-          trigger: root,
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-        },
-      });
-
-      gsap.to(".hero-content", {
-        yPercent: -8,
-        autoAlpha: 0.35,
-        ease: "none",
-        scrollTrigger: {
-          trigger: root,
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-        },
-      });
-
-      // Hand off into ValueEditorial: hero's divider line fades and a dark
-      // wipe rises as the section scrolls out, dissolving into the next one.
-      // (Hero is exactly viewport-height, so these must span from "bottom
-      // bottom" — true rest, progress 0 — through "bottom top" — fully
-      // scrolled past — not a "bottom X%" that's already satisfied at rest.)
-      gsap.to(".hero-line", {
-        autoAlpha: 0,
-        y: -12,
-        ease: "none",
-        scrollTrigger: { trigger: root, start: "bottom bottom", end: "bottom 45%", scrub: true },
-      });
-      // Compressed into the final ~20% of the exit (not the full "bottom
-      // bottom" -> "bottom top" range) — matching the HorizontalJourney/
-      // VehicleObjectJourney handoffs, which only activate over their last
-      // 14-15%. The uncompressed version was darkening the Hero for its
-      // entire scroll-out, which then ran straight into ValueEditorial's
-      // own near-identical near-black top padding — together reading as
-      // one long dead "black gap" with nothing legible on screen.
-      gsap.to(".hero-handoff", {
-        autoAlpha: 1,
-        ease: "none",
-        scrollTrigger: { trigger: root, start: "bottom 20%", end: "bottom top", scrub: true },
-      });
-
-      // Desktop-only pointer-parallax tilt on the hero image, layered on
-      // top of the scroll parallax above.
-      if (isDesktopMotion()) {
-        const media = root.querySelector(".hero-media-visual") as HTMLElement | null;
-        if (media) {
-          const moveX = gsap.quickTo(media, "x", { duration: 0.9, ease: "power3.out" });
-          const tiltY = gsap.quickTo(media, "rotateY", { duration: 0.9, ease: "power3.out" });
-          onMove = (e: MouseEvent) => {
-            const nx = e.clientX / window.innerWidth - 0.5;
-            moveX(nx * 16);
-            tiltY(nx * -1.4);
-          };
-          root.addEventListener("mousemove", onMove);
-        }
-      }
+      gsap.set(title, { autoAlpha: 0 });
+      gsap.set(".hero-rise", { autoAlpha: 0, y: 24 });
+      gsap.fromTo(
+        ".hero-photo-img",
+        { scale: 1.08 },
+        { scale: 1, duration: 6, ease: "power1.out" },
+      );
     }, root);
 
-    const onLoad = () => ScrollTrigger.refresh();
-    window.addEventListener("load", onLoad);
+    const begin = () => {
+      if (started || disposed) return;
+      started = true;
+      introPlayed = true;
+      gsap.set(title, { autoAlpha: 1 });
+      void typeHeadline(title);
+      ctx.add(() => {
+        gsap.to(".hero-rise", {
+          autoAlpha: 1,
+          y: 0,
+          duration: 1,
+          stagger: 0.08,
+          delay: 0.5,
+          ease: EASE,
+        });
+      });
+    };
+
+    const dropLayer = () => {
+      layer?.parentNode?.removeChild(layer);
+      layer = null;
+    };
+
+    if (!canRunIntro()) {
+      begin();
+    } else {
+      // Never hold the hero back: if the photo is slow to arrive, skip the car.
+      fallback = window.setTimeout(begin, 3000);
+      import("@/lib/drive-by-photo")
+        .then(async ({ preloadDriveByCar, runPhotoDriveBy }) => {
+          const ready = await preloadDriveByCar(2500);
+          if (disposed || started) return;
+          if (!ready) return begin();
+          window.clearTimeout(fallback);
+          // Marked only once the car really starts (dev StrictMode runs this
+          // effect twice; the first, cancelled run must not use up the intro).
+          introPlayed = true;
+          layer = document.createElement("div");
+          layer.setAttribute("aria-hidden", "true");
+          layer.style.cssText = "position:fixed;inset:0;z-index:45;pointer-events:none";
+          document.body.appendChild(layer);
+          // The headline starts typing as the car clears the middle.
+          typeTimer = window.setTimeout(begin, 1000);
+          cancelDrive = runPhotoDriveBy(layer, {
+            onDone: () => {
+              dropLayer();
+              begin();
+            },
+          });
+        })
+        .catch(begin);
+    }
+
     return () => {
-      window.removeEventListener("load", onLoad);
-      if (onMove) root.removeEventListener("mousemove", onMove);
+      disposed = true;
+      window.clearTimeout(fallback);
+      window.clearTimeout(typeTimer);
+      cancelDrive?.();
+      dropLayer();
       ctx.revert();
     };
   }, []);
@@ -134,39 +128,15 @@ export function CinematicHero() {
     <section
       ref={rootRef}
       id="hero"
-      className="relative flex min-h-[100svh] items-end overflow-hidden bg-black"
+      className="band-dark relative isolate min-h-[100svh] overflow-hidden bg-[color:var(--band)]"
     >
-      <div className="hero-grad absolute inset-0 z-[1]">
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(70% 55% at 72% 42%, color-mix(in oklab, var(--champagne) 16%, transparent), transparent 65%), linear-gradient(115deg, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.35) 42%, rgba(0,0,0,0.72) 100%)",
-          }}
-        />
-        <div
-          className="pointer-events-none absolute inset-0 opacity-40"
-          style={{
-            background:
-              "linear-gradient(105deg, transparent 30%, color-mix(in oklab, var(--champagne) 12%, transparent) 48%, transparent 62%)",
-            animation: prefersReducedMotion()
-              ? undefined
-              : "heroLightSweep 9s ease-in-out infinite",
-          }}
-        />
-      </div>
-
-      <div className="hero-media absolute inset-0" style={{ perspective: "1400px" }}>
+      <div className="absolute inset-0">
         <picture>
-          {/* Below `md`: a real cropped derivative, not just a repositioned
-              desktop frame — see `heroMobile` in image-map.ts for why a
-              position tweak alone can't fix this source on a portrait
-              viewport. */}
           <source media="(max-width: 767px)" srcSet={heroMobile.src} />
           <img
             src={hero.src}
             alt={hero.alt}
-            className="hero-media-visual absolute inset-0 h-full w-full object-cover [object-position:var(--hero-pos-m)] md:[object-position:var(--hero-pos-d)]"
+            className="hero-photo-img absolute inset-0 h-full w-full object-cover [object-position:var(--hero-pos-m)] md:[object-position:var(--hero-pos-d)]"
             style={
               {
                 "--hero-pos-m": heroMobile.objectPositionMobile,
@@ -177,104 +147,82 @@ export function CinematicHero() {
             decoding="async"
           />
         </picture>
+        <div
+          className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/45 to-black/10"
+          aria-hidden
+        />
+        <div
+          className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/90 to-transparent"
+          aria-hidden
+        />
       </div>
 
-      <div
-        className="hero-handoff pointer-events-none absolute inset-x-0 bottom-0 z-[3] h-[45vh] opacity-0"
-        style={{ background: "linear-gradient(to bottom, transparent, var(--surface-black))" }}
-      />
-
-      {/* Below `sm`, the two CTA buttons wrap onto two lines (see the
-          flex-wrap row below), pushing "Explore Our Fleet" down into the
-          same bottom-left band the fixed AI Concierge launcher occupies —
-          confirmed via screenshot the launcher covered the button's first
-          few letters. `sm:` and up the buttons fit on one line and never
-          reach that low, so the extra clearance is mobile-only. */}
-      <div className="hero-content relative z-[2] mx-auto w-full max-w-[var(--container-max)] px-[var(--page-gutter)] pb-[calc(140px+env(safe-area-inset-bottom))] pt-36 sm:pb-16 md:pb-24 lg:pb-28">
-        <div className="hero-line mb-6 flex items-center gap-3">
-          <span className="h-px w-10 bg-champagne/70" />
-          <span className="eyebrow text-champagne">Dallas–Fort Worth · Irving</span>
-        </div>
-
-        <h1 className="max-w-4xl font-display text-[clamp(2.75rem,7vw,6.25rem)] leading-[0.92] tracking-[-0.03em] text-off-white">
-          <span className="block overflow-hidden">
-            <span className="hero-word inline-block">
-              <span className="sr-only">O</span>
-              <span
-                aria-hidden
-                className="hero-o-slot relative -mb-1 mr-[0.02em] inline-block overflow-hidden rounded-full align-middle ring-1 ring-champagne/70"
-                style={{
-                  width: "0.62em",
-                  height: "0.62em",
-                  background:
-                    "radial-gradient(circle at 35% 30%, var(--gold-soft), var(--gold-deep) 75%)",
-                }}
-              >
-                <LoopVideo src={heroDrivingVideo} eager className="absolute inset-0 h-full w-full" />
-                <span className="absolute inset-0 bg-black/10" />
-              </span>
-              ne Fleet,
-            </span>
-          </span>
-          <span className="block overflow-hidden pb-1">
-            <span className="hero-word inline-block italic text-champagne">
-              Every Occasion.
-            </span>
-          </span>
+      <div className="relative z-[2] mx-auto flex min-h-[100svh] max-w-[var(--container-max)] flex-col justify-end px-[var(--page-gutter)] pb-8 pt-32 md:pb-12">
+        <p className="hero-rise text-xs font-semibold uppercase tracking-[0.18em] text-white/70">
+          Executive chauffeured transportation · Dallas–Fort Worth
+        </p>
+        <h1
+          ref={titleRef}
+          data-no-type
+          className="mt-5 max-w-5xl font-display text-[clamp(3.2rem,9.5vw,9.5rem)] leading-[0.88] tracking-[-0.05em]"
+        >
+          One fleet.
+          <br />
+          Every occasion.
         </h1>
 
-        <p className="hero-copy mt-7 max-w-xl text-base leading-relaxed text-off-white/75 md:text-lg">
-          Executive sedans, SUVs, sprinters, and coach transportation — airport transfers,
-          corporate travel, events, and group logistics across {CONTACT.serviceRegion}.
-        </p>
-
-        <div className="mt-10 flex flex-wrap items-center gap-4">
-          <div className="hero-cta">
+        <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
+          <p className="hero-rise max-w-md text-lg leading-[1.6] text-white/75">
+            Executive sedans, SUVs, Sprinters and coaches with professional chauffeurs, dispatched
+            around the clock from our Irving office.
+          </p>
+          <div className="hero-rise flex flex-wrap items-center gap-3">
             <Link
               to="/book"
-              data-cursor="book"
-              className="group inline-flex items-center gap-3 rounded-full bg-gold-gradient px-7 py-3.5 text-sm font-semibold uppercase tracking-widest text-onyx shadow-[var(--shadow-gold)] transition-all duration-300 hover:scale-[1.02] hover:brightness-110"
+              className="group inline-flex h-12 items-center gap-2.5 rounded-full bg-gold-gradient px-6 text-base font-semibold transition-opacity duration-200 hover:opacity-90"
             >
-              Book Your Ride
-              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1.5" />
+              Book your ride
+              <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
             </Link>
-          </div>
-          <div className="hero-cta">
-            <MagneticButton
-              className="inline-flex items-center gap-2 rounded-sm border border-champagne/35 bg-black/30 px-6 py-3.5 text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-off-white backdrop-blur-sm transition hover:border-champagne hover:text-champagne"
-              onClick={() =>
-                document.getElementById("fleet-journey")?.scrollIntoView({ behavior: "smooth" })
-              }
-              data-cursor="explore"
+            <a
+              href={CONTACT.phoneTel}
+              className="inline-flex h-12 items-center gap-2 rounded-full border border-white/30 px-6 text-base font-semibold text-white transition-colors duration-200 hover:bg-white hover:text-black"
             >
-              Explore Our Fleet
-              <ArrowRight className="h-4 w-4" aria-hidden />
-            </MagneticButton>
+              <Phone className="h-4 w-4" aria-hidden />
+              {CONTACT.phoneDisplay}
+            </a>
           </div>
         </div>
 
-        {/* Hidden below `lg`: this row sits at the same bottom-of-viewport
-            band as the fixed WhatsApp/phone FABs (bottom-right) and the AI
-            Concierge launcher (bottom-left), which only move to their
-            desktop position at `lg:bottom-6` (1024px) — an earlier `sm:flex`
-            (640px) reveal left a 640-1023px gap where this row and the FABs
-            both rendered in the same spot (confirmed via screenshot: the
-            phone/WhatsApp icons overlapped "Request a Quote"/"Scroll" on a
-            768px tablet). The row's own info (phone, "request a quote") is
-            already available via those FABs and the header, so below `lg`
-            it's dropped rather than squeezed into a shrinking FAB gap. */}
-        <div className="hero-scroll mt-16 hidden items-center gap-6 text-xs uppercase tracking-[0.28em] text-off-white/45 lg:flex">
-          <a href={CONTACT.phoneTel} className="transition hover:text-champagne">
-            {CONTACT.phoneDisplay}
-          </a>
-          <Link to="/contact" className="transition hover:text-champagne">
-            Request a Quote
-          </Link>
-          <span className="hidden items-center gap-2 sm:inline-flex">
-            <span className="block h-8 w-px bg-champagne/40" />
-            Scroll
-          </span>
-        </div>
+        {/* Quick paths as car key fobs: a pressable button, an engraved
+            label and an LED that lights amber on hover. */}
+        <ul className="mt-10 grid gap-3 sm:grid-cols-3">
+          {PATHS.map(({ to, title, line, Icon }, i) => (
+            <li key={to} className="hero-rise">
+              <Link
+                to={to}
+                className="fob group relative flex items-center gap-4 rounded-[28px] py-3 pl-3 pr-5 ring-1 ring-[color:var(--gold-light)]/30 transition-transform duration-300 hover:-translate-y-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[color:var(--gold-light)]"
+              >
+                <span className="fob-btn grid h-14 w-14 shrink-0 place-items-center rounded-full ring-1 ring-white/10">
+                  <Icon className="h-5 w-5 text-[color:var(--gold-light)]" aria-hidden />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[0.65rem] font-semibold uppercase tracking-[0.22em] text-white/40">
+                    LCT · 0{i + 1}
+                  </span>
+                  <span className="block truncate text-base font-semibold text-white">{title}</span>
+                  <span className="block truncate text-xs text-white/55">{line}</span>
+                </span>
+                <span className="fob-led h-2 w-2 shrink-0 rounded-full" aria-hidden />
+                {/* Key ring */}
+                <span
+                  className="absolute -right-2 top-1/2 h-5 w-3 -translate-y-1/2 rounded-r-full border-2 border-l-0 border-[color:var(--gold-light)]/50"
+                  aria-hidden
+                />
+              </Link>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );

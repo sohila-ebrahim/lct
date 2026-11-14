@@ -7,14 +7,10 @@ import { getRouter } from "./router";
 // firewall that silently drops Google Fonts used to block first paint and
 // delay this module script until that request timed out — reproduced as a
 // fully blank page in headless Chromium with fonts.googleapis.com dropped.
-// Same families/weights as before: Cormorant Garamond 400/500/600 + italic
-// 400/500 (display) and Manrope 300–700 (body, as one variable font).
-import "@fontsource/cormorant-garamond/400.css";
-import "@fontsource/cormorant-garamond/500.css";
-import "@fontsource/cormorant-garamond/600.css";
-import "@fontsource/cormorant-garamond/400-italic.css";
-import "@fontsource/cormorant-garamond/500-italic.css";
-import "@fontsource-variable/manrope/wght.css";
+// Montserrat (display headlines) + Inter (body), one variable file
+// each, Latin subsets loaded on demand by unicode-range.
+import "@fontsource-variable/montserrat/wght.css";
+import "@fontsource-variable/inter/wght.css";
 import "./styles.css";
 import { forwardMyLimoBizReturnToBook } from "./lib/mylimobiz-return-routing";
 import { STATIC_HEAD_ATTR } from "./lib/site-head";
@@ -39,4 +35,13 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <RouterProvider router={router} />
   </React.StrictMode>,
+);
+
+// The first-load waiting arrows (index.html) go once the site has painted,
+// after at least three blinks (about 2s from the start of the page load).
+requestAnimationFrame(() =>
+  window.setTimeout(
+    () => document.getElementById("boot-signal")?.remove(),
+    Math.max(0, 1980 - performance.now()),
+  ),
 );

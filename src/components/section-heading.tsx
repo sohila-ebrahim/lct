@@ -22,13 +22,6 @@ export function SectionHeading({
     let split: ReturnType<typeof revealLines> = null;
 
     const ctx = gsap.context(() => {
-      gsap.from(".sh-line", {
-        scaleX: 0,
-        transformOrigin: align === "center" ? "center" : "left",
-        duration: 0.6,
-        ease: "power2.out",
-        scrollTrigger: { trigger: root, start: "top 85%" },
-      });
       gsap.from(".sh-eyebrow", {
         autoAlpha: 0,
         y: 10,
@@ -54,21 +47,16 @@ export function SectionHeading({
   }, [align]);
 
   return (
-    <div ref={rootRef} className={align === "center" ? "mx-auto max-w-3xl text-center" : "max-w-2xl"}>
-      {eyebrow && (
-        <div className="mb-4 flex items-center gap-3">
-          {align === "center" && <span className="sh-line h-px w-8 bg-gold/60" />}
-          <span className="sh-eyebrow eyebrow">{eyebrow}</span>
-          <span className="sh-line h-px w-8 bg-gold/60" />
-        </div>
-      )}
-      <h2 className="sh-title font-display text-4xl leading-[1.05] text-foreground md:text-6xl">
+    <div
+      ref={rootRef}
+      className={align === "center" ? "mx-auto max-w-3xl text-center" : "max-w-2xl"}
+    >
+      {eyebrow && <p className="sh-eyebrow eyebrow mb-4">{eyebrow}</p>}
+      <h2 className="sh-title font-display text-[clamp(2.25rem,4.6vw,4.25rem)] leading-[0.95] tracking-[-0.04em] text-foreground">
         {title}
       </h2>
       {description && (
-        <p className="sh-desc mt-6 text-base leading-relaxed text-muted-foreground md:text-lg">
-          {description}
-        </p>
+        <p className="sh-desc mt-6 text-lg leading-[1.6] text-muted-foreground">{description}</p>
       )}
     </div>
   );

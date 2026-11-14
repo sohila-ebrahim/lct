@@ -1,37 +1,19 @@
 /**
- * Shared cinematic reveal presets built on the real GSAP plugins (SplitText,
- * DrawSVGPlugin) registered in `motion.ts` — one implementation per technique,
- * reused across the homepage and interior pages instead of re-implementing
- * the same tween inline in every section.
+ * Shared reveal presets for the editorial redesign, one implementation per
+ * technique so every page moves the same way:
  *
- * Every preset is a no-op under prefers-reduced-motion (the element simply
- * keeps its default, fully visible styling).
+ * - Headings are typed in sitewide by src/lib/typing.ts (caret, then the
+ *   line letter by letter); revealLines() is kept as a no-op for callers.
+ * - Images open like a film still: a slow fade with a gentle zoom-out of the
+ *   photo inside its frame. No clip wipes, no parallax.
+ * - Lists rise a short distance in sequence.
+ *
+ * All on the house curve (EASE in motion.ts). Every preset is a no-op under
+ * prefers-reduced-motion: elements keep their normal, fully visible styling.
  */
-import { ensureGsap, prefersReducedMotion } from "@/lib/motion";
+import { EASE, ensureGsap, prefersReducedMotion } from "@/lib/motion";
 
-type Edge = "left" | "right" | "up" | "down" | "diagonal" | "diagonal-reverse";
-type Direction = "left" | "right" | "up" | "down";
 type Target = Element | Element[] | NodeListOf<Element> | string | null;
-
-const CLIP_FROM: Record<Exclude<Edge, "diagonal" | "diagonal-reverse">, string> = {
-  left: "inset(0% 100% 0% 0%)",
-  right: "inset(0% 0% 0% 100%)",
-  up: "inset(100% 0% 0% 0%)",
-  down: "inset(0% 0% 100% 0%)",
-};
-
-function staggerOffset(from: Direction, distance: number): { x?: number; y?: number } {
-  switch (from) {
-    case "left":
-      return { x: -distance };
-    case "right":
-      return { x: distance };
-    case "up":
-      return { y: distance };
-    case "down":
-      return { y: -distance };
-  }
-}
 
 function hasTarget(t: Target) {
   if (!t) return false;
@@ -40,126 +22,87 @@ function hasTarget(t: Target) {
   return true;
 }
 
+function firstElement(t: Target): Element | null {
+  if (!t) return null;
+  if (typeof t === "string") return document.querySelector(t);
+  if (Array.isArray(t) || t instanceof NodeList) return (t as ArrayLike<Element>)[0] ?? null;
+  return t;
+}
+
 /**
- * Splits a heading into lines (or words/chars) and reveals them with a
- * masked upward wipe. Returns the SplitText instance so the caller can
- * `.revert()` it in their own effect cleanup alongside `gsap.context().revert()`.
+ * Heading settle. The signature is kept from the previous preset (callers
+ * pass a `type`/`stagger` and call `.revert()` on the result); the heading
+ * now moves as one block, so the return value is a no-op handle — the
+ * caller's own gsap.context() cleanup reverts the tween.
  */
 export function revealLines(
   el: Element | null,
   opts: { type?: "lines" | "words" | "chars"; stagger?: number; start?: string } = {},
-) {
-  if (!el || prefersReducedMotion()) return null;
-  const { gsap, SplitText } = ensureGsap();
-  const type = opts.type ?? "lines";
-  const split = new SplitText(el, { type, mask: type });
-  const targets = type === "chars" ? split.chars : type === "words" ? split.words : split.lines;
-
-  gsap.from(targets, {
-    yPercent: 110,
-    autoAlpha: 0,
-    duration: 0.9,
-    stagger: opts.stagger ?? (type === "chars" ? 0.02 : 0.06),
-    ease: "power4.out",
-    scrollTrigger: {
-      trigger: el,
-      start: opts.start ?? "top 82%",
-      toggleActions: "play none none reverse",
-    },
-  });
-
-  return split;
+): { revert: () => void } | null {
+  // Headings now type in sitewide (src/lib/typing.ts); kept as a no-op so
+  // existing callers need no changes.
+  void el;
+  return null;
 }
 
 /**
- * Clip-path image wipe. `diagonal`/`diagonal-reverse` sweep across at a true
- * slanted angle (the leading edge's two corners are given different travel
- * distances over the same duration, so they arrive at different times and
- * the cut line reads as visibly diagonal throughout — not just a straight
- * wipe dressed up as a polygon). The rest wipe from a flat edge.
+ * Film-still image reveal: the frame fades in and the photo inside it eases
+ * back from a slight zoom. `edge`/`angle`/`duration` are accepted for
+ * compatibility with existing callers; the direction no longer applies.
  */
 export function revealClipImage(
   el: Target,
-  opts: { edge?: Edge; start?: string; duration?: number; angle?: number } = {},
+  opts: { edge?: string; start?: string; duration?: number; angle?: number } = {},
 ) {
   if (!hasTarget(el) || prefersReducedMotion()) return;
   const { gsap } = ensureGsap();
-  const edge = opts.edge ?? "left";
-  const scrollTrigger = {
-    trigger: el as gsap.DOMTarget,
-    start: opts.start ?? "top 78%",
-    toggleActions: "play none none reverse",
-  };
-
-  if (edge === "diagonal" || edge === "diagonal-reverse") {
-    const a = opts.angle ?? 16;
-    // "diagonal": grows left→right, bottom edge leads.
-    // "diagonal-reverse": grows right→left, top edge leads — a mirrored
-    // slant so it never reads as the same motif as "diagonal".
-    const from =
-      edge === "diagonal"
-        ? "polygon(0% 0%, 0% 0%, 0% 100%, 0% 100%)"
-        : "polygon(100% 0%, 100% 0%, 100% 100%, 100% 100%)";
-    const to =
-      edge === "diagonal"
-        ? `polygon(0% 0%, 100% 0%, ${100 + a}% 100%, 0% 100%)`
-        : `polygon(${-a}% 0%, 100% 0%, 100% 100%, 0% 100%)`;
-    gsap.fromTo(
-      el,
-      { clipPath: from },
-      {
-        clipPath: to,
-        duration: opts.duration ?? 1.15,
-        ease: "power3.inOut",
-        scrollTrigger,
-      },
-    );
-    return;
-  }
+  const frame = firstElement(el);
+  if (!frame) return;
+  const photo = frame.tagName === "IMG" ? frame : (frame.querySelector("img") ?? frame);
+  const trigger = { trigger: frame, start: opts.start ?? "top 85%", once: true };
 
   gsap.fromTo(
-    el,
-    { clipPath: CLIP_FROM[edge] },
-    {
-      clipPath: "inset(0% 0% 0% 0%)",
-      duration: opts.duration ?? 1.1,
-      ease: "power3.inOut",
-      scrollTrigger,
-    },
+    frame,
+    { autoAlpha: 0 },
+    { autoAlpha: 1, duration: 0.9, ease: "none", scrollTrigger: trigger },
+  );
+  gsap.fromTo(
+    photo,
+    { scale: 1.08 },
+    { scale: 1, duration: opts.duration ?? 1.8, ease: EASE, scrollTrigger: trigger },
   );
 }
 
-/** Directional grid/list stagger — replaces the plain `y:48` fade-up used everywhere. */
+/** Sequenced short rise for grids and lists. `from`/`distance` kept for callers. */
 export function revealStagger(
   els: Target,
-  opts: { from?: Direction; amount?: number; start?: string; duration?: number; trigger?: Target; distance?: number } = {},
+  opts: {
+    from?: string;
+    amount?: number;
+    start?: string;
+    duration?: number;
+    trigger?: Target;
+    distance?: number;
+  } = {},
 ) {
   if (!hasTarget(els) || prefersReducedMotion()) return;
   const { gsap } = ensureGsap();
-  const offset = staggerOffset(opts.from ?? "up", opts.distance ?? 44);
-  // ScrollTrigger's `trigger` must be a single element/selector, not an array —
-  // fall back to the first item when `els` is a list and no explicit trigger given.
-  const trigger =
-    opts.trigger ??
-    (typeof els === "string" || !(Array.isArray(els) || els instanceof NodeList)
-      ? els
-      : (els as ArrayLike<Element>)[0]);
-
+  const trigger = opts.trigger ? firstElement(opts.trigger) : firstElement(els);
   gsap.from(els, {
-    ...offset,
+    y: 24,
     autoAlpha: 0,
-    duration: opts.duration ?? 0.85,
-    stagger: opts.amount ?? 0.1,
-    ease: "power3.out",
+    duration: opts.duration ?? 1,
+    stagger: opts.amount ?? 0.08,
+    ease: EASE,
     scrollTrigger: {
       trigger: trigger as gsap.DOMTarget,
-      start: opts.start ?? "top 82%",
-      toggleActions: "play none none reverse",
+      start: opts.start ?? "top 85%",
+      once: true,
     },
   });
 }
 
-/** DrawSVGPlugin stroke draw for gold-line / route-line SVG paths (not plain divs). */
+/** Stroke draw for SVG route lines (DrawSVGPlugin). */
 export function drawLine(el: Target, opts: { start?: string; duration?: number } = {}) {
   if (!hasTarget(el)) return;
   const { gsap } = ensureGsap();
@@ -172,13 +115,9 @@ export function drawLine(el: Target, opts: { start?: string; duration?: number }
     { drawSVG: "0%" },
     {
       drawSVG: "100%",
-      duration: opts.duration ?? 0.9,
-      ease: "power2.inOut",
-      scrollTrigger: {
-        trigger: el as gsap.DOMTarget,
-        start: opts.start ?? "top 85%",
-        toggleActions: "play none none reverse",
-      },
+      duration: opts.duration ?? 1.4,
+      ease: EASE,
+      scrollTrigger: { trigger: el as gsap.DOMTarget, start: opts.start ?? "top 85%", once: true },
     },
   );
 }

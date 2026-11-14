@@ -8,6 +8,8 @@ import { ensureGsap, prefersReducedMotion } from "@/lib/motion";
 import { revealClipImage, revealLines } from "@/lib/reveal";
 import { pageMeta } from "@/lib/seo";
 import { TrustBadges } from "@/components/trust-badges";
+import { StatsBand } from "@/components/home/editorial";
+import { ABOUT_STATS } from "@/lib/page-editorial";
 
 export const Route = createFileRoute("/about")({
   head: () =>
@@ -98,8 +100,8 @@ function About() {
               The private mode of travel.
             </h2>
             <p className="about-mission-desc mt-6 max-w-md text-base leading-relaxed text-muted-foreground md:text-lg">
-              From boardrooms to weddings, LCT Universal operates as a silent partner — solving
-              the transportation question so completely you forget it was ever asked.
+              From boardrooms to weddings, LCT Universal operates as a silent partner — solving the
+              transportation question so completely you forget it was ever asked.
             </p>
           </div>
         </div>
@@ -113,7 +115,10 @@ function About() {
             className="flex flex-col divide-y divide-border/50 lg:flex-row lg:divide-x lg:divide-y-0"
           >
             {VALUES.map(({ Icon, t, d }) => (
-              <div key={t} className="flex flex-1 items-start gap-4 py-6 lg:flex-col lg:gap-3 lg:px-8 lg:py-0 first:lg:pl-0">
+              <div
+                key={t}
+                className="flex flex-1 items-start gap-4 py-6 lg:flex-col lg:gap-3 lg:px-8 lg:py-0 first:lg:pl-0"
+              >
                 <Icon className="h-6 w-6 shrink-0 text-gold" strokeWidth={1.5} aria-hidden />
                 <div>
                   <h3 className="font-display text-xl text-foreground">{t}</h3>
@@ -132,7 +137,10 @@ function About() {
               className="group inline-flex min-h-11 items-center gap-2 text-sm uppercase tracking-[0.2em] text-champagne transition hover:text-gold"
             >
               Reserve your ride
-              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1.5" aria-hidden />
+              <ArrowRight
+                className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1.5"
+                aria-hidden
+              />
             </Link>
           </div>
         </div>
@@ -142,6 +150,7 @@ function About() {
           2026-08-08 (see TRUST_BADGES in site-data.ts). This is the fullest,
           most generous presentation sitewide — the footer's version (every
           page) is deliberately smaller and quieter. */}
+      <StatsBand stats={ABOUT_STATS} />
       <section className="border-t border-border py-20">
         <div className="mx-auto max-w-[var(--container-max)] px-[var(--page-gutter)] text-center">
           <div className="eyebrow">Recognized Industry Standards</div>

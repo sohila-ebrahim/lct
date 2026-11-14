@@ -17,12 +17,16 @@ import {
  */
 export function MobileBookBar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const menuOpen = useSyncExternalStore(subscribeMobileMenuOpen, getMobileMenuOpenSnapshot, getMobileMenuOpenServerSnapshot);
+  const menuOpen = useSyncExternalStore(
+    subscribeMobileMenuOpen,
+    getMobileMenuOpenSnapshot,
+    getMobileMenuOpenServerSnapshot,
+  );
   if (pathname === "/book" || pathname === "/fleet" || menuOpen) return null;
 
   return (
     <div
-      className="fixed inset-x-0 bottom-0 z-30 border-t border-champagne/25 bg-gold-gradient pb-[env(safe-area-inset-bottom)] lg:hidden"
+      className="fixed inset-x-0 bottom-0 z-30 border-t border-champagne/25 bg-gold-gradient pb-[env(safe-area-inset-bottom)] lg:hidden font-semibold rounded-full"
       style={{ boxShadow: "0 -8px 24px -8px rgba(0,0,0,0.35)" }}
     >
       <Link

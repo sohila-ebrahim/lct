@@ -6,9 +6,12 @@ import { SectionHeading } from "@/components/section-heading";
 import { LeadForm } from "@/components/lead-form";
 import { AIRLINE_PARTNER_KINDS, BOOKING_VEHICLE_OPTIONS, CONTACT } from "@/lib/site-data";
 import { PartnersBoard } from "@/components/partners-board";
+import { PartnerRibbons } from "@/components/partner-ribbons";
 import { IMAGES } from "@/lib/image-map";
 import { ensureGsap, prefersReducedMotion } from "@/lib/motion";
 import { pageMeta } from "@/lib/seo";
+import { ServiceStories, StatsBand } from "@/components/home/editorial";
+import { AIRPORT_STATS, AIRPORT_STEPS } from "@/lib/page-editorial";
 
 export const Route = createFileRoute("/airport")({
   head: () => ({
@@ -112,7 +115,7 @@ function Airport() {
         <Link
           to="/book"
           data-cursor="book"
-          className="group inline-flex items-center gap-2 rounded-sm bg-gold-gradient px-7 py-3.5 text-xs font-semibold uppercase tracking-widest text-onyx shadow-[var(--shadow-gold)] transition hover:brightness-110"
+          className="group inline-flex items-center gap-2 rounded-full bg-gold-gradient px-7 py-3.5 text-sm font-semibold transition"
         >
           Book Airport Transfer
           <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1.5" />
@@ -147,6 +150,13 @@ function Airport() {
         </div>
       </section>
 
+      <StatsBand stats={AIRPORT_STATS} />
+      <ServiceStories
+        stories={AIRPORT_STEPS}
+        eyebrow="How an airport pickup works"
+        id="airport-steps"
+      />
+      <PartnerRibbons />
       <PartnersBoard kinds={AIRLINE_PARTNER_KINDS} tone="black" />
 
       <section className="border-t border-border bg-onyx py-24">

@@ -1,5 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type MouseEvent as ReactMouseEvent } from "react";
+import {
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type MouseEvent as ReactMouseEvent,
+} from "react";
 import { SiteLayout, PageHero } from "@/components/site-layout";
 import { SectionHeading } from "@/components/section-heading";
 import { CheckCircle2, ArrowRight, Phone } from "lucide-react";
@@ -7,53 +14,12 @@ import { FLEET_VEHICLES, CONTACT, type FleetVehicle } from "@/lib/site-data";
 import { IMAGES } from "@/lib/image-map";
 import { LeadForm } from "@/components/lead-form";
 import { ensureGsap, prefersReducedMotion } from "@/lib/motion";
-import { revealClipImage } from "@/lib/reveal";
 import { pageMeta } from "@/lib/seo";
 import { track } from "@/lib/tracking";
+import { StatsBand } from "@/components/home/editorial";
+import { FLEET_STATS } from "@/lib/page-editorial";
+import { PartnerRibbons } from "@/components/partner-ribbons";
 
-/**
- * Fleet's wheel accent — was a continuously-rendering Three.js scene
- * (a permanent WebGL canvas + render-invalidate loop just to idle-rotate a
- * decorative rim). Per the performance-correction pass: this accent is
- * non-essential, so rather than optimize the WebGL version further, it's
- * replaced outright with the exact same visual as a plain CSS-animated SVG
- * — a GPU-composited transform with zero JS render loop, zero canvas,
- * zero Three.js chunk fetch, at effectively no cost. `motion-reduce:` stops
- * the spin entirely for reduced-motion visitors.
- */
-function FleetWheelAccent() {
-  const spokes = Array.from({ length: 6 }, (_, i) => {
-    const angle = (i / 6) * Math.PI * 2;
-    return {
-      x1: 60 + Math.cos(angle) * 18,
-      y1: 60 + Math.sin(angle) * 18,
-      x2: 60 + Math.cos(angle) * 40,
-      y2: 60 + Math.sin(angle) * 40,
-    };
-  });
-  return (
-    <svg
-      viewBox="0 0 120 120"
-      className="mx-auto h-full w-auto motion-safe:animate-[spin_26s_linear_infinite]"
-      aria-hidden
-    >
-      <defs>
-        <linearGradient id="fleetWheelGrad" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#f4dfa8" />
-          <stop offset="55%" stopColor="#d4af6a" />
-          <stop offset="100%" stopColor="#8a6a2f" />
-        </linearGradient>
-      </defs>
-      <circle cx="60" cy="60" r="45" fill="none" stroke="url(#fleetWheelGrad)" strokeWidth="9" />
-      {spokes.map((s, i) => (
-        <line key={i} x1={s.x1} y1={s.y1} x2={s.x2} y2={s.y2} stroke="url(#fleetWheelGrad)" strokeWidth="5" strokeLinecap="round" />
-      ))}
-      <circle cx="60" cy="60" r="15" fill="#141210" stroke="url(#fleetWheelGrad)" strokeWidth="2" />
-    </svg>
-  );
-}
-
-/** Anchor the sticky/in-chapter quote CTAs scroll to and prefill. */
 const FLEET_INQUIRY_ID = "fleet-inquiry";
 
 /** Exact CTA copy per vehicle, per the approved conversion-flow spec — not a generic template. */
@@ -79,7 +45,9 @@ const VEHICLE_BLURB: Record<string, string> = {
 };
 
 function ctaLabel(v: FleetVehicle) {
-  return CTA_LABEL[v.id] ?? (v.status === "bookable" ? "Book This Vehicle" : `Request a ${v.name} Quote`);
+  return (
+    CTA_LABEL[v.id] ?? (v.status === "bookable" ? "Book This Vehicle" : `Request a ${v.name} Quote`)
+  );
 }
 
 /**
@@ -147,27 +115,33 @@ function VehicleCta({
           to="/book"
           data-cursor="book"
           onMouseDown={trackBookMouseDown(v)}
-          className="group inline-flex w-fit items-center gap-2 rounded-sm bg-gold-gradient px-6 py-3 text-sm font-semibold uppercase tracking-widest text-onyx shadow-[var(--shadow-gold)] transition hover:brightness-110"
+          className="group inline-flex w-fit items-center gap-2 rounded-full bg-gold-gradient px-6 py-3 text-sm font-semibold transition"
         >
           {ctaLabel(v)}
-          <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden />
+          <ArrowRight
+            className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+            aria-hidden
+          />
         </Link>
       ) : (
         <button
           type="button"
           data-cursor="explore"
           onClick={() => onQuote(v)}
-          className="group inline-flex w-fit items-center gap-2 rounded-sm bg-gold-gradient px-6 py-3 text-sm font-semibold uppercase tracking-widest text-onyx shadow-[var(--shadow-gold)] transition hover:brightness-110"
+          className="group inline-flex w-fit items-center gap-2 rounded-full bg-gold-gradient px-6 py-3 text-sm font-semibold transition"
         >
           {ctaLabel(v)}
-          <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" aria-hidden />
+          <ArrowRight
+            className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1"
+            aria-hidden
+          />
         </button>
       )}
       {showDispatchCall && (
         <a
           href={CONTACT.phoneTel}
           onClick={() => track.fleetCallDispatchClick()}
-          className="inline-flex w-fit items-center gap-2 rounded-sm border border-champagne/40 px-6 py-3 text-sm font-semibold uppercase tracking-widest text-foreground transition hover:border-champagne hover:text-champagne"
+          className="inline-flex w-fit items-center gap-2 rounded-full border border-champagne/40 px-6 py-3 text-sm font-semibold text-foreground transition hover:border-champagne hover:text-champagne"
         >
           <Phone className="h-4 w-4" aria-hidden />
           Call Dispatch
@@ -180,7 +154,9 @@ function VehicleCta({
 function SpecRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-baseline justify-between border-b border-border/50 py-3">
-      <span className="text-[0.65rem] uppercase tracking-[0.22em] text-muted-foreground">{label}</span>
+      <span className="text-[0.65rem] uppercase tracking-[0.22em] text-muted-foreground">
+        {label}
+      </span>
       <span className="font-display text-xl text-gold-gradient">{value}</span>
     </div>
   );
@@ -207,12 +183,14 @@ function FleetConversionBar({
 
   return (
     <div
-      className="fixed inset-x-0 bottom-0 z-30 h-16 border-t border-champagne/25 bg-[color:var(--surface-elevated)]/97 backdrop-blur-xl pb-[env(safe-area-inset-bottom)]"
+      className="fixed inset-x-0 bottom-0 z-30 h-16 border-t border-border bg-background/95 backdrop-blur-md pb-[env(safe-area-inset-bottom)]"
       style={{ boxShadow: "0 -8px 24px -8px rgba(0,0,0,0.35)" }}
     >
       <div className="mx-auto flex h-16 max-w-[var(--container-max)] items-center justify-between gap-3 px-4 lg:px-10">
         <div className="min-w-0">
-          <div className="truncate font-display text-sm text-foreground md:text-base">{vehicle.name}</div>
+          <div className="truncate font-display text-sm text-foreground md:text-base">
+            {vehicle.name}
+          </div>
           <div className="truncate text-[0.7rem] text-muted-foreground">
             {vehicle.pax} passengers · {vehicle.priceLabel}
           </div>
@@ -222,7 +200,7 @@ function FleetConversionBar({
             to="/book"
             data-cursor="book"
             onMouseDown={trackBookMouseDown(vehicle)}
-            className="inline-flex min-h-[44px] shrink-0 items-center gap-2 whitespace-nowrap rounded-sm bg-gold-gradient px-4 py-3 text-[0.65rem] font-semibold uppercase tracking-widest text-onyx shadow-[var(--shadow-gold)] transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            className="inline-flex min-h-[44px] shrink-0 items-center gap-2 whitespace-nowrap rounded-full bg-gold-gradient px-4 py-3 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             {label}
           </Link>
@@ -231,7 +209,7 @@ function FleetConversionBar({
             type="button"
             data-cursor="explore"
             onClick={() => onQuote(vehicle)}
-            className="inline-flex min-h-[44px] shrink-0 items-center gap-2 whitespace-nowrap rounded-sm bg-gold-gradient px-4 py-3 text-[0.65rem] font-semibold uppercase tracking-widest text-onyx shadow-[var(--shadow-gold)] transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            className="inline-flex min-h-[44px] shrink-0 items-center gap-2 whitespace-nowrap rounded-full bg-gold-gradient px-4 py-3 text-sm font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             {label}
           </button>
@@ -241,70 +219,7 @@ function FleetConversionBar({
   );
 }
 
-/**
- * Mobile-only "swipe to explore" strip — added per explicit client feedback
- * that 7 full-bleed vehicle chapters stacking straight down felt like "a
- * long amateur-looking page" on mobile. Does NOT restructure the chapters
- * themselves (each remains a normal stacked `<section>`): the sticky
- * `FleetConversionBar` below tracks "current chapter" via an
- * `IntersectionObserver` keyed to vertical scroll position, and every
- * chapter has its own GSAP `ScrollTrigger` reveal timeline — both would
- * break if chapters were converted into actual horizontal-scroll slides.
- * Instead, this is a purely additive native scroll-snap filmstrip (same
- * technique as the existing `/events` "drag to explore" gallery) that lets
- * a visitor preview all 7 vehicles up front and tap one to smooth-scroll
- * straight to its full chapter — desktop is completely unaffected (`lg:hidden`).
- */
-function MobileFleetShowcase({ vehicles }: { vehicles: readonly FleetVehicle[] }) {
-  return (
-    <section className="border-b border-border py-8 lg:hidden">
-      <div className="mb-4 px-6">
-        <span className="eyebrow">Swipe to explore the fleet</span>
-      </div>
-      <div className="scrollbar-none flex snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-2">
-        {vehicles.map((v) => {
-          const img = IMAGES[v.imageKey];
-          return (
-            <a
-              key={v.id}
-              href={`#fleet-${v.id}`}
-              data-cursor="explore"
-              className="group relative aspect-[3/4] w-[62vw] shrink-0 snap-start overflow-hidden rounded-sm sm:w-[42vw]"
-            >
-              <img
-                src={img.src}
-                alt={img.alt}
-                loading="lazy"
-                className="absolute inset-0 h-full w-full object-cover transition duration-500 group-active:scale-105 [object-position:var(--img-pos-m)]"
-                style={{ "--img-pos-m": img.objectPositionMobile } as CSSProperties}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 p-4">
-                <div className="font-display text-lg leading-tight text-off-white">{v.name}</div>
-                <div className="mt-1 text-xs text-off-white/75">
-                  {v.pax} passengers · {v.priceLabel}
-                </div>
-              </div>
-            </a>
-          );
-        })}
-      </div>
-    </section>
-  );
-}
-
 function Fleet() {
-  // Looked up by id, not array position — FLEET_VEHICLES grew from 5 to 7
-  // entries (2026-08-08 fleet/pricing audit) and positional indices would
-  // silently pull the wrong vehicle into the wrong chapter after that.
-  const find = (id: string) => FLEET_VEHICLES.find((v) => v.id === id)!;
-  const sedan = find("sedan");
-  const firstClassSedan = find("firstClassSedan");
-  const suv = find("suv");
-  const luxurySuv = find("luxurySuv");
-  const sprinter = find("sprinter");
-  const coachMini = find("coachMini");
-  const coachLarge = find("coachLarge");
   const heroImg = IMAGES.fleetHero;
 
   const [inquiryVehicle, setInquiryVehicle] = useState<string | undefined>();
@@ -314,491 +229,204 @@ function Fleet() {
   );
   const handleQuote = useVehicleQuote(setInquiryVehicle);
 
-  const [activeId, setActiveId] = useState<string>(sedan.id);
-  const rootRef = useRef<HTMLDivElement>(null);
+  const [activeId, setActiveId] = useState<string>(FLEET_VEHICLES[0].id);
+  const rootRef = useRef<HTMLOListElement>(null);
 
   // Active-vehicle tracking for the sticky conversion bar — functional, not
   // decorative, so it runs identically regardless of reduced-motion.
   useLayoutEffect(() => {
-    const sections = Array.from(
-      document.querySelectorAll<HTMLElement>("[data-vehicle-chapter]"),
-    );
-    if (!sections.length) return;
-    const io = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.filter((e) => e.isIntersecting);
-        if (!visible.length) return;
-        // Prefer the entry closest to vertical center of the viewport.
-        const best = visible.reduce((a, b) =>
-          Math.abs(a.boundingClientRect.top) < Math.abs(b.boundingClientRect.top) ? a : b,
-        );
-        const id = best.target.getAttribute("data-vehicle-chapter");
-        if (id) setActiveId(id);
-      },
-      { rootMargin: "-40% 0px -40% 0px", threshold: 0 },
-    );
-    sections.forEach((s) => io.observe(s));
-    return () => io.disconnect();
+    const cards = Array.from(document.querySelectorAll<HTMLElement>("[data-vehicle-chapter]"));
+    if (!cards.length) return;
+    // Sticky cards stay on screen underneath the one stacked on top, so the
+    // active vehicle is simply the last card whose top has reached the
+    // middle of the viewport — correct in both scroll directions.
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const mid = window.innerHeight * 0.5;
+      let active = cards[0];
+      for (const c of cards) if (c.getBoundingClientRect().top <= mid) active = c;
+      const id = active.getAttribute("data-vehicle-chapter");
+      if (id) setActiveId(id);
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, []);
 
+  // Desktop: cards are sticky and stack; as the next one slides over, the
+  // previous recedes and dims (same motion as the home page fleet).
   useLayoutEffect(() => {
     const root = rootRef.current;
-    if (!root) return;
-    const { gsap, ScrollTrigger } = ensureGsap();
-    const reduce = prefersReducedMotion();
-    const ctx = gsap.context(() => {
-      if (reduce) return;
-
-      // Chapter 1 — Sedan: full-bleed reveal, diagonal wipe
-      revealClipImage(".ch-sedan-media", { edge: "diagonal", start: "top 78%" });
-      gsap.from(".ch-sedan-copy > *", {
-        y: 24,
-        autoAlpha: 0,
-        stagger: 0.08,
-        duration: 0.7,
-        ease: "power3.out",
-        scrollTrigger: { trigger: ".ch-sedan", start: "top 70%" },
+    if (!root || prefersReducedMotion()) return;
+    const { gsap } = ensureGsap();
+    const mm = gsap.matchMedia();
+    mm.add("(min-width: 1024px)", () => {
+      const cards = gsap.utils.toArray<HTMLElement>(".fleet-card", root);
+      cards.forEach((card, i) => {
+        const next = cards[i + 1];
+        if (!next) return;
+        gsap
+          .timeline({
+            scrollTrigger: { trigger: next, start: "top bottom", end: "top 25%", scrub: true },
+          })
+          .to(card.querySelector(".stack-inner"), { scale: 0.93, ease: "none" }, 0)
+          .to(card.querySelector(".stack-dim"), { opacity: 0.55, ease: "none" }, 0);
       });
-
-      // Chapter 1b — First Class Sedan: same full-bleed language as Sedan,
-      // mirrored wipe direction so the two adjacent sedan chapters don't
-      // read as an identical repeated beat.
-      revealClipImage(".ch-fcs-media", { edge: "diagonal-reverse", start: "top 78%" });
-      gsap.from(".ch-fcs-copy > *", {
-        y: 24,
-        autoAlpha: 0,
-        stagger: 0.08,
-        duration: 0.7,
-        ease: "power3.out",
-        scrollTrigger: { trigger: ".ch-fcs", start: "top 70%" },
-      });
-
-      // Chapter 2 — SUV: split spec panel + one-shot light sweep
-      revealClipImage(".ch-suv-media", { edge: "left", start: "top 78%" });
-      gsap.from(".ch-suv-copy > *", {
-        y: 24,
-        autoAlpha: 0,
-        stagger: 0.07,
-        duration: 0.65,
-        ease: "power3.out",
-        scrollTrigger: { trigger: ".ch-suv", start: "top 75%" },
-      });
-      ScrollTrigger.create({
-        trigger: ".ch-suv-media",
-        start: "top 70%",
-        once: true,
-        onEnter: () =>
-          gsap.fromTo(
-            ".ch-suv-sweep",
-            { xPercent: -140, autoAlpha: 0.9 },
-            { xPercent: 220, autoAlpha: 0, duration: 1.1, ease: "power1.inOut", delay: 0.3 },
-          ),
-      });
-
-      // Chapter 2b — Luxury SUV: same split-panel language as SUV, image on
-      // the right instead of the left so the pair doesn't feel copy-pasted.
-      revealClipImage(".ch-lsuv-media", { edge: "right", start: "top 78%" });
-      gsap.from(".ch-lsuv-copy > *", {
-        y: 24,
-        autoAlpha: 0,
-        stagger: 0.07,
-        duration: 0.65,
-        ease: "power3.out",
-        scrollTrigger: { trigger: ".ch-lsuv", start: "top 75%" },
-      });
-      ScrollTrigger.create({
-        trigger: ".ch-lsuv-media",
-        start: "top 70%",
-        once: true,
-        onEnter: () =>
-          gsap.fromTo(
-            ".ch-lsuv-sweep",
-            { xPercent: 140, autoAlpha: 0.9 },
-            { xPercent: -220, autoAlpha: 0, duration: 1.1, ease: "power1.inOut", delay: 0.3 },
-          ),
-      });
-
-      // Chapter 3 — Sprinter: asymmetric inset, oversized type behind
-      gsap.from(".ch-sprinter-numeral", {
-        autoAlpha: 0,
-        x: -30,
-        duration: 0.9,
-        ease: "power3.out",
-        scrollTrigger: { trigger: ".ch-sprinter", start: "top 72%" },
-      });
-      revealClipImage(".ch-sprinter-media", { edge: "up", start: "top 75%" });
-      gsap.from(".ch-sprinter-copy > *", {
-        y: 20,
-        autoAlpha: 0,
-        stagger: 0.07,
-        duration: 0.65,
-        ease: "power3.out",
-        scrollTrigger: { trigger: ".ch-sprinter", start: "top 68%" },
-      });
-
-      // Chapter 4 — Mini Coach: wide panoramic banner, slow horizontal drift
-      revealClipImage(".ch-coach-media", { edge: "right", start: "top 80%", duration: 1.3 });
-      gsap.to(".ch-coach-media img", {
-        xPercent: -6,
-        ease: "none",
-        scrollTrigger: { trigger: ".ch-coach", start: "top bottom", end: "bottom top", scrub: true },
-      });
-      gsap.from(".ch-coach-copy > *", {
-        y: 20,
-        autoAlpha: 0,
-        stagger: 0.07,
-        duration: 0.6,
-        ease: "power3.out",
-        scrollTrigger: { trigger: ".ch-coach", start: "top 75%" },
-      });
-
-      // Chapter 5 — Executive Coach: same panoramic banner language as Mini
-      // Coach (both are "wide vehicle" chapters), drifting the opposite
-      // direction so the two don't read as an identical repeated beat.
-      revealClipImage(".ch-coach-large-media", { edge: "left", start: "top 80%", duration: 1.3 });
-      gsap.to(".ch-coach-large-media img", {
-        xPercent: 6,
-        ease: "none",
-        scrollTrigger: { trigger: ".ch-coach-large", start: "top bottom", end: "bottom top", scrub: true },
-      });
-      gsap.from(".ch-coach-large-copy > *", {
-        y: 20,
-        autoAlpha: 0,
-        stagger: 0.07,
-        duration: 0.6,
-        ease: "power3.out",
-        scrollTrigger: { trigger: ".ch-coach-large", start: "top 75%" },
-      });
-    }, root);
-    return () => ctx.revert();
+    });
+    return () => mm.revert();
   }, []);
 
   return (
     <SiteLayout>
       <PageHero
         eyebrow="The Fleet"
-        title="Vehicles held to a single measure."
-        description="Every LCT Universal vehicle is meticulously maintained and prepared before dispatch — because to each client, it is the only one that matters."
+        title="Seven classes. One standard."
+        description="Every LCT Universal vehicle is maintained and prepared before dispatch, from the Executive Sedan to the 56-seat motor coach."
         image={heroImg.src}
         imagePosition={heroImg.objectPositionDesktop}
         imagePositionMobile={heroImg.objectPositionMobile}
-        imageEdge="diagonal-reverse"
       />
 
-      {/* One lightweight 3D accent for the whole page, per the brief — an
-          abstract rotating alloy rim, purely decorative. Photography in the
-          chapters below remains the primary content; this never replaces it. */}
-      <div className="mx-auto flex h-24 w-24 max-w-[var(--container-max)] items-center justify-center px-[var(--page-gutter)] pb-2 pt-4 md:h-28 md:w-28">
-        <FleetWheelAccent />
-      </div>
+      <StatsBand stats={FLEET_STATS} />
 
-      <MobileFleetShowcase vehicles={FLEET_VEHICLES} />
+      <section className="band-dark bg-[color:var(--band)] pb-[var(--section-space)] pt-[var(--section-space)]">
+        <div className="mx-auto flex max-w-[var(--container-max)] flex-col gap-8 px-[var(--page-gutter)] lg:flex-row lg:items-end lg:justify-between">
+          <h2 className="font-display text-[clamp(2.5rem,5.5vw,5rem)] leading-[0.95]">
+            Choose your vehicle.
+          </h2>
+          <nav aria-label="Jump to a vehicle" className="flex flex-wrap gap-2">
+            {FLEET_VEHICLES.map((v) => (
+              <a
+                key={v.id}
+                href={`#vehicle-${v.id}`}
+                className={`rounded-full border px-4 py-2 text-sm font-semibold transition-colors duration-200 ${
+                  activeId === v.id
+                    ? "border-[color:var(--gold-light)] bg-[color:var(--gold-light)] text-[#0d0e10]"
+                    : "border-white/20 text-white/80 hover:border-white/60 hover:text-white"
+                }`}
+              >
+                {v.name}
+              </a>
+            ))}
+          </nav>
+        </div>
 
-      <div ref={rootRef}>
-        {/* Chapter 1 — Sedan: full-bleed vehicle-first reveal, text in lower-left negative space */}
-        <section id="fleet-sedan" className="ch-sedan relative overflow-hidden" data-vehicle-chapter="sedan">
-          <div className="relative aspect-[16/9] w-full md:aspect-[21/9]">
-            <img
-              src={IMAGES.fleetSedan.src}
-              alt={IMAGES.fleetSedan.alt}
-              loading="lazy"
-              className="ch-sedan-media absolute inset-0 h-full w-full object-cover [object-position:var(--img-pos-m)] md:[object-position:var(--img-pos-d)]"
-              style={
-                {
-                  "--img-pos-m": IMAGES.fleetSedan.objectPositionMobile,
-                  "--img-pos-d": IMAGES.fleetSedan.objectPositionDesktop,
-                } as CSSProperties
-              }
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-          </div>
-          <div className="ch-sedan-copy mx-auto max-w-[var(--container-max)] px-6 pb-16 pt-8 lg:px-10">
-            <div className="eyebrow text-champagne">{sedan.model}</div>
-            <h2 className="mt-3 font-display text-4xl md:text-6xl">{sedan.name}</h2>
-            <p className="mt-3 max-w-md text-sm text-foreground/80">{VEHICLE_BLURB.sedan}</p>
-            <div className="mt-6 flex flex-wrap items-end gap-8 border-y border-border py-4">
-              <div>
-                <div className="eyebrow text-[0.6rem]">Passengers</div>
-                <div className="mt-1 font-display text-2xl text-gold-gradient">{sedan.pax}</div>
-              </div>
-              <div>
-                <div className="eyebrow text-[0.6rem]">Luggage</div>
-                <div className="mt-1 font-display text-2xl text-gold-gradient">{sedan.bags}</div>
-              </div>
-              <div className="ml-auto text-right">
-                <div className="eyebrow text-[0.6rem]">Pricing</div>
-                <div className="mt-1 font-display text-2xl text-gold-gradient">{sedan.priceLabel}</div>
-              </div>
-            </div>
-            <ul className="mt-6 flex flex-wrap gap-x-8 gap-y-3">
-              {sedan.features.map((f) => (
-                <li key={f} className="flex items-center gap-2 text-sm text-foreground/85">
-                  <CheckCircle2 className="h-4 w-4 shrink-0 text-champagne" aria-hidden />
-                  {f}
-                </li>
-              ))}
-            </ul>
-            <VehicleCta v={sedan} onQuote={handleQuote} />
-          </div>
-        </section>
-
-        {/* Chapter 1b — First Class Sedan: same full-bleed template as Sedan
-            (same verified S-Class, different real photograph — a white-glove
-            chauffeur portrait rather than the exterior valet shot). */}
-        <section id="fleet-firstClassSedan" className="ch-fcs relative overflow-hidden border-t border-border" data-vehicle-chapter="firstClassSedan">
-          <div className="relative aspect-[16/9] w-full md:aspect-[21/9]">
-            <img
-              src={IMAGES.fleetFirstClassSedan.src}
-              alt={IMAGES.fleetFirstClassSedan.alt}
-              loading="lazy"
-              className="ch-fcs-media absolute inset-0 h-full w-full object-cover [object-position:var(--fcs-pos-m)] md:[object-position:var(--fcs-pos-d)]"
-              style={
-                {
-                  "--fcs-pos-m": IMAGES.fleetFirstClassSedan.objectPositionMobile,
-                  "--fcs-pos-d": IMAGES.fleetFirstClassSedan.objectPositionDesktop,
-                } as CSSProperties
-              }
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-          </div>
-          <div className="ch-fcs-copy mx-auto max-w-[var(--container-max)] px-6 pb-16 pt-8 lg:px-10">
-            <div className="eyebrow text-champagne">{firstClassSedan.model}</div>
-            <h2 className="mt-3 font-display text-4xl md:text-6xl">{firstClassSedan.name}</h2>
-            <p className="mt-3 max-w-md text-sm text-foreground/80">{VEHICLE_BLURB.firstClassSedan}</p>
-            <div className="mt-6 flex flex-wrap items-end gap-8 border-y border-border py-4">
-              <div>
-                <div className="eyebrow text-[0.6rem]">Passengers</div>
-                <div className="mt-1 font-display text-2xl text-gold-gradient">{firstClassSedan.pax}</div>
-              </div>
-              <div>
-                <div className="eyebrow text-[0.6rem]">Luggage</div>
-                <div className="mt-1 font-display text-2xl text-gold-gradient">{firstClassSedan.bags}</div>
-              </div>
-              <div className="ml-auto text-right">
-                <div className="eyebrow text-[0.6rem]">Pricing</div>
-                <div className="mt-1 font-display text-2xl text-gold-gradient">{firstClassSedan.priceLabel}</div>
-              </div>
-            </div>
-            <ul className="mt-6 flex flex-wrap gap-x-8 gap-y-3">
-              {firstClassSedan.features.map((f) => (
-                <li key={f} className="flex items-center gap-2 text-sm text-foreground/85">
-                  <CheckCircle2 className="h-4 w-4 shrink-0 text-champagne" aria-hidden />
-                  {f}
-                </li>
-              ))}
-            </ul>
-            <VehicleCta v={firstClassSedan} onQuote={handleQuote} />
-          </div>
-        </section>
-
-        {/* Chapter 2 — SUV: split spotlight specification panel */}
-        <section id="fleet-suv" className="ch-suv border-t border-border" data-vehicle-chapter="suv">
-          <div className="mx-auto grid max-w-[var(--container-max)] gap-10 px-6 py-20 lg:grid-cols-2 lg:items-center lg:gap-16 lg:px-10 lg:py-28">
-            <div className="ch-suv-media relative overflow-hidden rounded-sm luxe-card">
-              <img
-                src={IMAGES.fleetSuv.src}
-                alt={IMAGES.fleetSuv.alt}
-                loading="lazy"
-                className="aspect-[4/3] w-full object-cover [object-position:var(--img-pos-m)] md:[object-position:var(--img-pos-d)]"
-                style={
-                  {
-                    "--img-pos-m": IMAGES.fleetSuv.objectPositionMobile,
-                    "--img-pos-d": IMAGES.fleetSuv.objectPositionDesktop,
-                  } as CSSProperties
-                }
-              />
-              <div className="ch-suv-sweep pointer-events-none absolute inset-y-0 left-0 w-1/3 opacity-0" style={{ background: "linear-gradient(90deg, transparent, color-mix(in oklab, var(--champagne) 55%, white), transparent)", mixBlendMode: "screen" }} />
-            </div>
-            <div className="ch-suv-copy rounded-sm border border-border/60 bg-[color:var(--surface-elevated)]/40 p-8">
-              <div className="eyebrow">{suv.model}</div>
-              <h2 className="mt-3 font-display text-3xl md:text-4xl">{suv.name}</h2>
-              <p className="mt-3 text-sm text-muted-foreground">{VEHICLE_BLURB.suv}</p>
-              <div className="mt-6">
-                <SpecRow label="Passengers" value={suv.pax} />
-                <SpecRow label="Luggage" value={suv.bags ?? "—"} />
-                <SpecRow label="Pricing" value={suv.priceLabel} />
-              </div>
-              <VehicleCta v={suv} onQuote={handleQuote} />
-            </div>
-          </div>
-        </section>
-
-        {/* Chapter 2b — Luxury SUV: same split-panel template as SUV, image
-            and copy columns swapped so the adjacent pair doesn't feel
-            copy-pasted (same verified Escalade, different real photograph —
-            rear 3/4 vs. SUV's front 3/4). */}
-        <section id="fleet-luxurySuv" className="ch-lsuv border-t border-border" data-vehicle-chapter="luxurySuv">
-          <div className="mx-auto grid max-w-[var(--container-max)] gap-10 px-6 py-20 lg:grid-cols-2 lg:items-center lg:gap-16 lg:px-10 lg:py-28">
-            <div className="ch-lsuv-copy order-2 rounded-sm border border-border/60 bg-[color:var(--surface-elevated)]/40 p-8 lg:order-1">
-              <div className="eyebrow">{luxurySuv.model}</div>
-              <h2 className="mt-3 font-display text-3xl md:text-4xl">{luxurySuv.name}</h2>
-              <p className="mt-3 text-sm text-muted-foreground">{VEHICLE_BLURB.luxurySuv}</p>
-              <div className="mt-6">
-                <SpecRow label="Passengers" value={luxurySuv.pax} />
-                <SpecRow label="Luggage" value={luxurySuv.bags ?? "—"} />
-                <SpecRow label="Pricing" value={luxurySuv.priceLabel} />
-              </div>
-              <VehicleCta v={luxurySuv} onQuote={handleQuote} />
-            </div>
-            <div className="ch-lsuv-media relative order-1 overflow-hidden rounded-sm luxe-card lg:order-2">
-              <img
-                src={IMAGES.fleetLuxurySuv.src}
-                alt={IMAGES.fleetLuxurySuv.alt}
-                loading="lazy"
-                className="aspect-[4/3] w-full object-cover [object-position:var(--img-pos-m)] md:[object-position:var(--img-pos-d)]"
-                style={
-                  {
-                    "--img-pos-m": IMAGES.fleetLuxurySuv.objectPositionMobile,
-                    "--img-pos-d": IMAGES.fleetLuxurySuv.objectPositionDesktop,
-                  } as CSSProperties
-                }
-              />
-              <div className="ch-lsuv-sweep pointer-events-none absolute inset-y-0 right-0 w-1/3 opacity-0" style={{ background: "linear-gradient(90deg, transparent, color-mix(in oklab, var(--champagne) 55%, white), transparent)", mixBlendMode: "screen" }} />
-            </div>
-          </div>
-        </section>
-
-        {/* Chapter 3 — Sprinter: asymmetric inset image, oversized type */}
-        <section
-          id="fleet-sprinter"
-          className="ch-sprinter relative overflow-hidden border-t border-border py-20 lg:py-28"
-          data-vehicle-chapter="sprinter"
+        <ol
+          ref={rootRef}
+          className="mx-auto mt-12 max-w-[var(--container-max)] space-y-6 px-[var(--page-gutter)]"
         >
-          <div
-            className="ch-sprinter-numeral pointer-events-none absolute -left-4 top-1/2 -translate-y-1/2 select-none font-display text-[26vw] leading-none text-off-white/[0.04] lg:text-[16vw]"
-            aria-hidden
-          >
-            Sprinter
-          </div>
-          <div className="relative mx-auto grid max-w-[var(--container-max)] gap-10 px-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:gap-16 lg:px-10">
-            <div className="ch-sprinter-copy order-2 lg:order-1">
-              <div className="eyebrow text-champagne">{sprinter.model}</div>
-              <h2 className="mt-3 font-display text-4xl text-off-white md:text-5xl">{sprinter.name}</h2>
-              <p className="mt-4 max-w-sm text-sm leading-relaxed text-off-white/70">
-                {VEHICLE_BLURB.sprinter}
-              </p>
-              <ul className="mt-6 space-y-3">
-                {sprinter.features.map((f) => (
-                  <li key={f} className="flex items-start gap-3 text-sm text-off-white/80">
-                    <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-champagne" aria-hidden />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-8 flex flex-wrap items-end gap-8">
-                <div>
-                  <div className="eyebrow text-[0.6rem] text-off-white/50">Passengers</div>
-                  <div className="mt-1 font-display text-2xl text-gold-gradient">{sprinter.pax}</div>
+          {FLEET_VEHICLES.map((v, i) => {
+            const img = IMAGES[v.imageKey];
+            const bookable = v.status === "bookable";
+            return (
+              <li
+                key={v.id}
+                id={`vehicle-${v.id}`}
+                data-vehicle-chapter={v.id}
+                className="fleet-card scroll-mt-[calc(var(--header-height)+1.5rem)] lg:sticky"
+                style={{ top: `calc(var(--header-height) + 1rem + ${i * 12}px)` } as CSSProperties}
+              >
+                <div className="stack-inner relative grid origin-top overflow-hidden rounded-[28px] bg-[#111215] ring-1 ring-white/10 lg:h-[min(80svh,740px)] lg:grid-cols-[1.45fr_1fr]">
+                  <div className="relative aspect-[16/10] lg:aspect-auto">
+                    <img
+                      src={img.src}
+                      alt={img.alt}
+                      loading={i < 2 ? "eager" : "lazy"}
+                      decoding="async"
+                      className="absolute inset-0 h-full w-full object-cover"
+                      style={{ objectPosition: img.objectPositionDesktop }}
+                    />
+                    <div
+                      className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/60 to-transparent"
+                      aria-hidden
+                    />
+                    <span className="absolute left-5 top-5 rounded-full bg-black/55 px-3 py-1.5 text-xs font-semibold text-white backdrop-blur-sm">
+                      {String(i + 1).padStart(2, "0")} /{" "}
+                      {String(FLEET_VEHICLES.length).padStart(2, "0")}
+                    </span>
+                    <span
+                      className={`absolute right-5 top-5 rounded-full px-3 py-1.5 text-xs font-semibold ${
+                        bookable
+                          ? "bg-[#25d366] text-[#06210f]"
+                          : "bg-[color:var(--gold-light)] text-[#0d0e10]"
+                      }`}
+                    >
+                      {bookable ? "Book online" : "Quote only"}
+                    </span>
+                  </div>
+
+                  <div className="flex flex-col justify-center p-7 md:p-10">
+                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/55">
+                      {v.model}
+                    </p>
+                    <h3 className="mt-3 bg-[image:var(--logo-gradient)] bg-[length:10em_100%] bg-clip-text font-display text-[clamp(2rem,3.4vw,3.25rem)] font-extrabold leading-[0.95] tracking-[-0.02em] text-transparent">
+                      {v.name}
+                    </h3>
+                    <p className="mt-4 max-w-md text-base leading-relaxed text-white/75 md:text-lg">
+                      {VEHICLE_BLURB[v.id]}
+                    </p>
+                    <dl className="mt-7 grid grid-cols-3 gap-3">
+                      {[
+                        { k: "Passengers", val: v.pax },
+                        { k: "Luggage", val: v.bags ?? "Ask us" },
+                        { k: "Rate", val: v.priceLabel },
+                      ].map((s) => (
+                        <div
+                          key={s.k}
+                          className="rounded-2xl border border-white/10 bg-white/[0.04] p-3"
+                        >
+                          <dt className="text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-white/50">
+                            {s.k}
+                          </dt>
+                          <dd className="mt-1 text-sm font-bold text-white md:text-base">
+                            {s.val}
+                          </dd>
+                        </div>
+                      ))}
+                    </dl>
+                    {v.features.length > 0 && (
+                      <ul className="mt-6 grid gap-2 text-sm text-white/75">
+                        {v.features.slice(0, 3).map((f) => (
+                          <li key={f} className="flex items-start gap-2">
+                            <CheckCircle2
+                              className="mt-0.5 h-4 w-4 shrink-0 text-[color:var(--gold-light)]"
+                              aria-hidden
+                            />
+                            {f}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    <VehicleCta v={v} onQuote={handleQuote} showDispatchCall={!bookable} />
+                  </div>
+                  <div
+                    className="stack-dim pointer-events-none absolute inset-0 bg-black opacity-0"
+                    aria-hidden
+                  />
                 </div>
-                <div>
-                  <div className="eyebrow text-[0.6rem] text-off-white/50">Pricing</div>
-                  <div className="mt-1 font-display text-2xl text-gold-gradient">{sprinter.priceLabel}</div>
-                </div>
-              </div>
-              <VehicleCta v={sprinter} onQuote={handleQuote} />
-            </div>
-            <div className="ch-sprinter-media order-1 overflow-hidden rounded-sm luxe-card lg:order-2 lg:ml-12">
-              <img
-                src={IMAGES.sprinterInterior.src}
-                alt={IMAGES.sprinterInterior.alt}
-                loading="lazy"
-                className="aspect-[3/2] w-full object-cover [object-position:var(--img-pos-m)] md:[object-position:var(--img-pos-d)]"
-                style={
-                  {
-                    "--img-pos-m": IMAGES.sprinterInterior.objectPositionMobile,
-                    "--img-pos-d": IMAGES.sprinterInterior.objectPositionDesktop,
-                  } as CSSProperties
-                }
-              />
-            </div>
-          </div>
-        </section>
+              </li>
+            );
+          })}
+        </ol>
+      </section>
 
-        {/* Chapter 4 — Executive Mini Coach: wide panoramic banner */}
-        <section id="fleet-coachMini" className="ch-coach relative overflow-hidden border-t border-border" data-vehicle-chapter="coachMini">
-          <div className="ch-coach-media relative aspect-[16/9] w-full overflow-hidden md:aspect-[24/9]">
-            <img
-              src={IMAGES.fleetCoach.src}
-              alt={IMAGES.fleetCoach.alt}
-              loading="lazy"
-              className="absolute inset-0 h-full w-[112%] object-cover [object-position:var(--img-pos-m)] md:[object-position:var(--img-pos-d)]"
-              style={
-                {
-                  "--img-pos-m": IMAGES.fleetCoach.objectPositionMobile,
-                  "--img-pos-d": IMAGES.fleetCoach.objectPositionDesktop,
-                } as CSSProperties
-              }
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/15 to-transparent" />
-          </div>
-          <div className="ch-coach-copy mx-auto max-w-[var(--container-max)] px-6 pb-16 pt-8 lg:px-10">
-            <div className="eyebrow">{coachMini.model}</div>
-            <h2 className="mt-3 font-display text-4xl md:text-5xl">{coachMini.name}</h2>
-            <p className="mt-3 max-w-md text-sm text-muted-foreground">{VEHICLE_BLURB.coachMini}</p>
-            <div className="mt-6 flex flex-wrap items-end gap-8">
-              <div>
-                <div className="eyebrow text-[0.6rem]">Passengers</div>
-                <div className="mt-1 font-display text-2xl text-gold-gradient">{coachMini.pax}</div>
-              </div>
-              <div>
-                <div className="eyebrow text-[0.6rem]">Pricing</div>
-                <div className="mt-1 font-display text-2xl text-gold-gradient">{coachMini.priceLabel}</div>
-              </div>
-            </div>
-            <VehicleCta v={coachMini} onQuote={handleQuote} showDispatchCall />
-          </div>
-        </section>
+      <PartnerRibbons />
 
-        {/* Chapter 5 — Executive Coach: wide panoramic banner, full-size motorcoach */}
-        <section
-          id="fleet-coachLarge"
-          className="ch-coach-large relative overflow-hidden border-t border-border"
-          data-vehicle-chapter="coachLarge"
-        >
-          <div className="ch-coach-large-media relative aspect-[16/9] w-full overflow-hidden md:aspect-[24/9]">
-            <img
-              src={IMAGES.groupCoachStory.src}
-              alt={IMAGES.groupCoachStory.alt}
-              loading="lazy"
-              className="absolute inset-0 h-full w-[112%] object-cover [object-position:var(--img-pos-m)] md:[object-position:var(--img-pos-d)]"
-              style={
-                {
-                  "--img-pos-m": IMAGES.groupCoachStory.objectPositionMobile,
-                  "--img-pos-d": IMAGES.groupCoachStory.objectPositionDesktop,
-                } as CSSProperties
-              }
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/15 to-transparent" />
-          </div>
-          <div className="ch-coach-large-copy mx-auto max-w-[var(--container-max)] px-6 pb-16 pt-8 lg:px-10">
-            <div className="eyebrow">{coachLarge.model}</div>
-            <h2 className="mt-3 font-display text-4xl md:text-5xl">{coachLarge.name}</h2>
-            <p className="mt-3 max-w-md text-sm text-muted-foreground">{VEHICLE_BLURB.coachLarge}</p>
-            <div className="mt-6 flex flex-wrap items-end gap-8">
-              <div>
-                <div className="eyebrow text-[0.6rem]">Passengers</div>
-                <div className="mt-1 font-display text-2xl text-gold-gradient">{coachLarge.pax}</div>
-              </div>
-              <div>
-                <div className="eyebrow text-[0.6rem]">Pricing</div>
-                <div className="mt-1 font-display text-2xl text-gold-gradient">{coachLarge.priceLabel}</div>
-              </div>
-            </div>
-            <VehicleCta v={coachLarge} onQuote={handleQuote} showDispatchCall />
-          </div>
-        </section>
-      </div>
-
-      <section id={FLEET_INQUIRY_ID} className="scroll-mt-24 border-t border-border bg-onyx py-24">
+      <section id={FLEET_INQUIRY_ID} className="scroll-mt-24 border-t border-border py-24">
         <div className="mx-auto max-w-3xl px-[var(--page-gutter)]">
           <SectionHeading
             align="center"
             eyebrow="Fleet Inquiry"
-            title={
-              <>
-                Ask about a <span className="italic text-gold-gradient">specific vehicle.</span>
-              </>
-            }
+            title="Ask about a specific vehicle."
             description="Questions about a particular vehicle, group capacity, or availability? Send us an inquiry."
           />
           <div className="mt-12">
@@ -839,7 +467,7 @@ function Fleet() {
       </section>
 
       <FleetConversionBar
-        vehicle={FLEET_VEHICLES.find((v) => v.id === activeId) ?? sedan}
+        vehicle={FLEET_VEHICLES.find((v) => v.id === activeId) ?? FLEET_VEHICLES[0]}
         onQuote={handleQuote}
       />
     </SiteLayout>

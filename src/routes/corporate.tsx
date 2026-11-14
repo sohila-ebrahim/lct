@@ -9,6 +9,9 @@ import { ensureGsap, prefersReducedMotion } from "@/lib/motion";
 import { pageMeta } from "@/lib/seo";
 import { CONTACT } from "@/lib/site-data";
 import { PartnersBoard } from "@/components/partners-board";
+import { PartnerRibbons } from "@/components/partner-ribbons";
+import { ServiceStories, StatsBand } from "@/components/home/editorial";
+import { CORPORATE_STORIES } from "@/lib/page-editorial";
 
 const chauffeurImg = IMAGES.corporate;
 
@@ -119,7 +122,7 @@ function Corporate() {
         <Link
           to="/book"
           data-cursor="book"
-          className="group inline-flex items-center gap-2 rounded-sm bg-gold-gradient px-7 py-3.5 text-xs font-semibold uppercase tracking-widest text-onyx shadow-[var(--shadow-gold)] transition hover:brightness-110"
+          className="group inline-flex items-center gap-2 rounded-full bg-gold-gradient px-7 py-3.5 text-sm font-semibold transition"
         >
           Book Corporate Transportation
           <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1.5" />
@@ -142,7 +145,7 @@ function Corporate() {
             />
             <div ref={timelineRef} className="relative mt-10 pl-8">
               <div className="absolute left-[3px] top-1 bottom-1 w-px bg-border/60">
-                <div className="corp-timeline-fill absolute inset-0 bg-gold-gradient" />
+                <div className="corp-timeline-fill absolute inset-0 bg-gold-gradient font-semibold rounded-full" />
               </div>
               <div className="space-y-8">
                 {ITINERARY.map((stop) => (
@@ -172,6 +175,9 @@ function Corporate() {
         </div>
       </section>
 
+      <ServiceStories stories={CORPORATE_STORIES} eyebrow="Corporate travel" id="corporate-uses" />
+      <StatsBand />
+      <PartnerRibbons />
       <PartnersBoard tone="black" />
 
       <section

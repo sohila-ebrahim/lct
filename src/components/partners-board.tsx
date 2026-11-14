@@ -4,6 +4,7 @@ import { ArrowRight, Pause, Play } from "lucide-react";
 import { SectionHeading } from "@/components/section-heading";
 import { ALL_PARTNER_KINDS, PARTNERS, type PartnerKind } from "@/lib/site-data";
 import { prefersReducedMotion } from "@/lib/motion";
+import { useDallasTime } from "@/hooks/use-dallas-time";
 
 /**
  * Corporate & Airline Partners — shown as an airport departures board.
@@ -232,23 +233,6 @@ function Board({
       </ul>
     </div>
   );
-}
-
-function useDallasTime() {
-  const [time, setTime] = useState<string | null>(null);
-  useEffect(() => {
-    const fmt = new Intl.DateTimeFormat("en-US", {
-      timeZone: "America/Chicago",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
-    const update = () => setTime(fmt.format(new Date()));
-    update();
-    const id = window.setInterval(update, 15_000);
-    return () => window.clearInterval(id);
-  }, []);
-  return time;
 }
 
 function DallasClock({

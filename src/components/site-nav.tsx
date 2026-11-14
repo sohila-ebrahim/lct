@@ -1,149 +1,121 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { useCallback, useEffect, useId, useRef, useState } from "react";
-import { Menu, Phone, X, ChevronDown } from "lucide-react";
-import * as NavigationMenuPrimitive from "@radix-ui/react-navigation-menu";
+import { useCallback, useEffect, useId, useRef, useState, type CSSProperties } from "react";
+import { ArrowUpRight, Phone, X } from "lucide-react";
 import { Logo } from "@/components/logo";
-import { CONTACT } from "@/lib/site-data";
-import { setMobileMenuOpen } from "@/lib/mobile-menu-state";
-import { startLenis, stopLenis } from "@/lib/lenis-instance";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { MyLimoBizLoginPopover } from "@/components/booking/mylimobiz-login-popover";
+import { CONTACT } from "@/lib/site-data";
+import { IMAGES, type ImageKey } from "@/lib/image-map";
+import { setMobileMenuOpen } from "@/lib/mobile-menu-state";
+import { useDallasTime } from "@/hooks/use-dallas-time";
 
-type NavLeaf = { to: string; label: string };
-type NavGroup = { label: string; items: NavLeaf[]; matchPaths: string[] };
-type NavEntry = NavLeaf | NavGroup;
-
-function isGroup(entry: NavEntry): entry is NavGroup {
-  return "items" in entry;
-}
-
-/**
- * Desktop mega-menu / mobile accordion structure — replaces the previous
- * flat 8-item `NAV_LINKS` row. Every `to` here is a real, verified route
- * (cross-checked against the router, not assumed). Group Transportation
- * has no standalone route, so (matching the footer's own already-approved
- * precedent) it points at `/fleet` alongside Fleet's own "Fleet Overview" —
- * an intentional dual entry point, not an accidental duplicate.
- * "Join Our Team" (added 2026-08-11) lives under Company, not as a
- * top-level item — it's a real destination but not a booking-adjacent one,
- * so it shouldn't compete visually with the primary nav row or the
- * "Book Now" CTA per explicit client instruction.
+/*
+ * Site header: a floating capsule that hides while reading down the page
+ * and returns on the way up, with a live dispatch chip, the theme switch and
+ * the booking action. "Menu" opens a full-screen index: large numbered links
+ * with a photo preview per destination, contact details and client login.
  */
-const NAV_ENTRIES: NavEntry[] = [
-  { to: "/", label: "Home" },
-  {
-    label: "Services",
-    matchPaths: ["/services", "/airport", "/corporate", "/events"],
-    items: [
-      { to: "/services", label: "All Services" },
-      { to: "/airport", label: "Airport Transfers" },
-      { to: "/corporate", label: "Corporate Travel" },
-      { to: "/events", label: "Events" },
-      { to: "/fleet", label: "Group Transportation" },
-    ],
-  },
-  {
-    label: "Fleet",
-    matchPaths: ["/fleet", "/rates"],
-    items: [
-      { to: "/fleet", label: "Fleet Overview" },
-      { to: "/rates", label: "Rates & Pricing" },
-    ],
-  },
-  {
-    label: "Company",
-    matchPaths: ["/about", "/reviews", "/service-areas", "/faq", "/join-our-team", "/blog"],
-    items: [
-      { to: "/about", label: "About" },
-      { to: "/reviews", label: "Reviews" },
-      { to: "/service-areas", label: "Service Areas" },
-      { to: "/faq", label: "FAQ" },
-      { to: "/join-our-team", label: "Join Our Team" },
-      { to: "/blog", label: "Blog" },
-    ],
-  },
-  {
-    label: "Policies",
-    matchPaths: ["/privacy", "/terms", "/cancellation-policy", "/zero-tolerance"],
-    items: [
-      { to: "/privacy", label: "Privacy Policy" },
-      { to: "/terms", label: "Terms & Conditions" },
-      { to: "/cancellation-policy", label: "Cancellation Policy" },
-      { to: "/zero-tolerance", label: "Zero Tolerance Policy" },
-    ],
-  },
-  { to: "/contact", label: "Get In Touch" },
+
+const QUICK_LINKS = [
+  { to: "/fleet", label: "Fleet" },
+  { to: "/services", label: "Services" },
+  { to: "/airport", label: "Airport" },
+  { to: "/corporate", label: "Corporate" },
+  { to: "/contact", label: "Contact" },
+] as const;
+
+const MENU_MAIN: { to: string; label: string; image: ImageKey }[] = [
+  { to: "/", label: "Home", image: "hero" },
+  { to: "/fleet", label: "Fleet", image: "fleetSuv" },
+  { to: "/services", label: "Services", image: "groupCoachStory" },
+  { to: "/airport", label: "Airport transfers", image: "airport" },
+  { to: "/corporate", label: "Corporate travel", image: "corporateStory" },
+  { to: "/events", label: "Events", image: "events" },
+  { to: "/about", label: "About", image: "chauffeur" },
+  { to: "/contact", label: "Contact", image: "rearview" },
 ];
 
-const navLinkClass =
-  "rounded-sm px-3 py-2 text-[0.8125rem] font-medium tracking-wide text-foreground/65 transition-colors hover:text-champagne focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
-const navTriggerClass =
-  "group flex items-center gap-1 rounded-sm bg-transparent px-3 py-2 text-[0.8125rem] font-medium tracking-wide text-foreground/65 transition-colors hover:text-champagne focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background data-[state=open]:text-champagne";
+const MENU_MORE = [
+  { to: "/rates", label: "Rates & pricing" },
+  { to: "/reviews", label: "Reviews" },
+  { to: "/service-areas", label: "Service areas" },
+  { to: "/faq", label: "FAQ" },
+  { to: "/blog", label: "Blog" },
+  { to: "/join-our-team", label: "Join our team" },
+  { to: "/privacy", label: "Privacy" },
+  { to: "/terms", label: "Terms" },
+  { to: "/cancellation-policy", label: "Cancellation" },
+  { to: "/zero-tolerance", label: "Zero tolerance" },
+];
+
+function LiveChip() {
+  const time = useDallasTime();
+  return (
+    <span className="hidden items-center gap-2 rounded-full border border-border px-3 py-1.5 text-xs font-semibold text-foreground xl:inline-flex">
+      <span className="relative flex h-2 w-2" aria-hidden>
+        <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-60 motion-reduce:animate-none" />
+        <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+      </span>
+      Dispatch online
+      {time && <span className="font-medium text-muted-foreground">· Dallas {time}</span>}
+    </span>
+  );
+}
 
 export function SiteNav() {
-  const [scrolled, setScrolled] = useState(false);
-  const [open, setOpen] = useState(false);
-  const menuButtonRef = useRef<HTMLButtonElement>(null);
-  const firstLinkRef = useRef<HTMLAnchorElement>(null);
-  const menuPanelRef = useRef<HTMLDivElement>(null);
-  const menuId = useId();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const [open, setOpen] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const [preview, setPreview] = useState<ImageKey>("hero");
+  const menuId = useId();
+  const menuRef = useRef<HTMLDivElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
 
+  const closeMenu = useCallback(() => setOpen(false), []);
+
+  // Hide while scrolling down, show on the way up (and always near the top).
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
+    let lastY = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      if (Math.abs(y - lastY) < 6) return;
+      setHidden(y > 160 && y > lastY);
+      lastY = y;
+    };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Publish open/closed state so the floating WhatsApp/phone/Concierge
-  // buttons and the sticky Book Now bar can hide themselves while the menu
-  // is open — see src/lib/mobile-menu-state.ts.
+  // Close on navigation.
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
+  // Menu open: lock page scroll, trap focus, Escape closes, focus returns.
   useEffect(() => {
     setMobileMenuOpen(open);
-    return () => setMobileMenuOpen(false);
-  }, [open]);
-
-  const closeMenu = useCallback(() => {
-    setOpen(false);
-    requestAnimationFrame(() => menuButtonRef.current?.focus());
-  }, []);
-
-  useEffect(() => {
     if (!open) return;
-    const prevOverflow = document.body.style.overflow;
-    const prevPadding = document.body.style.paddingRight;
-    // `document.scrollingElement` is <html>, not <body>, in standard mode —
-    // locking only body.overflow left <html> free to scroll (confirmed via
-    // wheel-scroll testing: the page behind the open menu still scrolled).
-    const prevHtmlOverflow = document.documentElement.style.overflow;
-    const scrollbar = window.innerWidth - document.documentElement.clientWidth;
-    document.body.style.overflow = "hidden";
+    const panel = menuRef.current;
+    const prevOverflow = document.documentElement.style.overflow;
     document.documentElement.style.overflow = "hidden";
-    if (scrollbar > 0) document.body.style.paddingRight = `${scrollbar}px`;
-    // The CSS overflow lock above only stops native scroll — this site's
-    // Lenis smooth-scroll drives scroll itself via its own rAF loop and
-    // ignores `overflow`, so without this the page behind the menu kept
-    // scrolling on wheel/touch input (confirmed via Playwright wheel test).
-    stopLenis();
-
-    // Trap Tab focus inside the open menu panel — without this, tabbing past
-    // the last link falls through to <main> content that's hidden behind the
-    // opaque overlay, so keyboard focus visibly "disappears" for the user.
+    const focusables = () =>
+      Array.from(
+        panel?.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        ) ?? [],
+      );
+    focusables()[0]?.focus();
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.preventDefault();
-        closeMenu();
+        setOpen(false);
         return;
       }
       if (e.key !== "Tab") return;
-      const panel = menuPanelRef.current;
-      if (!panel) return;
-      const focusable = Array.from(
-        panel.querySelectorAll<HTMLElement>("a[href], button:not([disabled])"),
-      );
-      if (focusable.length === 0) return;
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
+      const items = focusables();
+      if (!items.length) return;
+      const first = items[0];
+      const last = items[items.length - 1];
       if (e.shiftKey && document.activeElement === first) {
         e.preventDefault();
         last.focus();
@@ -153,261 +125,222 @@ export function SiteNav() {
       }
     };
     window.addEventListener("keydown", onKey);
-    requestAnimationFrame(() => firstLinkRef.current?.focus());
-
+    const button = menuButtonRef.current;
     return () => {
-      document.body.style.overflow = prevOverflow;
-      document.body.style.paddingRight = prevPadding;
-      document.documentElement.style.overflow = prevHtmlOverflow;
-      startLenis();
+      document.documentElement.style.overflow = prevOverflow;
       window.removeEventListener("keydown", onKey);
+      button?.focus();
     };
-  }, [open, closeMenu]);
+  }, [open]);
 
-  useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
+  useEffect(() => () => setMobileMenuOpen(false), []);
 
-  const headerSolid = scrolled || open;
-
-  const isEntryActive = (entry: NavEntry) =>
-    isGroup(entry)
-      ? entry.matchPaths.includes(pathname)
-      : entry.to === "/"
-        ? pathname === "/"
-        : pathname === entry.to;
+  const isActive = (to: string) => (to === "/" ? pathname === "/" : pathname.startsWith(to));
 
   return (
     <>
       <header
-        className={`fixed inset-x-0 top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-500 ${
-          headerSolid
-            ? "border-b border-border/80 bg-[color:var(--surface-elevated)]/92 backdrop-blur-xl"
-            : "border-b border-transparent bg-transparent"
+        className={`site-header fixed inset-x-3 top-3 z-50 transition-transform duration-500 ease-[cubic-bezier(0.625,0.05,0,1)] md:inset-x-5 md:top-4 ${
+          hidden && !open ? "-translate-y-[140%]" : "translate-y-0"
         }`}
       >
-        <div className="mx-auto flex h-[var(--header-height)] max-w-[var(--container-max)] items-center justify-between gap-4 px-[var(--page-gutter)]">
-          <Logo
-            priority
-            onClick={open ? closeMenu : undefined}
-            imgClassName={`w-auto transition-all duration-500 ${
-              scrolled ? "h-11 md:h-12" : "h-12 md:h-14 lg:h-16"
-            }`}
-            className="shrink-0"
-          />
+        <div className="mx-auto flex h-[60px] max-w-[1240px] items-center justify-between gap-3 rounded-full border border-border bg-background/80 pl-4 pr-2 backdrop-blur-xl">
+          <Logo priority imgClassName="h-10 w-auto md:h-11" className="shrink-0" />
 
-          <NavigationMenuPrimitive.Root
-            className="relative hidden lg:block"
-            delayDuration={120}
-            skipDelayDuration={300}
-          >
-            <NavigationMenuPrimitive.List
-              className="flex items-center gap-1 xl:gap-1.5"
-              aria-label="Primary"
-            >
-              {NAV_ENTRIES.map((entry) =>
-                isGroup(entry) ? (
-                  <NavigationMenuPrimitive.Item key={entry.label} className="relative">
-                    <NavigationMenuPrimitive.Trigger className={navTriggerClass}>
-                      <span className={isEntryActive(entry) ? "text-champagne" : undefined}>
-                        {entry.label}
-                      </span>
-                      <ChevronDown
-                        className="h-3 w-3 transition-transform duration-300 group-data-[state=open]:rotate-180"
+          <nav aria-label="Primary" className="hidden lg:block">
+            <ul className="flex items-center gap-1">
+              {QUICK_LINKS.map((l) => (
+                <li key={l.to}>
+                  <Link
+                    to={l.to}
+                    className={`relative rounded-full px-3.5 py-2 text-sm font-medium transition-colors duration-200 hover:bg-muted ${
+                      isActive(l.to)
+                        ? "text-foreground"
+                        : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {l.label}
+                    {isActive(l.to) && (
+                      <span
+                        className="absolute inset-x-0 -bottom-0.5 mx-auto h-1 w-1 rounded-full bg-[color:var(--gold)]"
                         aria-hidden
                       />
-                    </NavigationMenuPrimitive.Trigger>
-                    <NavigationMenuPrimitive.Content
-                      className="absolute left-0 top-full pt-2 data-[state=closed]:pointer-events-none data-[state=closed]:-translate-y-1 data-[state=closed]:opacity-0 data-[state=open]:translate-y-0 data-[state=open]:opacity-100"
-                      style={{ transition: "opacity 180ms ease, transform 180ms ease" }}
-                    >
-                      <ul className="min-w-[15rem] rounded-sm border border-border/60 bg-[color:var(--surface-elevated)]/97 p-2 shadow-[var(--shadow-luxe)] backdrop-blur-xl">
-                        {entry.items.map((item) => (
-                          <li key={item.to + item.label}>
-                            <NavigationMenuPrimitive.Link asChild>
-                              <Link
-                                to={item.to}
-                                data-cursor="explore"
-                                className="block rounded-sm px-4 py-2.5 text-sm text-foreground/75 transition-colors hover:bg-champagne/[0.06] hover:text-champagne focus-visible:outline-none focus-visible:bg-champagne/[0.06] focus-visible:text-champagne"
-                                activeProps={{ className: "!text-champagne" }}
-                              >
-                                {item.label}
-                              </Link>
-                            </NavigationMenuPrimitive.Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </NavigationMenuPrimitive.Content>
-                  </NavigationMenuPrimitive.Item>
-                ) : (
-                  <NavigationMenuPrimitive.Item key={entry.to}>
-                    <NavigationMenuPrimitive.Link asChild>
-                      <Link
-                        to={entry.to}
-                        data-cursor="explore"
-                        className={navLinkClass}
-                        activeProps={{ className: "!text-champagne" }}
-                        activeOptions={{ exact: entry.to === "/" }}
-                      >
-                        {entry.label}
-                      </Link>
-                    </NavigationMenuPrimitive.Link>
-                  </NavigationMenuPrimitive.Item>
-                ),
-              )}
-            </NavigationMenuPrimitive.List>
-          </NavigationMenuPrimitive.Root>
+                    )}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
 
-          <div className="hidden items-center gap-4 lg:flex">
+          <div className="flex items-center gap-2">
+            <LiveChip />
+            <ThemeToggle />
             <a
               href={CONTACT.phoneTel}
-              data-track-label="header_phone"
-              className="flex items-center gap-2 text-sm text-foreground/75 transition-colors hover:text-champagne focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              aria-label={`Call ${CONTACT.phoneDisplay}`}
+              className="hidden h-10 w-10 items-center justify-center rounded-full border border-border text-foreground transition-colors duration-200 hover:bg-muted md:inline-flex"
             >
               <Phone className="h-4 w-4" aria-hidden />
-              <span>{CONTACT.phoneDisplay}</span>
             </a>
-            <MyLimoBizLoginPopover
-              panelAlign="right"
-              triggerClassName="inline-flex items-center gap-1.5 rounded-sm border border-champagne/40 px-4 py-2.5 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-off-white transition hover:border-champagne hover:text-champagne focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-            />
             <Link
               to="/book"
-              data-cursor="book"
-              className="inline-flex items-center justify-center rounded-sm bg-gold-gradient px-5 py-2.5 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-onyx shadow-[var(--shadow-gold)] transition hover:brightness-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="hidden h-10 items-center rounded-full bg-gold-gradient px-5 text-sm font-semibold transition-opacity duration-200 hover:opacity-90 sm:inline-flex"
             >
-              Book Now
+              Book now
             </Link>
+            <button
+              ref={menuButtonRef}
+              type="button"
+              onClick={() => setOpen(true)}
+              aria-expanded={open}
+              aria-controls={menuId}
+              className="inline-flex h-10 items-center gap-2 rounded-full bg-foreground px-4 text-sm font-semibold text-background transition-opacity duration-200 hover:opacity-85"
+            >
+              Menu
+              <span className="flex flex-col gap-[3px]" aria-hidden>
+                <span className="block h-[1.5px] w-4 bg-current" />
+                <span className="block h-[1.5px] w-4 bg-current" />
+              </span>
+            </button>
           </div>
-
-          <button
-            ref={menuButtonRef}
-            type="button"
-            onClick={() => setOpen((o) => !o)}
-            className="relative z-[60] rounded-sm p-2 text-foreground transition-colors hover:text-champagne focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring lg:hidden"
-            aria-label={open ? "Close menu" : "Open menu"}
-            aria-expanded={open}
-            aria-controls={menuId}
-          >
-            {open ? (
-              <X className="h-6 w-6" aria-hidden />
-            ) : (
-              <Menu className="h-6 w-6" aria-hidden />
-            )}
-          </button>
         </div>
       </header>
 
       <div
         id={menuId}
-        ref={menuPanelRef}
+        ref={menuRef}
         role="dialog"
         aria-modal="true"
-        aria-label="Mobile navigation"
+        aria-label="Site menu"
         hidden={!open}
-        className={`fixed inset-0 z-40 lg:hidden ${open ? "" : "pointer-events-none"}`}
+        className="band-dark site-menu fixed inset-0 z-[70] overflow-y-auto bg-[color:var(--band)]"
       >
-        {
-          <>
-            <div className="absolute inset-0 bg-[color:var(--surface-black)]/98 backdrop-blur-2xl" />
-            <div
-              className="pointer-events-none absolute inset-0 opacity-60"
-              style={{
-                background:
-                  "radial-gradient(55% 40% at 85% 10%, color-mix(in oklab, var(--champagne) 22%, transparent), transparent 70%), radial-gradient(45% 35% at 10% 90%, color-mix(in oklab, var(--gold-deep) 18%, transparent), transparent 65%)",
-              }}
-            />
-            <div className="relative flex h-full flex-col overflow-y-auto px-8 pt-28 pb-10">
-              <div className="mb-6 flex items-center gap-3">
-                <span className="h-px w-6 bg-champagne/60" aria-hidden />
-                <span className="eyebrow">Menu</span>
-              </div>
+        <div className="mx-auto flex min-h-full max-w-[1240px] flex-col px-[var(--page-gutter)] pb-10 pt-5">
+          <div className="flex items-center justify-between">
+            <Logo imgClassName="h-11 w-auto" onClick={closeMenu} />
+            <button
+              type="button"
+              onClick={closeMenu}
+              className="inline-flex h-11 items-center gap-2 rounded-full border border-border px-4 text-sm font-semibold text-foreground transition-colors duration-200 hover:bg-white/10"
+            >
+              Close
+              <X className="h-4 w-4" aria-hidden />
+            </button>
+          </div>
 
-              <nav className="flex flex-col" aria-label="Mobile">
-                {NAV_ENTRIES.map((entry, i) =>
-                  isGroup(entry) ? (
-                    <details key={entry.label} className="group border-b border-border/40 py-2">
-                      <summary className="flex cursor-pointer list-none items-center justify-between py-2 font-display text-3xl text-foreground transition-colors marker:content-none hover:text-champagne focus-visible:outline-none focus-visible:text-champagne">
-                        <span className={isEntryActive(entry) ? "text-champagne" : undefined}>
-                          {entry.label}
-                        </span>
-                        <ChevronDown
-                          className="h-5 w-5 shrink-0 text-champagne/60 transition-transform duration-300 group-open:rotate-180"
-                          aria-hidden
-                        />
-                      </summary>
-                      <div className="flex flex-col pb-3 pl-1">
-                        {entry.items.map((item) => (
-                          <Link
-                            key={item.to + item.label}
-                            to={item.to}
-                            onClick={closeMenu}
-                            className="py-3 text-lg text-foreground/70 transition-colors hover:text-champagne focus-visible:outline-none focus-visible:text-champagne"
-                            activeProps={{ className: "!text-champagne" }}
-                          >
-                            {item.label}
-                          </Link>
-                        ))}
-                      </div>
-                    </details>
-                  ) : (
+          <div className="mt-10 grid flex-1 gap-12 lg:mt-14 lg:grid-cols-[1.2fr_1fr]">
+            <nav aria-label="Site">
+              <ol className="site-menu-list">
+                {MENU_MAIN.map((m, i) => (
+                  <li key={m.to} style={{ "--i": i } as CSSProperties}>
                     <Link
-                      key={entry.to}
-                      ref={i === 0 ? firstLinkRef : undefined}
-                      to={entry.to}
+                      to={m.to}
                       onClick={closeMenu}
-                      className="group flex items-baseline justify-between border-b border-border/40 py-4 font-display text-3xl text-foreground transition-colors hover:text-champagne focus-visible:outline-none focus-visible:text-champagne"
-                      activeProps={{ className: "text-champagne" }}
-                      activeOptions={{ exact: entry.to === "/" }}
+                      onMouseEnter={() => setPreview(m.image)}
+                      onFocus={() => setPreview(m.image)}
+                      className={`group flex items-baseline gap-4 border-b border-border py-2.5 transition-[padding,color] duration-300 hover:pl-3 md:py-3 ${
+                        isActive(m.to) ? "text-[color:var(--gold)]" : "text-foreground"
+                      }`}
                     >
-                      <span>{entry.label}</span>
+                      <span className="w-7 shrink-0 text-xs font-semibold text-muted-foreground">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <span className="font-display text-[clamp(2rem,5.2vw,4.25rem)] leading-[0.95] tracking-[-0.045em]">
+                        {m.label}
+                      </span>
+                      <ArrowUpRight
+                        className="ml-auto h-6 w-6 shrink-0 opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+                        aria-hidden
+                      />
                     </Link>
-                  ),
-                )}
-              </nav>
+                  </li>
+                ))}
+              </ol>
+            </nav>
 
-              <div
-                className="mt-8 h-px w-full bg-linear-to-r from-champagne/50 via-champagne/15 to-transparent"
-                aria-hidden
-              />
-
-              <div className="mt-8 space-y-4">
-                <a
-                  href={CONTACT.phoneTel}
-                  data-track-label="header_phone"
-                  className="flex items-center gap-3 text-base text-foreground/85 transition hover:text-champagne focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                >
-                  <Phone className="h-4 w-4 text-champagne" aria-hidden />
-                  {CONTACT.phoneDisplay}
-                </a>
-                <a
-                  href={CONTACT.emailMailto}
-                  className="block text-sm text-foreground/70 transition hover:text-champagne focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                >
-                  {CONTACT.email}
-                </a>
-                <p className="text-sm text-muted-foreground">
-                  {CONTACT.streetAddress}, {CONTACT.addressLine2}
-                  <br />
-                  {CONTACT.locationLine}
-                </p>
+            <div className="flex flex-col gap-8">
+              <div className="relative hidden aspect-[4/3] overflow-hidden lg:block">
+                {MENU_MAIN.map((m) => {
+                  const img = IMAGES[m.image];
+                  return (
+                    <img
+                      key={m.to}
+                      src={img.src}
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                      className="absolute inset-0 h-full w-full object-cover transition-[opacity,transform] duration-700 ease-[cubic-bezier(0.625,0.05,0,1)]"
+                      style={{
+                        objectPosition: img.objectPositionDesktop,
+                        opacity: preview === m.image ? 1 : 0,
+                        transform: preview === m.image ? "scale(1)" : "scale(1.06)",
+                      }}
+                    />
+                  );
+                })}
               </div>
 
-              <MyLimoBizLoginPopover
-                panelAlign="left"
-                triggerClassName="mt-6 flex min-h-[44px] w-full items-center justify-center gap-2 rounded-sm border border-champagne/40 px-6 py-3 text-center text-[0.7rem] font-semibold uppercase tracking-[0.22em] text-off-white transition hover:border-champagne hover:text-champagne focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-              />
+              <div className="grid gap-6 sm:grid-cols-2">
+                <div>
+                  <p className="eyebrow">Reservations, 24/7</p>
+                  <a
+                    href={CONTACT.phoneTel}
+                    className="mt-2 block text-xl font-semibold text-foreground"
+                  >
+                    {CONTACT.phoneDisplay}
+                  </a>
+                  <a
+                    href={CONTACT.emailMailto}
+                    className="mt-1 block break-all text-sm text-muted-foreground hover:text-foreground"
+                  >
+                    {CONTACT.email}
+                  </a>
+                </div>
+                <div>
+                  <p className="eyebrow">Office</p>
+                  <a
+                    href={CONTACT.mapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="mt-2 block text-sm leading-relaxed text-foreground hover:text-[color:var(--gold)]"
+                  >
+                    {CONTACT.streetAddress}, {CONTACT.addressLine2}
+                    <br />
+                    {CONTACT.locationLine}
+                  </a>
+                </div>
+              </div>
 
-              <Link
-                to="/book"
-                onClick={closeMenu}
-                className="mt-4 block rounded-sm bg-gold-gradient px-6 py-4 text-center text-[0.7rem] font-semibold uppercase tracking-[0.24em] text-onyx shadow-[var(--shadow-gold)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-              >
-                Book Now
-              </Link>
+              <div className="flex flex-wrap items-center gap-3">
+                <Link
+                  to="/book"
+                  onClick={closeMenu}
+                  className="inline-flex h-12 items-center rounded-full bg-gold-gradient px-6 text-base font-semibold"
+                >
+                  Book your ride
+                </Link>
+                <MyLimoBizLoginPopover
+                  panelAlign="left"
+                  triggerClassName="inline-flex h-12 items-center gap-2 rounded-full border border-border px-5 text-sm font-semibold text-foreground transition-colors duration-200 hover:bg-white/10"
+                />
+              </div>
             </div>
-          </>
-        }
+          </div>
+
+          <ul className="mt-12 flex flex-wrap gap-x-6 gap-y-2 border-t border-border pt-6 text-sm text-muted-foreground">
+            {MENU_MORE.map((m) => (
+              <li key={m.to}>
+                <Link
+                  to={m.to}
+                  onClick={closeMenu}
+                  className="transition-colors duration-200 hover:text-foreground"
+                >
+                  {m.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </>
   );

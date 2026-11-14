@@ -5,8 +5,8 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-display: "Cormorant Garamond", ui-serif, Georgia, "Times New Roman", serif;
-  --font-sans: "Manrope Variable", "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Montserrat Variable", "Montserrat", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
 
   /* Proportional, not subtractive — with the site's deliberately tiny 0.2rem
      base radius (a sharp, architectural look, not a bubbly one), the
@@ -53,7 +53,8 @@
 }
 
 :root {
-  --radius: 0.2rem;
+  /* Hard-edged panels and cards; buttons are full pills (see bg-gold-gradient). */
+  --radius: 0rem;
 
   /* Layout */
   --container-max: 80rem;
@@ -76,54 +77,102 @@
   --z-modal: 60;
   --z-toast: 70;
 
-  /* Luxury palette — near black, charcoal, champagne gold accent */
-  --surface-black: oklch(0.08 0.004 60);
-  --surface-elevated: oklch(0.11 0.005 60);
-  --onyx: oklch(0.14 0.005 60);
-  --charcoal: oklch(0.22 0.005 60);
-  --champagne: oklch(0.82 0.08 88);
-  --gold: oklch(0.78 0.11 84);
-  --gold-soft: oklch(0.88 0.07 90);
-  --gold-deep: oklch(0.58 0.11 72);
-  --off-white: oklch(0.96 0.01 90);
+  /*
+   * Editorial palette (2026-11 redesign): ink type on a white canvas, dark
+   * bands for contrast sections, and LCT gold as the single warm accent.
+   * Light values live here; `.band-dark` (and any dark-surface section, see
+   * below) re-declares the same names for dark backgrounds, so every
+   * component reads the right colour for the band it sits in.
+   */
+  --paper: #ffffff;
+  --bone: #f4f2ed;
+  --ink: #0d0e10;
+  --ash: #45474d;
+  --ash-soft: #85878e;
+  --hairline: #dddad4;
+  --band: #0d0e10;
+  --band-raised: #17181b;
+  --gold-light: #c8ad86;
 
-  --background: var(--surface-black);
+  /* Legacy names, kept so existing components follow the new palette. */
+  --surface-black: var(--band);
+  --surface-elevated: var(--band-raised);
+  --onyx: var(--band-raised);
+  --charcoal: #232428;
+  --champagne: #85662f;
+  --gold: #8f6f37;
+  --gold-soft: #6c5226;
+  --gold-deep: #85662f;
+  --off-white: #f6f4ef;
+  --headline-soft: var(--ash-soft);
+  --btn-bg: var(--ink);
+  --btn-fg: #ffffff;
+
+  --background: var(--paper);
+  --foreground: var(--ink);
+
+  --card: var(--paper);
+  --card-foreground: var(--ink);
+  --popover: var(--paper);
+  --popover-foreground: var(--ink);
+
+  --primary: var(--ink);
+  --primary-foreground: #ffffff;
+  --secondary: var(--bone);
+  --secondary-foreground: var(--ink);
+  --muted: var(--bone);
+  --muted-foreground: var(--ash);
+  --accent: var(--bone);
+  --accent-foreground: var(--ink);
+  --destructive: #b42318;
+  --destructive-foreground: #ffffff;
+  --border: var(--hairline);
+  --input: #cfccc5;
+  --ring: var(--ink);
+
+  /* Flat by design: no gradients, glows or drop shadows. */
+  --gradient-gold: linear-gradient(var(--gold), var(--gold));
+  --gradient-onyx: linear-gradient(var(--surface-black), var(--surface-black));
+  --gradient-surface: linear-gradient(var(--surface-black), var(--surface-black));
+  --shadow-luxe: none;
+  --shadow-gold: none;
+}
+
+/*
+ * Dark bands. Sections already painted with the dark surface colours pick
+ * these up automatically; `.band-dark` marks any other dark block.
+ */
+.band-dark,
+.bg-onyx,
+[class*="bg-[color:var(--surface-black)]"],
+[class*="bg-[color:var(--surface-elevated)]"],
+[class*="bg-[color:var(--onyx)]"] {
+  --champagne: var(--gold-light);
+  --gold: var(--gold-light);
+  --gold-soft: #e3d2b0;
+  --gold-deep: #a88a5c;
+  --headline-soft: var(--gold-light);
+  --btn-bg: var(--gold-light);
+  --btn-fg: var(--ink);
+
+  --background: var(--band);
   --foreground: var(--off-white);
-
-  --card: var(--onyx);
+  --card: var(--band-raised);
   --card-foreground: var(--off-white);
-  --popover: var(--onyx);
+  --popover: var(--band-raised);
   --popover-foreground: var(--off-white);
-
-  --primary: var(--gold);
-  --primary-foreground: oklch(0.12 0.005 60);
-  --secondary: var(--charcoal);
+  --primary: var(--off-white);
+  --primary-foreground: var(--ink);
+  --secondary: #1d1e22;
   --secondary-foreground: var(--off-white);
-  --muted: oklch(0.18 0.005 60);
-  --muted-foreground: oklch(0.68 0.015 75);
-  --accent: oklch(0.2 0.01 80);
-  --accent-foreground: var(--champagne);
-  --destructive: oklch(0.6 0.22 25);
-  --destructive-foreground: oklch(0.98 0.005 80);
-  --border: oklch(0.3 0.01 75 / 0.45);
-  --input: var(--charcoal);
-  --ring: var(--champagne);
-
-  --gradient-gold: linear-gradient(
-    135deg,
-    oklch(0.9 0.06 92) 0%,
-    oklch(0.78 0.11 84) 48%,
-    oklch(0.55 0.1 72) 100%
-  );
-  --gradient-onyx: linear-gradient(180deg, var(--surface-black) 0%, var(--onyx) 100%);
-  --gradient-surface: linear-gradient(
-    165deg,
-    oklch(0.14 0.008 70 / 0.9) 0%,
-    oklch(0.09 0.004 60) 55%,
-    oklch(0.11 0.01 80 / 0.55) 100%
-  );
-  --shadow-luxe: 0 30px 80px -20px oklch(0 0 0 / 0.65), 0 8px 24px -8px oklch(0.78 0.11 84 / 0.12);
-  --shadow-gold: 0 18px 48px -18px oklch(0.78 0.11 84 / 0.32);
+  --muted: #1d1e22;
+  --muted-foreground: #c3c5cb;
+  --accent: #1d1e22;
+  --accent-foreground: var(--off-white);
+  --border: rgb(255 255 255 / 0.14);
+  --input: #34353a;
+  --ring: var(--gold-light);
+  color: var(--foreground);
 }
 
 @layer base {
@@ -138,69 +187,45 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
-    font-feature-settings: "ss01", "cv11";
+    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
     overflow-x: clip;
   }
+  /* Display voice: bold and tight. Explicit weight/tracking/leading
+     utilities on an element still win (utilities outrank this layer). */
   h1, h2, h3, h4, .font-display {
     font-family: var(--font-display);
-    font-weight: 400;
-    letter-spacing: -0.015em;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1;
   }
   :focus-visible {
     outline: 2px solid var(--ring);
     outline-offset: 3px;
   }
   ::selection {
-    background: var(--champagne);
-    color: var(--onyx);
+    background: var(--ink);
+    color: #ffffff;
   }
 }
 
-/*
- * Deliberately UNLAYERED (not inside @layer base/components/utilities):
- * Tailwind v4's cascade layers give `@layer utilities` (where `cursor-pointer`
- * and friends live, used throughout the shadcn/Radix components) higher
- * precedence than `@layer base` REGARDLESS of selector specificity — so a
- * same-layer or lower-layer `cursor: none` rule can never fully win against
- * every `cursor-pointer` in the app. Unlayered CSS always beats every layer,
- * which is what "no native cursor flashes, anywhere, ever" actually requires.
- */
-html.cursor-none,
-html.cursor-none body,
-html.cursor-none * {
-  cursor: none !important;
-}
-
-/*
- * Native cursor exceptions: text entry, editable content and third-party
- * embeds are where the OS cursor (I-beam, iframe-native pointer) genuinely
- * communicates more than our decorative pin — the Cursor component also
- * fades its visuals out over these targets (see the text-zone check in
- * cursor.tsx) so the native cursor is never fighting a hidden custom one.
- */
-html.cursor-none input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
-html.cursor-none textarea,
-html.cursor-none select,
-html.cursor-none [contenteditable="true"],
-html.cursor-none iframe {
-  cursor: auto !important;
-}
 
 @utility text-measure {
   max-width: var(--text-measure);
 }
 
+/* Second voice in a headline: soft grey on light, LCT gold on dark bands. */
 @utility text-gold-gradient {
-  background: var(--gradient-gold);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--headline-soft);
+  font-style: normal !important;
 }
 
+/* The primary action: ink pill on light, gold pill on dark bands. */
 @utility bg-gold-gradient {
-  background: var(--gradient-gold);
+  background: var(--btn-bg);
+  color: var(--btn-fg) !important;
+  border-radius: 9999px !important;
 }
 
 @utility hairline {
@@ -218,23 +243,20 @@ html.cursor-none iframe {
 @utility eyebrow {
   font-family: var(--font-sans);
   font-size: 0.72rem;
-  letter-spacing: 0.28em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--gold);
-  font-weight: 500;
+  color: var(--muted-foreground);
+  font-weight: 600;
 }
 
 @utility luxe-card {
-  background: linear-gradient(180deg, oklch(0.16 0.005 60 / 0.9), oklch(0.11 0.005 60 / 0.9));
-  border: 1px solid oklch(0.78 0.13 82 / 0.15);
-  backdrop-filter: blur(20px);
-  box-shadow: var(--shadow-luxe);
+  background: var(--card);
+  border: 1px solid var(--border);
 }
 
 @utility glass {
-  background: oklch(0.14 0.005 60 / 0.65);
-  border: 1px solid oklch(0.78 0.13 82 / 0.2);
-  backdrop-filter: blur(24px) saturate(140%);
+  background: var(--card);
+  border: 1px solid var(--border);
 }
 
 @keyframes shimmer {
@@ -390,7 +412,6 @@ html.cursor-none iframe {
   [style*="fadeRise"] { animation: none !important; opacity: 1 !important; transform: none !important; filter: none !important; }
 }
 
-/* Brand loader — cinematic automotive intro */
 @keyframes heroLightSweep {
   0%,
   100% {
@@ -409,32 +430,6 @@ html.cursor-none iframe {
   }
 }
 
-@keyframes loaderRoad {
-  0%   { opacity: 0; transform: translateY(-50%) scaleX(0.4); }
-  40%  { opacity: 1; }
-  100% { opacity: 0.9; transform: translateY(-50%) scaleX(1); }
-}
-@keyframes loaderLamp {
-  0%   { opacity: 0; transform: translateY(-50%) scale(0.4); }
-  60%  { opacity: 1; transform: translateY(-50%) scale(1.05); }
-  100% { opacity: 1; transform: translateY(-50%) scale(1); }
-}
-@keyframes loaderDrive {
-  0%   { transform: translate(-140%, -50%); }
-  55%  { transform: translate(-50%, -50%); }
-  100% { transform: translate(75%, -50%); opacity: 0; }
-}
-@keyframes loaderTrail {
-  0%   { transform: scaleX(0); opacity: 0; }
-  35%  { opacity: 1; }
-  70%  { transform: scaleX(1); opacity: 1; }
-  100% { transform: scaleX(1); opacity: 0; }
-}
-@keyframes loaderLogo {
-  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.94); filter: blur(6px); }
-  60%  { opacity: 1; filter: blur(0); }
-  100% { opacity: 1; transform: translate(-50%, -50%) scale(1); filter: blur(0); }
-}
 
 /* Light sweep — polished-metal reflection, plays once on enter */
 @keyframes lightSweep {
@@ -1041,4 +1036,569 @@ html.cursor-none iframe {
   top: calc(50% - 0.5px);
   height: 1px;
   background: rgb(20 18 16 / 0.1);
+}
+
+/*
+ * Page transitions (View Transitions API, router `defaultViewTransition`).
+ * The outgoing page dims and recedes slightly; the new one rises in on the
+ * house curve. The header has its own name, so it stays put while the
+ * content changes.
+ */
+.site-header {
+  view-transition-name: site-header;
+}
+::view-transition-old(root) {
+  animation: vt-out 240ms cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+::view-transition-new(root) {
+  animation: vt-in 720ms cubic-bezier(0.625, 0.05, 0, 1) both;
+}
+@keyframes vt-out {
+  to {
+    opacity: 0;
+    transform: scale(0.985);
+  }
+}
+@keyframes vt-in {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+}
+
+/*
+ * Logo marquee: one slow linear loop (45s) for partner strips. The track
+ * holds the list twice and moves by half its width, so the loop is seamless.
+ */
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 45s linear infinite;
+}
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+  .marquee-track {
+    animation: none;
+    width: auto;
+    justify-content: center;
+  }
+  .marquee-track > ul {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .marquee-dup {
+    display: none;
+  }
+}
+
+/*
+ * Turn-signal "waiting" arrows (src/components/turn-signal.tsx; the first
+ * load uses the #boot-signal copy inlined in index.html). Gold block arrows
+ * at both screen edges blink on the relay beat (0.66s).
+ */
+.turn-signal {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  pointer-events: none;
+  visibility: hidden;
+  view-transition-name: turn-signal;
+}
+.turn-signal[data-on] {
+  visibility: visible;
+}
+.turn-signal i {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  width: 44px;
+  height: 36px;
+  margin-top: -18px;
+  background: #b8862b;
+  clip-path: polygon(0 50%, 55% 0, 55% 28%, 100% 28%, 100% 72%, 55% 72%, 55% 100%);
+  animation: signal-blink 0.66s steps(1, end) infinite;
+}
+.turn-signal i + i {
+  left: auto;
+  right: 14px;
+  transform: scaleX(-1);
+}
+@keyframes signal-blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.12;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .turn-signal {
+    display: none;
+  }
+}
+
+/*
+ * Dark mode (html[data-theme="dark"], set before first paint by the inline
+ * script in index.html and by <ThemeToggle>). The page becomes near-black;
+ * dark bands become a step lighter so sections still alternate.
+ */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --paper: #0b0c0e;
+  --bone: #141518;
+  --ash: #c3c5cb;
+  --ash-soft: #8a8c93;
+  --hairline: rgb(255 255 255 / 0.12);
+  --band: #15161a;
+  --band-raised: #1c1d21;
+  --champagne: var(--gold-light);
+  --gold: var(--gold-light);
+  --gold-soft: #e3d2b0;
+  --gold-deep: #a88a5c;
+  --headline-soft: var(--ash-soft);
+  --btn-bg: var(--off-white);
+  --btn-fg: var(--ink);
+
+  --background: var(--paper);
+  --foreground: var(--off-white);
+  --card: #141518;
+  --card-foreground: var(--off-white);
+  --popover: #141518;
+  --popover-foreground: var(--off-white);
+  --primary: var(--off-white);
+  --primary-foreground: var(--ink);
+  --secondary: #1c1d21;
+  --secondary-foreground: var(--off-white);
+  --muted: #17181b;
+  --muted-foreground: var(--ash);
+  --accent: #1c1d21;
+  --accent-foreground: var(--off-white);
+  --border: var(--hairline);
+  --input: #34353a;
+  --ring: var(--gold-light);
+}
+
+/* Blocks that must stay light in both themes (logo plates, badge strips). */
+.band-light {
+  --bone: #f4f2ed;
+  --champagne: #85662f;
+  --gold: #8f6f37;
+  --gold-deep: #85662f;
+  --headline-soft: #85878e;
+  --btn-bg: #0d0e10;
+  --btn-fg: #ffffff;
+  --background: #ffffff;
+  --foreground: #0d0e10;
+  --card: #ffffff;
+  --card-foreground: #0d0e10;
+  --muted: #f4f2ed;
+  --muted-foreground: #45474d;
+  --border: #dddad4;
+  --ring: #0d0e10;
+  color: var(--foreground);
+}
+
+/* Colour changes follow the theme switch smoothly, without animating layout. */
+html.theme-switching,
+html.theme-switching * {
+  transition:
+    background-color 0.35s ease,
+    color 0.35s ease,
+    border-color 0.35s ease !important;
+}
+
+/* Full-screen menu (site-nav.tsx): drops from the top, links rise in turn. */
+.site-menu:not([hidden]) {
+  animation: menu-open 0.7s cubic-bezier(0.625, 0.05, 0, 1) both;
+}
+.site-menu:not([hidden]) .site-menu-list > li {
+  animation: menu-item 0.8s cubic-bezier(0.625, 0.05, 0, 1) both;
+  animation-delay: calc(0.15s + var(--i) * 0.05s);
+}
+@keyframes menu-open {
+  from {
+    clip-path: inset(0 0 100% 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes menu-item {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-menu:not([hidden]),
+  .site-menu:not([hidden]) .site-menu-list > li {
+    animation: none;
+  }
+}
+
+/*
+ * Headlines in the logo's metallic gold, lit from within. On dark surfaces
+ * the gold is bright with a near-white core; on light surfaces it is a
+ * deeper, richer gold (a white core would vanish on white) with a hairline
+ * shadow underneath to define the letters. The gradient repeats every 10em
+ * (symmetric stops, so the repeat is seamless) so the sheen shows on short
+ * and long lines alike.
+ */
+:root,
+.band-light {
+  --logo-gradient: linear-gradient(
+    100deg,
+    #7a5410 0%,
+    #b47f22 24%,
+    #dca848 50%,
+    #b47f22 76%,
+    #7a5410 100%
+  );
+  --headline-shadow: drop-shadow(0 1px 1px rgb(60 40 10 / 0.35));
+  --caret: #b47f22;
+}
+:root[data-theme="dark"],
+.band-dark,
+.bg-onyx,
+[class*="bg-[color:var(--surface-black)]"],
+[class*="bg-[color:var(--surface-elevated)]"],
+[class*="bg-[color:var(--onyx)]"] {
+  --logo-gradient: linear-gradient(
+    100deg,
+    #c39436 0%,
+    #f2d27e 24%,
+    #fff7de 50%,
+    #f2d27e 76%,
+    #c39436 100%
+  );
+  --headline-shadow: none;
+  --caret: #f2d27e;
+}
+:root[data-theme="dark"] .band-light {
+  --logo-gradient: linear-gradient(100deg, #7a5410 0%, #b47f22 24%, #dca848 50%, #b47f22 76%, #7a5410 100%);
+  --headline-shadow: drop-shadow(0 1px 1px rgb(60 40 10 / 0.35));
+  --caret: #b47f22;
+}
+main h1,
+main h2,
+.type-clone {
+  background-image: var(--logo-gradient);
+  background-size: 10em 100%;
+  background-repeat: repeat-x;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/*
+ * Headline typing (src/lib/typing.ts): a caret blinks, then the line types
+ * letter by letter on a positioned copy; the real heading stays in place
+ * (and readable to assistive tech) underneath. html.lct-type is only set
+ * when motion is allowed, so without it headings simply show.
+ */
+html.lct-type main :is(h1, h2):not([data-no-type]):not(.typed) {
+  opacity: 0;
+}
+main :is(h1, h2).is-typing {
+  position: relative;
+  background-image: none;
+}
+main :is(h1, h2).is-typing > :not(.type-clone) {
+  visibility: hidden;
+}
+.type-clone {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.type-clone .tc {
+  visibility: hidden;
+}
+.type-clone .tc.on {
+  visibility: visible;
+}
+.type-caret {
+  display: inline-block;
+  width: 0.06em;
+  height: 0.9em;
+  margin-right: -0.06em;
+  vertical-align: -0.06em;
+  background: var(--caret);
+  -webkit-text-fill-color: initial;
+  animation: caret-blink 0.9s steps(1, end) infinite;
+}
+@keyframes caret-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Turn-signal light: amber lamps with a glow, and a wash of light at each edge. */
+.turn-signal::before,
+.turn-signal::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 22vw;
+  max-width: 260px;
+  animation: signal-blink 0.66s steps(1, end) infinite;
+  pointer-events: none;
+}
+.turn-signal::before {
+  left: 0;
+  background: radial-gradient(60% 45% at 0% 50%, rgb(255 176 32 / 0.38), transparent 70%);
+}
+.turn-signal::after {
+  right: 0;
+  background: radial-gradient(60% 45% at 100% 50%, rgb(255 176 32 / 0.38), transparent 70%);
+}
+.turn-signal i {
+  background: #ffb020 !important;
+  filter: drop-shadow(0 0 10px rgb(255 176 32 / 0.95)) drop-shadow(0 0 22px rgb(255 140 0 / 0.6));
+}
+
+/* Hero quick paths as car key fobs. */
+.fob {
+  background: linear-gradient(180deg, #1d1e22 0%, #0d0e10 100%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.1),
+    inset 0 -1px 0 rgb(0 0 0 / 0.6),
+    0 14px 30px -14px rgb(0 0 0 / 0.7);
+}
+.fob-btn {
+  background: radial-gradient(circle at 50% 35%, #34353b 0%, #17181b 70%);
+  box-shadow:
+    inset 0 1px 1px rgb(255 255 255 / 0.18),
+    inset 0 -3px 6px rgb(0 0 0 / 0.7),
+    0 1px 0 rgb(255 255 255 / 0.05);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.fob:active .fob-btn {
+  transform: scale(0.92);
+  box-shadow: inset 0 3px 8px rgb(0 0 0 / 0.8);
+}
+.fob-led {
+  background: rgb(255 255 255 / 0.18);
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+.fob:hover .fob-led,
+.fob:focus-visible .fob-led {
+  background: #ffb020;
+  box-shadow: 0 0 10px 2px rgb(255 176 32 / 0.85);
+  animation: signal-blink 0.66s steps(1, end) 3;
+}
+
+/*
+ * Luminous headlines: the letters themselves are lit, with a sheen
+ * travelling along the gradient (it repeats every 10em, so moving it 10em
+ * loops seamlessly). No outline and no halo around the type.
+ */
+main h1,
+main h2 {
+  filter: var(--headline-shadow);
+}
+main h1,
+main h2,
+.type-clone {
+  letter-spacing: -0.02em;
+  animation: headline-sheen 7s linear infinite;
+}
+@keyframes headline-sheen {
+  to {
+    background-position: 10em 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  main h1,
+  main h2,
+  .type-clone {
+    animation: none;
+  }
+}
+
+/* Floating actions (floating-actions.tsx): icon-only WhatsApp and handset. */
+.fab {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  filter: drop-shadow(0 6px 12px rgb(0 0 0 / 0.35)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.4));
+  transition: transform 0.2s ease;
+}
+.fab:hover,
+.fab:focus-visible {
+  transform: translateY(-2px) scale(1.06);
+}
+.fab:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 4px;
+  border-radius: 9999px;
+}
+/* The standard WhatsApp chat button: white mark on WhatsApp green. */
+.fab-wa {
+  border-radius: 9999px;
+  background: #25d366;
+  color: #ffffff;
+}
+.fab-wa:hover {
+  background: #1ebe5b;
+}
+.fab-call {
+  width: 52px;
+  height: 52px;
+  color: #e2b24c;
+  animation: fab-ring 4s ease-in-out infinite;
+}
+@keyframes fab-ring {
+  0%,
+  86%,
+  100% {
+    transform: rotate(0);
+  }
+  88% {
+    transform: rotate(-14deg);
+  }
+  90% {
+    transform: rotate(12deg);
+  }
+  92% {
+    transform: rotate(-10deg);
+  }
+  94% {
+    transform: rotate(8deg);
+  }
+  96% {
+    transform: rotate(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fab-call {
+    animation: none;
+  }
+}
+
+/*
+ * Partner ribbons (partner-ribbons.tsx): two ribbons crossing in an X.
+ * Gold ribbon of partner logos runs left, black ribbon of badges and names
+ * runs right. Wider than the page so the tilted ends never show.
+ */
+.ribbons {
+  position: relative;
+  height: clamp(300px, 32vw, 420px);
+  overflow: hidden;
+  background: var(--background);
+}
+.ribbon {
+  position: absolute;
+  left: -10%;
+  width: 120%;
+  top: 50%;
+  overflow: hidden;
+  box-shadow: 0 16px 34px -14px rgb(0 0 0 / 0.5);
+}
+.ribbon-a {
+  z-index: 1;
+  padding-block: 16px;
+  background: linear-gradient(100deg, #b8862b 0%, #e9cb7c 50%, #b8862b 100%);
+  border-block: 2px solid rgb(64 44 10 / 0.35);
+  transform: translateY(-50%) rotate(-3deg);
+}
+.ribbon-b {
+  z-index: 2;
+  padding-block: 18px;
+  background: #0d0e10;
+  border-block: 2px solid #c9a24f;
+  transform: translateY(-50%) rotate(3deg);
+}
+.ribbon-track {
+  display: flex;
+  width: max-content;
+  animation: ribbon-left 26s linear infinite;
+}
+.ribbon-track--right {
+  animation: ribbon-right 36s linear infinite;
+}
+.ribbons:hover .ribbon-track {
+  animation-play-state: paused;
+}
+@keyframes ribbon-left {
+  to {
+    transform: translateX(-50%);
+  }
+}
+@keyframes ribbon-right {
+  from {
+    transform: translateX(-50%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+.ribbon-plate {
+  display: grid;
+  place-items: center;
+  height: 68px;
+  min-width: 190px;
+  padding: 0 22px;
+  border-radius: 14px;
+  background: #ffffff;
+  border: 1px solid rgb(64 44 10 / 0.18);
+  box-shadow: 0 2px 6px rgb(40 28 6 / 0.18);
+}
+.ribbon-badge {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-right: 12px;
+  padding: 4px;
+  border-radius: 9999px;
+  background: #ffffff;
+}
+.ribbon-word {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1rem, 2vw, 1.45rem);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #f0cf7e;
+}
+.ribbon-star {
+  margin: 0 26px;
+  color: #c9a24f;
+  font-size: 1rem;
+}
+@media (max-width: 639px) {
+  .ribbon-plate {
+    height: 52px;
+    min-width: 140px;
+    padding: 0 14px;
+  }
+  .ribbon-badge {
+    width: 36px;
+    height: 36px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ribbon-track,
+  .ribbon-track--right {
+    animation: none;
+  }
 }

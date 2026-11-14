@@ -8,6 +8,7 @@ import { LeadForm } from "@/components/lead-form";
 import { ensureGsap, prefersReducedMotion } from "@/lib/motion";
 import { pageMeta } from "@/lib/seo";
 import { CONTACT } from "@/lib/site-data";
+import { ServiceStories, StatsBand } from "@/components/home/editorial";
 
 type ServiceChapter = {
   id: string;
@@ -66,7 +67,11 @@ const CHAPTERS: ServiceChapter[] = [
     desc: "Point-to-point, hourly, or as-directed — one chauffeur, complete discretion.",
     cta: "Reserve an Executive Vehicle",
     to: "/book",
-    image: { src: IMAGES.chauffeurPortrait.src, alt: IMAGES.chauffeurPortrait.alt, position: "35% 25%" },
+    image: {
+      src: IMAGES.chauffeurPortrait.src,
+      alt: IMAGES.chauffeurPortrait.alt,
+      position: "35% 25%",
+    },
   },
   {
     id: "family",
@@ -157,10 +162,7 @@ function Services() {
           );
           chapters.forEach((c, ci) =>
             gsap.to(c.querySelector(".service-chapter-title"), {
-              color:
-                ci === i
-                  ? "var(--champagne)"
-                  : "var(--foreground)",
+              color: ci === i ? "var(--champagne)" : "var(--foreground)",
               duration: 0.4,
             }),
           );
@@ -193,16 +195,14 @@ function Services() {
       <section ref={rootRef} className="pt-32 pb-16 md:pt-44">
         <div className="services-intro mx-auto max-w-3xl px-6 text-center lg:px-10">
           <div className="mb-5 flex items-center justify-center gap-3">
-            <span className="h-px w-8 bg-gold/60" />
             <span className="eyebrow">Services</span>
-            <span className="h-px w-8 bg-gold/60" />
           </div>
           <h1 className="font-display text-4xl leading-[1.05] text-foreground md:text-6xl">
             One standard, six occasions.
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
-            Every LCT vehicle and chauffeur meets the same measure, whichever service brings you
-            to us.
+            Every LCT vehicle and chauffeur meets the same measure, whichever service brings you to
+            us.
           </p>
         </div>
 
@@ -210,7 +210,7 @@ function Services() {
           <div ref={listRef} className="relative">
             {/* Progress rail — animated fill, the page's signature device */}
             <div className="absolute -left-5 top-2 bottom-2 hidden w-px bg-border/60 lg:block">
-              <div className="services-rail-fill absolute inset-0 bg-gold-gradient" />
+              <div className="services-rail-fill absolute inset-0 bg-gold-gradient font-semibold rounded-full" />
             </div>
 
             {CHAPTERS.map((c, i) => (
@@ -269,6 +269,8 @@ function Services() {
         </div>
       </section>
 
+      <ServiceStories />
+      <StatsBand />
       <section className="border-t border-border bg-onyx py-24">
         <div className="mx-auto max-w-3xl px-6 lg:px-10">
           <SectionHeading
@@ -287,7 +289,13 @@ function Services() {
               submitLabel="Send Service Inquiry"
               fields={[
                 { name: "customerName", label: "Full Name", required: true, colSpan: 1 },
-                { name: "customerEmail", label: "Email", type: "email", required: true, colSpan: 1 },
+                {
+                  name: "customerEmail",
+                  label: "Email",
+                  type: "email",
+                  required: true,
+                  colSpan: 1,
+                },
                 { name: "phone", label: "Phone", type: "tel", colSpan: 2 },
                 {
                   name: "tripType",
@@ -296,8 +304,19 @@ function Services() {
                   colSpan: 2,
                   options: CHAPTERS.map((s) => s.title),
                 },
-                { name: "pickupDateTime", label: "Preferred Date & Time (if known)", type: "datetime-local", colSpan: 2 },
-                { name: "specialRequests", label: "Tell us about your needs", type: "textarea", rows: 4, colSpan: 2 },
+                {
+                  name: "pickupDateTime",
+                  label: "Preferred Date & Time (if known)",
+                  type: "datetime-local",
+                  colSpan: 2,
+                },
+                {
+                  name: "specialRequests",
+                  label: "Tell us about your needs",
+                  type: "textarea",
+                  rows: 4,
+                  colSpan: 2,
+                },
               ]}
             />
           </div>

@@ -57,8 +57,6 @@ function FooterColumn({ title, links }: { title: string; links: FooterLink[] }) 
 export function SiteFooter() {
   return (
     <footer className="relative overflow-hidden border-t border-border bg-onyx">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gold-gradient opacity-50" />
-
       {/* Conversion banner — the footer must still sell, not just index
           pages. Restrained (no gradient background wash), matching the
           site's existing closing-CTA language elsewhere. */}
@@ -76,7 +74,7 @@ export function SiteFooter() {
             <Link
               to="/book"
               data-cursor="book"
-              className="group inline-flex items-center gap-3 rounded-full bg-gold-gradient px-7 py-3.5 text-sm font-semibold uppercase tracking-widest text-onyx shadow-[var(--shadow-gold)] transition hover:scale-[1.02] hover:brightness-110"
+              className="group inline-flex items-center gap-3 rounded-full bg-gold-gradient px-7 py-3.5 text-sm font-semibold transition"
             >
               Book Your Ride
               <ArrowRight
@@ -86,7 +84,7 @@ export function SiteFooter() {
             </Link>
             <a
               href={CONTACT.phoneTel}
-              className="inline-flex items-center gap-2 rounded-full border border-champagne/40 px-6 py-3.5 text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-off-white transition hover:border-champagne hover:text-champagne"
+              className="inline-flex items-center gap-2 rounded-full border border-champagne/40 px-6 py-3.5 text-sm font-semibold text-off-white transition hover:border-champagne hover:text-champagne"
             >
               <Phone className="h-4 w-4" aria-hidden />
               Call Dispatch

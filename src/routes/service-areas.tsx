@@ -356,7 +356,7 @@ function ServiceAreas() {
           <Link
             to="/book"
             data-cursor="book"
-            className="mt-8 inline-flex rounded-sm bg-gold-gradient px-8 py-4 text-sm font-semibold uppercase tracking-widest text-onyx shadow-[var(--shadow-gold)]"
+            className="mt-8 inline-flex rounded-full bg-gold-gradient px-8 py-4 text-sm font-semibold"
           >
             Book Your Ride
           </Link>

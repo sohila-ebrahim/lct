@@ -16,6 +16,8 @@ export const getRouter = () => {
     // initial homepage load, competing with the actual LCP image for
     // bandwidth even though the nav is always in the viewport.
     defaultPreload: "intent",
+    // View transitions are switched on by <RouteTransition> after the first
+    // render, never for the initial load (see that component).
   });
 
   return router;
