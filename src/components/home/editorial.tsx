@@ -20,16 +20,48 @@ import { EASE, ensureGsap, prefersReducedMotion } from "@/lib/motion";
  */
 
 const CITY_COUNT = SERVICE_AREA_GROUPS.reduce((n, g) => n + g.cities.length, 0);
-export type Stat = { value: number; suffix?: string; prefix?: string; label: string };
+export type Stat = {
+  value: number;
+  suffix?: string;
+  prefix?: string;
+  label: string;
+  /** Top of the dial; defaults to a round number above the value. */
+  max?: number;
+};
 
 const STATS: Stat[] = [
-  { value: 24, suffix: "/7", label: "Dispatch, every day of the year" },
+  { value: 24, suffix: "/7", label: "Dispatch, every day of the year", max: 24 },
   { value: FLEET_VEHICLES.length, suffix: "", label: "Vehicle classes, sedan to motor coach" },
   { value: CITY_COUNT, suffix: "", label: "Dallas–Fort Worth communities served" },
   { value: PARTNERS.length, suffix: "", label: "Airline and corporate partners" },
 ];
 
-/** Count-up figures. Pages pass their own real numbers; the home set is the default. */
+// Dial geometry: a 270° sweep from bottom-left, clockwise, to bottom-right.
+const DIAL = { cx: 100, cy: 104, r: 78, start: 135, sweep: 270 };
+const ARC_LEN = (Math.PI * 2 * DIAL.r * DIAL.sweep) / 360;
+
+function polar(angle: number, r: number) {
+  const a = (angle * Math.PI) / 180;
+  return { x: DIAL.cx + r * Math.cos(a), y: DIAL.cy + r * Math.sin(a) };
+}
+const ARC_PATH = (() => {
+  const a = polar(DIAL.start, DIAL.r);
+  const b = polar(DIAL.start + DIAL.sweep, DIAL.r);
+  return `M ${a.x} ${a.y} A ${DIAL.r} ${DIAL.r} 0 1 1 ${b.x} ${b.y}`;
+})();
+
+function dialMax(s: Stat) {
+  if (s.max) return s.max;
+  if (s.value >= 1900) return s.value; // a year: full sweep
+  return [10, 24, 60, 80, 100, 150, 200, 500, 1000].find((m) => m >= s.value * 1.15) ?? s.value;
+}
+
+/**
+ * Figures as car instrument-cluster gauges: a gold arc fills and a needle
+ * sweeps to the value while the number counts up, once, when the band
+ * enters view. Pages pass their own real numbers; the home set is the
+ * default. Without motion the dials simply show their final reading.
+ */
 export function StatsBand({ stats = STATS }: { stats?: Stat[] }) {
   const rootRef = useRef<HTMLElement>(null);
 
@@ -38,18 +70,28 @@ export function StatsBand({ stats = STATS }: { stats?: Stat[] }) {
     if (!root || prefersReducedMotion()) return;
     const { gsap } = ensureGsap();
     const ctx = gsap.context(() => {
-      root.querySelectorAll<HTMLElement>("[data-count]").forEach((el, i) => {
-        const end = Number(el.dataset.count);
-        const box = { v: 0 };
-        el.textContent = "0";
+      root.querySelectorAll<HTMLElement>(".gauge").forEach((g, i) => {
+        const count = g.querySelector<HTMLElement>("[data-count]");
+        const arc = g.querySelector<SVGPathElement>(".gauge-value");
+        const needle = g.querySelector<SVGGElement>(".gauge-needle");
+        const ratio = Number(g.dataset.ratio);
+        const end = Number(count?.dataset.count ?? 0);
+        const box = { p: 0 };
+        const apply = () => {
+          if (count) count.textContent = String(Math.round(end * box.p));
+          arc?.setAttribute("stroke-dashoffset", String(ARC_LEN * (1 - ratio * box.p)));
+          needle?.setAttribute(
+            "transform",
+            `rotate(${DIAL.start + DIAL.sweep * ratio * box.p} ${DIAL.cx} ${DIAL.cy})`,
+          );
+        };
+        apply();
         gsap.to(box, {
-          v: end,
-          duration: 1.6,
-          delay: i * 0.08,
+          p: 1,
+          duration: 1.8,
+          delay: i * 0.12,
           ease: EASE,
-          onUpdate: () => {
-            el.textContent = String(Math.round(box.v));
-          },
+          onUpdate: apply,
           scrollTrigger: { trigger: root, start: "top 80%", once: true },
         });
       });
@@ -58,24 +100,116 @@ export function StatsBand({ stats = STATS }: { stats?: Stat[] }) {
   }, []);
 
   return (
-    <section ref={rootRef} className="bg-[color:var(--bone)] py-[var(--section-space)]">
-      <dl className="mx-auto grid max-w-[var(--container-max)] gap-x-10 gap-y-12 px-[var(--page-gutter)] sm:grid-cols-2 lg:grid-cols-4">
-        {stats.map((s) => (
-          <div key={s.label} className="border-t border-foreground pt-5">
-            <dt className="sr-only">{s.label}</dt>
-            <dd className="font-display text-[clamp(3.5rem,7vw,6.5rem)] leading-[0.9] tracking-[-0.05em] text-foreground">
-              {s.prefix}
-              <span data-count={s.value}>{s.value}</span>
-              {s.suffix}
-            </dd>
-            <dd
-              aria-hidden
-              className="mt-3 max-w-[16rem] text-base leading-snug text-muted-foreground"
+    <section ref={rootRef} className="band-dark bg-[color:var(--band)] py-[var(--section-space)]">
+      <dl className="mx-auto grid max-w-[var(--container-max)] gap-x-8 gap-y-14 px-[var(--page-gutter)] sm:grid-cols-2 lg:grid-cols-4">
+        {stats.map((s) => {
+          const max = dialMax(s);
+          const ratio = Math.min(1, s.value / max);
+          const ticks = Array.from({ length: 11 }, (_, k) => DIAL.start + (DIAL.sweep * k) / 10);
+          return (
+            <div
+              key={s.label}
+              className="gauge flex flex-col items-center text-center"
+              data-ratio={ratio}
             >
-              {s.label}
-            </dd>
-          </div>
-        ))}
+              <dt className="sr-only">{s.label}</dt>
+              <dd className="relative w-full max-w-[240px]">
+                <svg viewBox="0 0 200 180" className="w-full" aria-hidden>
+                  <defs>
+                    <linearGradient id="gauge-gold" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stopColor="#b8862b" />
+                      <stop offset="55%" stopColor="#f2d27e" />
+                      <stop offset="100%" stopColor="#fff1c9" />
+                    </linearGradient>
+                  </defs>
+                  <path
+                    d={ARC_PATH}
+                    fill="none"
+                    stroke="rgb(255 255 255 / 0.1)"
+                    strokeWidth="10"
+                    strokeLinecap="round"
+                  />
+                  <path
+                    className="gauge-value"
+                    d={ARC_PATH}
+                    fill="none"
+                    stroke="url(#gauge-gold)"
+                    strokeWidth="10"
+                    strokeLinecap="round"
+                    strokeDasharray={ARC_LEN}
+                    strokeDashoffset={ARC_LEN * (1 - ratio)}
+                  />
+                  {ticks.map((a, k) => {
+                    const p1 = polar(a, DIAL.r - 14);
+                    const p2 = polar(a, DIAL.r - (k % 5 === 0 ? 24 : 19));
+                    return (
+                      <line
+                        key={k}
+                        x1={p1.x}
+                        y1={p1.y}
+                        x2={p2.x}
+                        y2={p2.y}
+                        stroke="rgb(255 255 255 / 0.45)"
+                        strokeWidth={k % 5 === 0 ? 2 : 1.2}
+                        strokeLinecap="round"
+                      />
+                    );
+                  })}
+                  <text
+                    x={polar(DIAL.start, DIAL.r).x + 4}
+                    y="172"
+                    fontSize="10"
+                    fill="rgb(255 255 255 / 0.45)"
+                  >
+                    0
+                  </text>
+                  <text
+                    x={polar(DIAL.start + DIAL.sweep, DIAL.r).x - 4}
+                    y="172"
+                    fontSize="10"
+                    textAnchor="end"
+                    fill="rgb(255 255 255 / 0.45)"
+                  >
+                    {max}
+                  </text>
+                  <g
+                    className="gauge-needle"
+                    transform={`rotate(${DIAL.start + DIAL.sweep * ratio} ${DIAL.cx} ${DIAL.cy})`}
+                  >
+                    <line
+                      x1={DIAL.cx - 10}
+                      y1={DIAL.cy}
+                      x2={DIAL.cx + DIAL.r - 26}
+                      y2={DIAL.cy}
+                      stroke="#f2d27e"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                    />
+                  </g>
+                  <circle
+                    cx={DIAL.cx}
+                    cy={DIAL.cy}
+                    r="7"
+                    fill="#0d0e10"
+                    stroke="#f2d27e"
+                    strokeWidth="2"
+                  />
+                </svg>
+                <div className="absolute inset-x-0 top-[83%] -translate-y-1/2 font-display text-[clamp(2rem,3.4vw,2.75rem)] font-extrabold leading-none tracking-[-0.03em] text-white">
+                  {s.prefix}
+                  <span data-count={s.value}>{s.value}</span>
+                  <span className="text-[0.55em] text-[color:var(--gold-light)]">{s.suffix}</span>
+                </div>
+              </dd>
+              <dd
+                aria-hidden
+                className="mt-2 max-w-[15rem] text-base leading-snug text-muted-foreground"
+              >
+                {s.label}
+              </dd>
+            </div>
+          );
+        })}
       </dl>
     </section>
   );

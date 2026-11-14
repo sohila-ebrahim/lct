@@ -12,9 +12,9 @@ const CITY_COUNT = SERVICE_AREA_GROUPS.reduce((n, g) => n + g.cities.length, 0);
 const AIRLINES = PARTNERS.filter((p) => p.kind === "airline").length;
 
 export const AIRPORT_STATS: Stat[] = [
-  { value: 60, suffix: " min", label: "Complimentary waiting time on airport pickups" },
+  { value: 60, suffix: " min", label: "Complimentary waiting time on airport pickups", max: 60 },
   { value: 2, label: "Airports covered: DFW International and Dallas Love Field" },
-  { value: 24, suffix: "/7", label: "Pickups for early departures and late arrivals" },
+  { value: 24, suffix: "/7", label: "Pickups for early departures and late arrivals", max: 24 },
   { value: AIRLINES, label: "Airline partners" },
 ];
 
@@ -95,7 +95,7 @@ export const FLEET_STATS: Stat[] = [
   { value: FLEET_VEHICLES.length, label: "Vehicle classes, sedan to motor coach" },
   { value: LARGEST, label: "Seats in our largest motor coach" },
   { value: 95, prefix: "$", label: "Executive Sedan rides start from" },
-  { value: 24, suffix: "/7", label: "Dispatch, every day of the year" },
+  { value: 24, suffix: "/7", label: "Dispatch, every day of the year", max: 24 },
 ];
 
 export const ABOUT_STATS: Stat[] = [

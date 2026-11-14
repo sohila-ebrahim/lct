@@ -11,8 +11,8 @@ import { PARTNERS, TRUST_BADGES } from "@/lib/site-data";
 /** Same visual weight for wide wordmarks and tall emblems. */
 function logoWidth(w: number, h: number) {
   const ar = w / h;
-  const lw = Math.sqrt(2600 * ar);
-  return Math.round(lw * Math.min(1, 132 / lw, 40 / (lw / ar)));
+  const lw = Math.sqrt(4200 * ar);
+  return Math.round(lw * Math.min(1, 160 / lw, 50 / (lw / ar)));
 }
 
 const BADGE_TEXT: Record<string, string> = {
@@ -75,19 +75,30 @@ function WordRun({ copy = false }: { copy?: boolean }) {
   );
 }
 
+/*
+ * Each track is two identical halves and moves by exactly one half, so the
+ * loop is seamless. A half holds the list several times so it is always
+ * wider than the widest screen — the ribbon never runs out and shows a gap
+ * before it repeats. Only the first list is exposed to assistive tech.
+ */
+const LOGO_RUNS_PER_HALF = 3;
+const WORD_RUNS_PER_HALF = 2;
+
 export function PartnerRibbons() {
   return (
     <section aria-label="Our partners and accreditations" className="ribbons">
       <div className="ribbon ribbon-a">
         <div className="ribbon-track">
-          <LogoRun />
-          <LogoRun copy />
+          {Array.from({ length: LOGO_RUNS_PER_HALF * 2 }, (_, i) => (
+            <LogoRun key={i} copy={i > 0} />
+          ))}
         </div>
       </div>
       <div className="ribbon ribbon-b">
         <div className="ribbon-track ribbon-track--right">
-          <WordRun />
-          <WordRun copy />
+          {Array.from({ length: WORD_RUNS_PER_HALF * 2 }, (_, i) => (
+            <WordRun key={i} copy={i > 0} />
+          ))}
         </div>
       </div>
     </section>
