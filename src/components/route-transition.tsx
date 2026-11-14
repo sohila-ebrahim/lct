@@ -46,7 +46,9 @@ export function RouteTransition() {
         duration: 0.4,
         ease: "power3.inOut",
         onComplete: () => {
-          router.navigate({ to: url.pathname as never });
+          // Keep ?query and #hash (e.g. /corporate#corporate-inquiry); the router
+          // scrolls a #hash target into view after the new page renders.
+          router.navigate({ href: url.pathname + url.search + url.hash });
           requestAnimationFrame(() => {
             gsap.set(overlay, { transformOrigin: "top" });
             gsap.to(overlay, {

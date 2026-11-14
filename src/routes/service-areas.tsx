@@ -18,7 +18,7 @@ export const Route = createFileRoute("/service-areas")({
   head: () => ({
     ...pageMeta({
       title: "Service Areas — Dallas–Fort Worth Metroplex — LCT Universal",
-      description: `LCT Universal provides executive chauffeur and group transportation across the Dallas–Fort Worth Metroplex — Dallas, Fort Worth, Grapevine, the Mid-Cities, and ${ALL_CITIES.length - 3} surrounding communities.`,
+      description: `LCT Universal provides executive chauffeur and group transportation across the Dallas–Fort Worth Metroplex — Dallas, Fort Worth, Irving, Grapevine, the Mid-Cities, and ${ALL_CITIES.length - 4} surrounding communities.`,
       ogTitle: "Service Areas — LCT Universal",
       ogDescription: "Executive transportation across the full Dallas–Fort Worth Metroplex.",
       path: "/service-areas",
@@ -36,7 +36,11 @@ export const Route = createFileRoute("/service-areas")({
           "@type": "Service",
           serviceType: "Executive Chauffeur & Group Transportation",
           provider: { "@type": "LocalBusiness", name: "LCT Universal Executive Transports" },
-          areaServed: ALL_CITIES.map((name) => ({ "@type": "City", name, containedInPlace: "Dallas–Fort Worth Metroplex" })),
+          areaServed: ALL_CITIES.map((name) => ({
+            "@type": "City",
+            name,
+            containedInPlace: "Dallas–Fort Worth Metroplex",
+          })),
           description: `Executive chauffeur and group transportation across ${ALL_CITIES.length} Dallas–Fort Worth Metroplex communities.`,
         }),
       },
@@ -47,7 +51,12 @@ export const Route = createFileRoute("/service-areas")({
           "@type": "BreadcrumbList",
           itemListElement: [
             { "@type": "ListItem", position: 1, name: "Home", item: `${CONTACT.siteUrl}/` },
-            { "@type": "ListItem", position: 2, name: "Service Areas", item: `${CONTACT.siteUrl}/service-areas` },
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: "Service Areas",
+              item: `${CONTACT.siteUrl}/service-areas`,
+            },
           ],
         }),
       },
@@ -62,13 +71,15 @@ const AREAS = [
   { name: "Dallas", x: 320, y: 90, note: "Downtown & business district" },
   { name: "Fort Worth", x: 60, y: 130, note: "Cultural district & downtown" },
   { name: "DFW Airport", x: 190, y: 60, note: "Terminal pickup & meet-and-greet" },
-  { name: "Grapevine", x: 210, y: 30, note: "Home base — dispatch & management" },
+  { name: "Grapevine", x: 210, y: 30, note: "Mid-Cities & North DFW" },
+  { name: "Irving", x: 262, y: 100, note: "Our office — 800 W Airport Fwy, Suite 1050" },
 ] as const;
 
 const ROUTES: [number, number][] = [
   [1, 2],
   [2, 3],
-  [2, 0],
+  [2, 4],
+  [4, 0],
   [3, 0],
 ];
 
@@ -97,7 +108,13 @@ function ServiceAreasMapFallback({ activeIndex }: { activeIndex: number | null }
           transform={`translate(${a.x},${a.y}) scale(${activeIndex === i ? 1.25 : 1})`}
           style={{ transition: "transform 0.2s ease" }}
         >
-          <circle r={12} fill="none" style={{ stroke: "var(--champagne)" }} strokeOpacity={0.3} strokeWidth={1} />
+          <circle
+            r={12}
+            fill="none"
+            style={{ stroke: "var(--champagne)" }}
+            strokeOpacity={0.3}
+            strokeWidth={1}
+          />
           <circle r={4.5} style={{ fill: "var(--champagne)" }} />
           <circle r={1.6} fill="#141210" />
           <text
@@ -180,7 +197,10 @@ function ServiceAreas() {
 
       {/* Signature interaction — a stylized DFW diagram with animated route lines, not a literal map */}
       <section className="mx-auto max-w-[var(--container-max)] px-[var(--page-gutter)] pb-16 pt-4">
-        <div ref={mapRef} className="grid gap-10 lg:grid-cols-[1.3fr_1fr] lg:items-center lg:gap-16">
+        <div
+          ref={mapRef}
+          className="grid gap-10 lg:grid-cols-[1.3fr_1fr] lg:items-center lg:gap-16"
+        >
           <div className="luxe-card rounded-sm p-6 md:p-10">
             <Scene3D
               className="aspect-[380/170] w-full"
@@ -238,8 +258,8 @@ function ServiceAreas() {
           </div>
 
           <p className="mt-14 text-center text-xs leading-relaxed text-off-white/45">
-            LCT Universal is based in Grapevine, Texas and dispatches to the communities listed above —
-            we do not operate branch offices in every city served.
+            LCT Universal&rsquo;s office is at {CONTACT.fullAddress}. We dispatch to the communities
+            listed above — we do not operate branch offices in every city served.
           </p>
         </div>
       </section>
@@ -273,8 +293,8 @@ function ServiceAreas() {
             <div>
               <h3 className="font-display text-xl text-foreground">Corporate transportation</h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                Dedicated account management and priority dispatch for executive travel across Dallas,
-                Fort Worth, and every business district between them.{" "}
+                Dedicated account management and priority dispatch for executive travel across
+                Dallas, Fort Worth, and every business district between them.{" "}
                 <Link to="/corporate" className="text-gold underline underline-offset-2">
                   Corporate accounts
                 </Link>
@@ -284,8 +304,8 @@ function ServiceAreas() {
             <div>
               <h3 className="font-display text-xl text-foreground">Sedans &amp; SUVs</h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                First Class Sedan and Luxury SUV service for point-to-point travel, wherever your day
-                starts in the Metroplex.{" "}
+                First Class Sedan and Luxury SUV service for point-to-point travel, wherever your
+                day starts in the Metroplex.{" "}
                 <Link to="/fleet" className="text-gold underline underline-offset-2">
                   View the fleet
                 </Link>
@@ -300,10 +320,10 @@ function ServiceAreas() {
               </p>
             </div>
             <div>
-              <h3 className="font-display text-xl text-foreground">Grapevine &amp; the Mid-Cities</h3>
+              <h3 className="font-display text-xl text-foreground">Irving &amp; the airports</h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                Home to our dispatch and management team, with the shortest response times to DFW
-                International and the Mid-Cities corridor.
+                Our office sits on Airport Freeway (Hwy 183) in Irving, between DFW International
+                and Dallas Love Field and close to the Mid-Cities corridor.
               </p>
             </div>
             <div>

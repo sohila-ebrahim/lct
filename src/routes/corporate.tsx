@@ -7,6 +7,8 @@ import { LeadForm } from "@/components/lead-form";
 import { IMAGES } from "@/lib/image-map";
 import { ensureGsap, prefersReducedMotion } from "@/lib/motion";
 import { pageMeta } from "@/lib/seo";
+import { CONTACT } from "@/lib/site-data";
+import { PartnersBoard } from "@/components/partners-board";
 
 const chauffeurImg = IMAGES.corporate;
 
@@ -28,7 +30,7 @@ export const Route = createFileRoute("/corporate")({
           "@type": "Service",
           serviceType: "Corporate Transportation",
           provider: { "@type": "LocalBusiness", name: "LCT Universal Executive Transports" },
-          areaServed: "Dallas–Fort Worth and Grapevine, Texas",
+          areaServed: CONTACT.serviceRegion,
           description:
             "Dedicated corporate chauffeur service — executive travel, roadshows, delegations and consolidated billing.",
         }),
@@ -41,7 +43,11 @@ export const Route = createFileRoute("/corporate")({
 const ITINERARY = [
   { time: "7:15 AM", label: "Pickup", d: "Chauffeur waiting curbside, residence or hotel." },
   { time: "8:00 AM", label: "Board Meeting", d: "Direct arrival, no parking, no delay." },
-  { time: "12:30 PM", label: "Client Lunch", d: "Same chauffeur, same vehicle, full-day continuity." },
+  {
+    time: "12:30 PM",
+    label: "Client Lunch",
+    d: "Same chauffeur, same vehicle, full-day continuity.",
+  },
   { time: "3:00 PM", label: "Second Meeting", d: "Waiting on standby — no re-dispatch needed." },
   { time: "6:30 PM", label: "Return", d: "Home or airport, exactly on schedule." },
 ] as const;
@@ -128,7 +134,8 @@ function Corporate() {
               eyebrow="A Day With LCT"
               title={
                 <>
-                  Designed for <span className="italic text-gold-gradient">how businesses move.</span>
+                  Designed for{" "}
+                  <span className="italic text-gold-gradient">how businesses move.</span>
                 </>
               }
               description="An illustrative schedule — every itinerary is built around your actual day."
@@ -140,7 +147,10 @@ function Corporate() {
               <div className="space-y-8">
                 {ITINERARY.map((stop) => (
                   <div key={stop.label} className="corp-stop relative">
-                    <span className="absolute -left-8 top-1 h-2 w-2 rounded-full bg-gold" aria-hidden />
+                    <span
+                      className="absolute -left-8 top-1 h-2 w-2 rounded-full bg-gold"
+                      aria-hidden
+                    />
                     <div className="eyebrow text-[0.6rem] text-champagne">{stop.time}</div>
                     <h3 className="mt-1 font-display text-xl text-foreground">{stop.label}</h3>
                     <p className="mt-1 text-sm text-muted-foreground">{stop.d}</p>
@@ -162,7 +172,12 @@ function Corporate() {
         </div>
       </section>
 
-      <section className="border-t border-border bg-onyx py-24">
+      <PartnersBoard tone="black" />
+
+      <section
+        id="corporate-inquiry"
+        className="scroll-mt-[var(--header-height)] border-t border-border bg-onyx py-24"
+      >
         <div className="mx-auto max-w-3xl px-6 lg:px-10">
           <SectionHeading
             align="center"

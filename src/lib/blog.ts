@@ -109,7 +109,7 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
       {
         heading: "Location makes the difference",
         body: [
-          "Dallas Love Field sits closer to downtown Dallas, which can mean a shorter transfer if your destination is a downtown hotel or office. DFW International, by contrast, sits between Dallas and Fort Worth and serves as a major connecting hub — a natural fit whether your final stop is in Dallas, Fort Worth, or one of the Mid-Cities communities in between, including Grapevine, where LCT Universal is based.",
+          "Dallas Love Field sits closer to downtown Dallas, which can mean a shorter transfer if your destination is a downtown hotel or office. DFW International, by contrast, sits between Dallas and Fort Worth and serves as a major connecting hub — a natural fit whether your final stop is in Dallas, Fort Worth, or one of the Mid-Cities communities in between, including Irving, where LCT Universal's office is.",
           "Neither airport is the 'wrong' choice — the right transfer plan simply depends on where you're actually headed once you land.",
         ],
       },
@@ -193,7 +193,7 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
       {
         heading: "Planning around the Metroplex",
         body: [
-          "LCT Universal is based in Grapevine and dispatches across the full Dallas–Fort Worth Metroplex — Dallas and its close-in suburbs, Fort Worth and the southwest metro, and the Mid-Cities corridor between them. For companies with recurring pickups across multiple business districts, that single dispatch base means consistent service regardless of which part of the Metroplex a meeting is in.",
+          "LCT Universal is based in Irving and dispatches across the full Dallas–Fort Worth Metroplex — Dallas and its close-in suburbs, Fort Worth and the southwest metro, and the Mid-Cities corridor between them. For companies with recurring pickups across multiple business districts, that single dispatch base means consistent service regardless of which part of the Metroplex a meeting is in.",
         ],
       },
       {
@@ -451,7 +451,7 @@ export const BLOG_ARTICLES: readonly BlogArticle[] = [
       {
         heading: "Service area",
         body: [
-          "LCT Universal dispatches across the full Dallas–Fort Worth Metroplex from our Grapevine base. If you're unsure whether your pickup or drop-off falls within our coverage area, our Service Areas page lists every community we serve.",
+          "LCT Universal dispatches across the full Dallas–Fort Worth Metroplex from our Irving office. If you're unsure whether your pickup or drop-off falls within our coverage area, our Service Areas page lists every community we serve.",
         ],
       },
     ],

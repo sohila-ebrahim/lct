@@ -139,7 +139,7 @@ export function SiteNav() {
       const panel = menuPanelRef.current;
       if (!panel) return;
       const focusable = Array.from(
-        panel.querySelectorAll<HTMLElement>('a[href], button:not([disabled])'),
+        panel.querySelectorAll<HTMLElement>("a[href], button:not([disabled])"),
       );
       if (focusable.length === 0) return;
       const first = focusable[0];
@@ -201,7 +201,10 @@ export function SiteNav() {
             delayDuration={120}
             skipDelayDuration={300}
           >
-            <NavigationMenuPrimitive.List className="flex items-center gap-1 xl:gap-1.5" aria-label="Primary">
+            <NavigationMenuPrimitive.List
+              className="flex items-center gap-1 xl:gap-1.5"
+              aria-label="Primary"
+            >
               {NAV_ENTRIES.map((entry) =>
                 isGroup(entry) ? (
                   <NavigationMenuPrimitive.Item key={entry.label} className="relative">
@@ -383,7 +386,11 @@ export function SiteNav() {
                 >
                   {CONTACT.email}
                 </a>
-                <p className="text-sm text-muted-foreground">{CONTACT.locationLine}</p>
+                <p className="text-sm text-muted-foreground">
+                  {CONTACT.streetAddress}, {CONTACT.addressLine2}
+                  <br />
+                  {CONTACT.locationLine}
+                </p>
               </div>
 
               <MyLimoBizLoginPopover

@@ -34,7 +34,7 @@ export const ROOT_META: Array<
   {
     name: "description",
     content:
-      "LCT Universal Executive Transports — premium chauffeured transportation in Dallas–Fort Worth and Grapevine, Texas. Airport transfers, corporate travel, and VIP service. Available 24/7.",
+      "LCT Universal Executive Transports — chauffeured sedans, SUVs, Sprinters and coaches across Dallas–Fort Worth from our Irving office. DFW and Love Field airport transfers, corporate travel and events, 24/7.",
   },
   { name: "author", content: "LCT Universal" },
   { name: "theme-color", content: "#141210" },
@@ -42,7 +42,7 @@ export const ROOT_META: Array<
   {
     property: "og:description",
     content:
-      "Premium chauffeured transportation in Dallas–Fort Worth and Grapevine, Texas. Airport transfers, corporate travel, and VIP service.",
+      "Premium chauffeured transportation across Dallas–Fort Worth, Texas. Airport transfers, corporate travel, and VIP service.",
   },
   { property: "og:type", content: "website" },
   { property: "og:site_name", content: "LCT Universal" },
@@ -50,7 +50,7 @@ export const ROOT_META: Array<
   { name: "twitter:title", content: SITE_TITLE },
   {
     name: "twitter:description",
-    content: "Premium chauffeured transportation in Dallas–Fort Worth and Grapevine, Texas.",
+    content: "Premium chauffeured transportation across Dallas–Fort Worth, Texas.",
   },
   { property: "og:image", content: OG_IMAGE },
 ];
@@ -67,11 +67,13 @@ export const ROOT_JSON_LD = [
     email: CONTACT.email,
     address: {
       "@type": "PostalAddress",
+      streetAddress: `${CONTACT.streetAddress}, ${CONTACT.addressLine2}`,
       addressLocality: CONTACT.city,
-      addressRegion: "TX",
+      addressRegion: CONTACT.stateCode,
       postalCode: CONTACT.zip,
       addressCountry: "US",
     },
+    hasMap: CONTACT.mapsUrl,
     // Updated 2026-08-11 — was a single free-text string
     // (CONTACT.serviceRegion); the client explicitly asked for the
     // full DFW Metroplex coverage list to be represented in
@@ -188,7 +190,7 @@ export function staticShellHtml(): string {
           </section>
           <section>
             <h2>Contact</h2>
-            <p>${phone} · ${email} · ${esc(CONTACT.locationLine)}</p>
+            <p>${phone} · ${email} · ${esc(CONTACT.fullAddress)}</p>
           </section>
         </div>
       </div>

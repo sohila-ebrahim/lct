@@ -19,13 +19,17 @@ const ContactPinCanvas = lazy(() => import("@/components/contact/pin-canvas"));
 
 /**
  * The pin itself for the fallback (non-3D) path — centered, sitting on the
- * same map backdrop the 3D version uses, at the same "Grapevine
+ * same map backdrop the 3D version uses, at the same "Irving
  * intersection" point. Route/roads/labels all live in `ContactMapBackdrop`
  * now, shared by both paths, so this is just the pin shape.
  */
 function ContactPinFallback() {
   return (
-    <svg viewBox="0 0 34 44" className="h-[72px] w-auto drop-shadow-[0_6px_10px_rgba(0,0,0,0.5)]" aria-hidden>
+    <svg
+      viewBox="0 0 34 44"
+      className="h-[72px] w-auto drop-shadow-[0_6px_10px_rgba(0,0,0,0.5)]"
+      aria-hidden
+    >
       <defs>
         <linearGradient id="contactPinMetal" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0%" style={{ stopColor: "var(--gold-soft)" }} />
@@ -43,7 +47,15 @@ function ContactPinFallback() {
         style={{ stroke: "var(--gold-deep)" }}
         strokeWidth={0.6}
       />
-      <circle cx="17" cy="14.5" r="5.1" fill="url(#contactPinCore)" style={{ stroke: "var(--champagne)" }} strokeOpacity={0.75} strokeWidth={0.7} />
+      <circle
+        cx="17"
+        cy="14.5"
+        r="5.1"
+        fill="url(#contactPinCore)"
+        style={{ stroke: "var(--champagne)" }}
+        strokeOpacity={0.75}
+        strokeWidth={0.7}
+      />
       <circle cx="14.6" cy="12" r="1" fill="#fff8e8" opacity={0.85} />
     </svg>
   );
@@ -122,7 +134,7 @@ function Contact() {
         </Link>
       </div>
 
-      {/* Signature interaction — a stylized Grapevine/DFW map with the
+      {/* Signature interaction — a stylized Irving/DFW map with the
           premium gold pin marking the location. The map is decorative
           (SVG/CSS, no map SDK, no screenshot, no implied live navigation);
           the address text below and the CTA above are the real, always-
@@ -132,12 +144,17 @@ function Contact() {
           <div className="contact-map-frame relative mx-auto h-[240px] w-full overflow-hidden rounded-sm border border-border/60 md:h-[300px]">
             <ContactMapBackdrop />
             <div className="relative z-[1] flex h-full items-center justify-center">
-              <Scene3D className="flex h-full w-full items-center justify-center" fallback={<ContactPinFallback />}>
+              <Scene3D
+                className="flex h-full w-full items-center justify-center"
+                fallback={<ContactPinFallback />}
+              >
                 <ContactPinCanvas />
               </Scene3D>
             </div>
           </div>
-          <p className="mt-4 text-xs uppercase tracking-[0.25em] text-muted-foreground">
+          <p className="mt-4 text-xs uppercase leading-relaxed tracking-[0.25em] text-muted-foreground">
+            {CONTACT.streetAddress} · {CONTACT.addressLine2}
+            <br />
             {CONTACT.locationLine}
           </p>
         </div>
@@ -160,7 +177,13 @@ function Contact() {
               submitLabel="Send Message"
               fields={[
                 { name: "customerName", label: "Full Name", required: true, colSpan: 1 },
-                { name: "customerEmail", label: "Email", type: "email", required: true, colSpan: 1 },
+                {
+                  name: "customerEmail",
+                  label: "Email",
+                  type: "email",
+                  required: true,
+                  colSpan: 1,
+                },
                 { name: "phone", label: "Phone", type: "tel", colSpan: 1 },
                 { name: "companyName", label: "Company (optional)", colSpan: 1 },
                 {
@@ -205,9 +228,10 @@ function Contact() {
             />
             <InfoCard
               icon="location"
-              title="Location"
-              line1={CONTACT.locationLine}
-              line2={CONTACT.serviceRegion}
+              title="Office"
+              line1={`${CONTACT.streetAddress}, ${CONTACT.addressLine2}`}
+              line2={`${CONTACT.locationLine} · Get directions`}
+              href={CONTACT.mapsUrl}
             />
             <InfoCard
               icon="clock"
@@ -256,7 +280,11 @@ function InfoCard({
   );
   if (href) {
     return (
-      <a href={href} className="glass block rounded-sm p-6 transition hover:border-champagne">
+      <a
+        href={href}
+        {...(href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+        className="glass block rounded-sm p-6 transition hover:border-champagne"
+      >
         {inner}
       </a>
     );
