@@ -3,7 +3,7 @@
  * Swap paths here to replace imagery site-wide without hunting components.
  *
  * Official DSC client photos are copied under /assets/official/ with professional names.
- * Do not reference ChatGPT-* or AI-named source filenames in components.
+ * Do not reference raw or placeholder source filenames in components.
  * Physical Luxlane plate/sticker text in photos is unchanged (documented for later review).
  */
 
@@ -66,23 +66,10 @@ export const IMAGES = {
       "Changed 2026-08-08 (final production cleanup pass). Two prior real photos were tried and rejected before this one: `sedan-virgin-hotels.jpg` had a second, differently-colored S-Class in the same frame, ambiguous about which car was being advertised; a tight rectangular re-crop of just the black car (`sharp .extract` down to 880px wide) technically excluded the second car but — at the Fleet Sedan chapter's ultra-wide 21:9 full-bleed container — a source that narrow has to scale up so much to cover the container's width that only a ~18% vertical sliver of it ever renders, reducing the shot to an extreme hood/grille close-up that no longer clearly read as 'a sedan' at a glance. `hero-sclass-chauffeur.jpg` (same verified S-Class, different real photo, 3/4 angle showing the full car body) was tried next, but its far-left edge had a seated bystander who — same container-math issue — can never be cropped out via `objectPosition` alone since the container always needs this image's full width. Fixed with a real rectangular crop of THIS photo (`sedan-chauffeur-crop.jpg`, `sharp .extract({left:220,width:1780})`) that excludes the bystander while staying wide enough (1780px) to avoid the earlier over-zoom problem — verified by checking the actual rendered container math (only ~43% of source height gets cropped away here, vs. ~82% for the narrower attempt) and by direct visual inspection of the final crop before use.",
   },
   fleetFirstClassSedan: {
-    // FINAL 2026-08-09 — client-supplied photo, not a project-derived crop.
-    // Delivered as a chat attachment (no tool available can persist inline
-    // chat image bytes to disk — that limitation was surfaced explicitly
-    // rather than worked around), then saved to disk by the client directly.
-    // Two path attempts (`first-class-sedan.jpg`, then a claimed second save
-    // to the same name) genuinely did not exist on disk — verified via three
-    // independent methods (`ls`, a `sharp` read, and the `Read` tool) each
-    // time before saying so, plus a search across all three LCT project
-    // copies on this machine and the full user profile, specifically to
-    // avoid a false "still broken" report if the file truly was there. The
-    // real file landed as `first-class-sedan.jpeg` (`.jpeg`, not `.jpg`) —
-    // confirmed via `sharp` metadata (1560×878 after EXIF auto-orientation)
-    // and a direct visual read that it matches the attached photo exactly
-    // before wiring it in. Used as supplied — not re-cropped into a new
-    // derivative — per explicit client instruction to art-direct via
-    // `objectPosition` only. `fleetSedan` (Executive Sedan) is a different
-    // class/photo and was not touched.
+    // FINAL 2026-08-09 — client-supplied photo (1560×878 after EXIF
+    // orientation), used as supplied rather than re-cropped, per the client's
+    // instruction to art-direct via `objectPosition` only. `fleetSedan`
+    // (Executive Sedan) is a different class/photo.
     src: "/assets/official/first-class-sedan.jpeg",
     alt: "First Class Sedan — Mercedes-Benz S-Class, front three-quarter view",
     // Source is ~16:9 (1560×878), almost exactly matching this chapter's own
@@ -498,16 +485,6 @@ export const IMAGES = {
     objectPositionMobile: "50% 42%",
     aspectRatio: "1600 / 2134",
     notes: "Previously unused. Used for the Airport Meet-and-Greet article.",
-  },
-  /** Do not use as primary brand visual */
-  legacyStretchLimo: {
-    src: "/assets/hero-limo.jpg",
-    alt: "Legacy stretch limousine image — not used as primary brand visual",
-    objectPositionDesktop: "50% 50%",
-    objectPositionMobile: "50% 50%",
-    aspectRatio: "16 / 9",
-    notes:
-      "Stock/cinematic stretch limo. Retained on disk only; do not use as hero or fleet flagship.",
   },
 } as const satisfies Record<string, ImagePlacement>;
 

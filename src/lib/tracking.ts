@@ -125,8 +125,8 @@ export const track = {
    * listens for that same signal (origin-checked, fires once) and calls this
    * before that navigation happens. `transport_type: 'beacon'` maximizes the
    * chance the hit is actually sent given a page navigation follows almost
-   * immediately. This could not be exercised against a real completed
-   * booking in this environment — verify it in Google Ads' conversion
+   * immediately. This has not been exercised against a real completed
+   * booking yet — verify it in Google Ads' conversion
    * diagnostics after a real test reservation.
    */
   bookingComplete: () =>

@@ -117,7 +117,7 @@ Used consistently across `SiteNav`, `FloatingActions`, `PageHero`/footer, and ev
 
 ## 9. Repo hygiene notes (not required by the spec, flagged for your awareness)
 
-- This project originated in **Lovable** (`README.md`, `AGENTS.md` still contain Lovable boilerplate/banners) and was migrated to a standalone Vite SPA (`MIGRATION-NOTES.md`). `src/lib/lovable-error-reporting.ts`, `error-page.ts`, `error-capture.ts` are leftover from that origin — not yet audited for whether they still do anything or just add dead weight.
+- This project originated on a hosted site builder and was migrated to a standalone Vite SPA (`MIGRATION-NOTES.md`). `src/lib/lovable-error-reporting.ts`, `error-page.ts`, `error-capture.ts` are leftover from that origin — not yet audited for whether they still do anything or just add dead weight.
 - Four stray files sit at the repo root: `0xC5`, `0xC9`, `0xCD` (all 0 bytes) and one literally named `exts.has(path.extname(f).toLowerCase())).sort()` — these look like debris from a broken shell redirect in an earlier session, not intentional project files. **Not deleted** — flagging for your confirmation before removal, per "investigate before deleting."
 - `image-audit.js` at repo root is a one-off diagnostic script from earlier image-inventory work — likely fine to keep or remove, low risk either way.
 

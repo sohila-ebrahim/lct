@@ -107,7 +107,7 @@ Official images compressed to web JPEGs (~100–400KB each).
 - `refreshScrollTriggers()` wired to image `load`/`error` events (matches the pattern already used in `horizontal-journey.tsx`) so ScrollTrigger recalculates pin distance after the real image dimensions land.
 
 ### Group Transportation image — client decision (2026-07-31)
-No genuine client-photographed bus/coach existed anywhere in the project. `chauffeur-coach-bus.jpg.asset.json` / `executive-coach.asset.json` were metadata stubs that resolved to `/assets/fleet-sprinter.jpg` (a rendered Sprinter van, not a bus). The only bus-shaped photo on disk was `src/assets/ChatGPT Image Feb 11, 2026, 06_41_20 PM.jpg`, which §8/Section C of this spec had flagged as AI-generated and off-limits for brand photography (its byte size, 96,774, exactly matches the size recorded in the original `chauffeur-coach-bus.jpg` asset record, corroborating it as that same client asset).
+No genuine client-photographed bus/coach existed anywhere in the project. `chauffeur-coach-bus.jpg.asset.json` / `executive-coach.asset.json` were metadata stubs that resolved to `/assets/fleet-sprinter.jpg` (a rendered Sprinter van, not a bus). The only bus-shaped photo on disk was a placeholder image (since removed), which §8/Section C of this spec had flagged as AI-generated and off-limits for brand photography (its byte size, 96,774, exactly matches the size recorded in the original `chauffeur-coach-bus.jpg` asset record, corroborating it as that same client asset).
 
 **Client explicitly approved this file for use and overrode the prior AI-flag warning.** Applied:
 - Copied to `public/assets/official/group-coach-bus.jpg` (already ~95KB, no further compression needed).
@@ -380,7 +380,7 @@ Audited against the brief (champagne-gold metal, onyx core, bevel, grounded shad
 
 ### 4–5. Image inventory and same-page repetition
 
-Full inventory: **10 real client (DSC-origin) photos** in `public/assets/official/`, mapped through 17 named crops in `src/lib/image-map.ts` (each repeat of a source photo gets its own `object-position`, alt text, and storytelling role — this convention already existed and is preserved). Two additional files in `src/assets/` (`male-chauffeur-...utc (1).jpg`, `middle-aged-woman-...utc (1).jpg`) carry stock-photography filename conventions and are **not referenced anywhere in the app** — left alone, not promoted to brand imagery, since ownership/licensing isn't verified (same standard applied to video in §8 below). `ChatGPT Image Feb 14, 2026...png` and `5.png` are likewise unreferenced and untouched.
+Full inventory: **10 real client (DSC-origin) photos** in `public/assets/official/`, mapped through 17 named crops in `src/lib/image-map.ts` (each repeat of a source photo gets its own `object-position`, alt text, and storytelling role — this convention already existed and is preserved). Two additional files in `src/assets/` (`male-chauffeur-...utc (1).jpg`, `middle-aged-woman-...utc (1).jpg`) carry stock-photography filename conventions and are **not referenced anywhere in the app** — left alone, not promoted to brand imagery, since ownership/licensing isn't verified (same standard applied to video in §8 below). Another placeholder image and `5.png` are likewise unreferenced and untouched.
 
 Re-auditing every route (including, critically, the **homepage as one page** — its 8 sections share one scroll, so a repeat between any two of them is a same-page repeat) against the hard "no repeated photo within the same page" rule found real violations, all fixed:
 
@@ -784,7 +784,7 @@ A polish pass, not a redesign: the architecture, animations, integrations, SEO, 
 
 ### 1. Media re-audit — scoped by what actually exists
 
-The brief said new professional photography would be added to the assets folder for this pass. It hadn't been — `public/assets/official/` still held the same 10 photos from 2026-07-30/31, and the `.asset.json` files under `src/assets/lct*/` are empty Lovable-import reference stubs, not real images. This was confirmed by directory listing before any reassignment work started, and is documented prominently in `MEDIA_REGISTRY.md` so it isn't missed later. The re-audit proceeded anyway, using the existing 10-photo library — every current `image-map.ts` assignment was reviewed against its adjacent copy, one clear mismatch was fixed (below), and every unresolvable gap (chiefly: no Sprinter photo exists at all) is now explicitly documented in `MEDIA_REGISTRY.md` §"Known gaps" rather than papered over with a misleading crop.
+The brief said new professional photography would be added to the assets folder for this pass. It hadn't been — `public/assets/official/` still held the same 10 photos from 2026-07-30/31, and the `.asset.json` files under `src/assets/lct*/` are empty import reference stubs, not real images. This was confirmed by directory listing before any reassignment work started, and is documented prominently in `MEDIA_REGISTRY.md` so it isn't missed later. The re-audit proceeded anyway, using the existing 10-photo library — every current `image-map.ts` assignment was reviewed against its adjacent copy, one clear mismatch was fixed (below), and every unresolvable gap (chiefly: no Sprinter photo exists at all) is now explicitly documented in `MEDIA_REGISTRY.md` §"Known gaps" rather than papered over with a misleading crop.
 
 **Fixed**: `PinnedStories`' "Corporate Transportation" story used `cockpit` — a highway dashboard/GPS photo that doesn't depict anything corporate. Replaced with a new `corporateStory` key (a wider, building-forward crop of the same `chauffeur-sclass-portrait.jpg` used three other places, distinct from all of them) so the image now actually supports the copy next to it.
 
@@ -1702,7 +1702,7 @@ All three edited forms still submit normally to Supabase via the existing `submi
 ## 2. Current project architecture
 
 ### Stack
-- **Vite 7** + **React 19** + **TypeScript** SPA (migrated from Lovable / TanStack Start)
+- **Vite 7** + **React 19** + **TypeScript** SPA (migrated from TanStack Start)
 - **TanStack Router** (file-based routes) + **TanStack Query**
 - **Tailwind CSS v4** + shadcn/Radix UI kit
 - **Supabase** browser client → `form_submissions` table
@@ -1997,8 +1997,8 @@ customer name/email, phone, company, pickup/dropoff, additional stops, trip type
 
 | File | Reason |
 |------|--------|
-| `ChatGPT Image Feb 11, 2026, 06_41_20 PM.jpg` | ~~Filename indicates AI generation~~ **Client-approved 2026-07-31 override — see §1c-1.** Copied to `public/assets/official/group-coach-bus.jpg` and mapped as `IMAGES.fleetCoach`. Byte size (96,774) matches the original `chauffeur-coach-bus.jpg` asset record. |
-| `ChatGPT Image Feb 14, 2026, 12_09_29 AM.png` | Filename indicates AI generation (~2.1 MB; size matches DFW pickup metadata) |
+| Placeholder image 1 (removed) | **Client-approved 2026-07-31 override — see §1c-1.** Copied to `public/assets/official/group-coach-bus.jpg` and mapped as `IMAGES.fleetCoach`. Byte size (96,774) matches the original `chauffeur-coach-bus.jpg` asset record. |
+| Placeholder image 2 (removed) | Placeholder (~2.1 MB; size matches DFW pickup metadata) |
 | `male-chauffeur-wearing-gloves-...utc (1).jpg` | Stock-style filename — verify ownership before use |
 | `middle-aged-woman-exiting-car-...utc (1).jpg` | Stock-style filename — verify ownership before use |
 | `5.png` | Unreferenced ~3.1 MB — inspect before use |
@@ -2065,7 +2065,7 @@ Single cinematic system: GSAP + ScrollTrigger primary; Framer only for small Rea
 3. Centralize images in an image map; rewire `.asset.json` or replace with direct imports of optimized client photos.  
 4. Preserve Supabase form inserts; plan Edge Function for email later.  
 5. Prepare embed/link to existing `/book` system — do not fake confirmation.  
-6. Prefer official DSC photos over ChatGPT/stock/low-res placeholders.  
+6. Prefer official DSC photos over stock/low-res placeholders.  
 7. Use 2D GSAP vehicle motion unless a professional GLB appears.  
 8. Remove or quarantine AI-leaning patterns (gold particles default, unused R3F badge pipeline, disconnected 900+ line home sections) during rebuild — not in Phase 1.  
 9. Fix `/airport` missing import when touching that file.  
