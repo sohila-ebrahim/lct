@@ -105,10 +105,13 @@ export function startHeadlineTyping(): () => void {
     { threshold: 0.35, rootMargin: "0px 0px -8% 0px" },
   );
 
+  // Per-run set (not a DOM flag): a cancelled run (dev StrictMode mounts
+  // twice) must not leave headings marked as watched by a dead observer.
+  const watched = new WeakSet<Element>();
   const scan = (node: ParentNode) => {
     node.querySelectorAll<HTMLElement>(SELECTOR).forEach((h) => {
-      if (h.classList.contains("typed") || h.dataset.typeWatched) return;
-      h.dataset.typeWatched = "1";
+      if (h.classList.contains("typed") || watched.has(h)) return;
+      watched.add(h);
       io.observe(h);
     });
   };

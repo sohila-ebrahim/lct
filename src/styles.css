@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-display: "Inter Tight Variable", "Inter Tight", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Montserrat Variable", "Montserrat", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
 
   /* Proportional, not subtractive — with the site's deliberately tiny 0.2rem
@@ -87,7 +87,7 @@
   --paper: #ffffff;
   --bone: #f4f2ed;
   --ink: #0d0e10;
-  --ash: #5f6168;
+  --ash: #45474d;
   --ash-soft: #85878e;
   --hairline: #dddad4;
   --band: #0d0e10;
@@ -166,7 +166,7 @@
   --secondary: #1d1e22;
   --secondary-foreground: var(--off-white);
   --muted: #1d1e22;
-  --muted-foreground: #a9abb1;
+  --muted-foreground: #c3c5cb;
   --accent: #1d1e22;
   --accent-foreground: var(--off-white);
   --border: rgb(255 255 255 / 0.14);
@@ -1160,7 +1160,7 @@
   color-scheme: dark;
   --paper: #0b0c0e;
   --bone: #141518;
-  --ash: #a3a5ab;
+  --ash: #c3c5cb;
   --ash-soft: #8a8c93;
   --hairline: rgb(255 255 255 / 0.12);
   --band: #15161a;
@@ -1206,7 +1206,7 @@
   --card: #ffffff;
   --card-foreground: #0d0e10;
   --muted: #f4f2ed;
-  --muted-foreground: #5f6168;
+  --muted-foreground: #45474d;
   --border: #dddad4;
   --ring: #0d0e10;
   color: var(--foreground);
@@ -1251,22 +1251,25 @@ html.theme-switching * {
 }
 
 /*
- * Headlines in the logo's metallic gold. The gradient repeats every 10em
- * (symmetric stops, so the repeat is seamless) to keep the metallic sweep
- * visible on short and long lines alike. Darker golds on light surfaces,
- * brighter golds on dark ones.
+ * Headlines in the logo's metallic gold, lit from within. On dark surfaces
+ * the gold is bright with a near-white core; on light surfaces it is a
+ * deeper, richer gold (a white core would vanish on white) with a hairline
+ * shadow underneath to define the letters. The gradient repeats every 10em
+ * (symmetric stops, so the repeat is seamless) so the sheen shows on short
+ * and long lines alike.
  */
 :root,
 .band-light {
   --logo-gradient: linear-gradient(
     100deg,
-    #5e4720 0%,
-    #8a6a2f 22%,
-    #b8913f 50%,
-    #8a6a2f 78%,
-    #5e4720 100%
+    #7a5410 0%,
+    #b47f22 24%,
+    #dca848 50%,
+    #b47f22 76%,
+    #7a5410 100%
   );
-  --caret: #9c7a3a;
+  --headline-shadow: drop-shadow(0 1px 1px rgb(60 40 10 / 0.35));
+  --caret: #b47f22;
 }
 :root[data-theme="dark"],
 .band-dark,
@@ -1276,17 +1279,19 @@ html.theme-switching * {
 [class*="bg-[color:var(--onyx)]"] {
   --logo-gradient: linear-gradient(
     100deg,
-    #a88a5c 0%,
-    #e3cf9f 26%,
-    #fff3d6 50%,
-    #e3cf9f 74%,
-    #a88a5c 100%
+    #c39436 0%,
+    #f2d27e 24%,
+    #fff7de 50%,
+    #f2d27e 76%,
+    #c39436 100%
   );
-  --caret: #e3cf9f;
+  --headline-shadow: none;
+  --caret: #f2d27e;
 }
 :root[data-theme="dark"] .band-light {
-  --logo-gradient: linear-gradient(100deg, #5e4720 0%, #8a6a2f 22%, #b8913f 50%, #8a6a2f 78%, #5e4720 100%);
-  --caret: #9c7a3a;
+  --logo-gradient: linear-gradient(100deg, #7a5410 0%, #b47f22 24%, #dca848 50%, #b47f22 76%, #7a5410 100%);
+  --headline-shadow: drop-shadow(0 1px 1px rgb(60 40 10 / 0.35));
+  --caret: #b47f22;
 }
 main h1,
 main h2,
@@ -1396,4 +1401,95 @@ main :is(h1, h2).is-typing > :not(.type-clone) {
   background: #ffb020;
   box-shadow: 0 0 10px 2px rgb(255 176 32 / 0.85);
   animation: signal-blink 0.66s steps(1, end) 3;
+}
+
+/*
+ * Luminous headlines: the letters themselves are lit, with a sheen
+ * travelling along the gradient (it repeats every 10em, so moving it 10em
+ * loops seamlessly). No outline and no halo around the type.
+ */
+main h1,
+main h2 {
+  filter: var(--headline-shadow);
+}
+main h1,
+main h2,
+.type-clone {
+  letter-spacing: -0.02em;
+  animation: headline-sheen 7s linear infinite;
+}
+@keyframes headline-sheen {
+  to {
+    background-position: 10em 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  main h1,
+  main h2,
+  .type-clone {
+    animation: none;
+  }
+}
+
+/* Floating actions (floating-actions.tsx): icon-only WhatsApp and handset. */
+.fab {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  filter: drop-shadow(0 6px 12px rgb(0 0 0 / 0.35)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.4));
+  transition: transform 0.2s ease;
+}
+.fab:hover,
+.fab:focus-visible {
+  transform: translateY(-2px) scale(1.06);
+}
+.fab:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 4px;
+  border-radius: 9999px;
+}
+.fab-wa {
+  color: #25d366;
+}
+/* White behind the mark so its handset reads white, as in the official logo. */
+.fab-wa-fill {
+  position: absolute;
+  inset: 22%;
+  border-radius: 9999px;
+  background: #ffffff;
+}
+.fab-call {
+  width: 52px;
+  height: 52px;
+  color: #e2b24c;
+  animation: fab-ring 4s ease-in-out infinite;
+}
+@keyframes fab-ring {
+  0%,
+  86%,
+  100% {
+    transform: rotate(0);
+  }
+  88% {
+    transform: rotate(-14deg);
+  }
+  90% {
+    transform: rotate(12deg);
+  }
+  92% {
+    transform: rotate(-10deg);
+  }
+  94% {
+    transform: rotate(8deg);
+  }
+  96% {
+    transform: rotate(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fab-call {
+    animation: none;
+  }
 }

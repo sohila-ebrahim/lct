@@ -7,9 +7,9 @@ import { getRouter } from "./router";
 // firewall that silently drops Google Fonts used to block first paint and
 // delay this module script until that request timed out — reproduced as a
 // fully blank page in headless Chromium with fonts.googleapis.com dropped.
-// Inter Tight (display, bold and tight) + Inter (body), one variable file
+// Montserrat (display headlines) + Inter (body), one variable file
 // each, Latin subsets loaded on demand by unicode-range.
-import "@fontsource-variable/inter-tight/index.css";
+import "@fontsource-variable/montserrat/wght.css";
 import "@fontsource-variable/inter/wght.css";
 import "./styles.css";
 import { forwardMyLimoBizReturnToBook } from "./lib/mylimobiz-return-routing";
