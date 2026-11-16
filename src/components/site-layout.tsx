@@ -10,7 +10,7 @@ import { revealLines, revealClipImage } from "@/lib/reveal";
 
 export function SiteLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-background pb-[calc(140px+env(safe-area-inset-bottom))] text-foreground lg:pb-0">
+    <div className="min-h-screen bg-background pb-[env(safe-area-inset-bottom)] text-foreground lg:pb-0">
       <ScrollProgress />
       <SiteNav />
       <main>{children}</main>
@@ -103,7 +103,7 @@ export function PageHero({
         )}
       </div>
       {image ? (
-        <div className="relative mt-10 h-[42svh] min-h-[260px] overflow-hidden md:mt-14 md:h-[60svh]">
+        <div className="relative mt-8 h-[26svh] min-h-[170px] overflow-hidden md:mt-14 md:h-[60svh] md:min-h-[260px]">
           <img
             src={image}
             alt=""

@@ -3,6 +3,7 @@ import { useSyncExternalStore } from "react";
 import { IoCall } from "react-icons/io5";
 import { SiWhatsapp } from "react-icons/si";
 import { CONTACT } from "@/lib/site-data";
+import { dockShownOn } from "@/lib/mobile-dock";
 import {
   getMobileMenuOpenServerSnapshot,
   getMobileMenuOpenSnapshot,
@@ -24,15 +25,18 @@ export function FloatingActions() {
   );
   // /fleet has its own 64px sticky conversion bar — sit above it there.
   const onFleet = pathname === "/fleet";
+  // On phones the dock carries these two buttons wherever it shows.
+  const phoneHidden = dockShownOn(pathname) ? "max-lg:hidden " : "";
 
   if (menuOpen) return null;
 
   return (
     <div
       className={
-        onFleet
+        phoneHidden +
+        (onFleet
           ? "fixed right-3 bottom-[calc(64px+env(safe-area-inset-bottom)+0.75rem)] z-40 flex flex-col items-center gap-2 lg:right-5 lg:bottom-[calc(64px+0.75rem)]"
-          : "fixed right-3 bottom-[calc(52px+env(safe-area-inset-bottom)+0.75rem)] z-40 flex flex-col items-center gap-2 lg:right-5 lg:bottom-6"
+          : "fixed right-3 bottom-[calc(52px+env(safe-area-inset-bottom)+0.75rem)] z-40 flex flex-col items-center gap-2 lg:right-5 lg:bottom-6")
       }
     >
       <a

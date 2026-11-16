@@ -40,8 +40,8 @@ const POLICY_LINKS: FooterLink[] = [
 function FooterColumn({ title, links }: { title: string; links: FooterLink[] }) {
   return (
     <div>
-      <div className="eyebrow mb-5">{title}</div>
-      <ul className="space-y-3 text-sm text-foreground/70">
+      <div className="eyebrow mb-3 md:mb-5">{title}</div>
+      <ul className="space-y-2 text-sm text-foreground/70 md:space-y-3">
         {links.map((l) => (
           <li key={l.to + l.label}>
             <Link to={l.to} className="transition hover:text-champagne">
@@ -61,7 +61,7 @@ export function SiteFooter() {
           pages. Restrained (no gradient background wash), matching the
           site's existing closing-CTA language elsewhere. */}
       <div className="border-b border-border/60">
-        <div className="mx-auto flex max-w-[var(--container-max)] flex-col items-center justify-between gap-6 px-[var(--page-gutter)] py-12 text-center md:flex-row md:text-left">
+        <div className="mx-auto flex max-w-[var(--container-max)] flex-col items-center justify-between gap-5 px-[var(--page-gutter)] py-8 text-center md:flex-row md:gap-6 md:py-12 md:text-left">
           <div>
             <div className="font-display text-2xl text-off-white md:text-3xl">
               Ready when you are.
@@ -93,26 +93,26 @@ export function SiteFooter() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-[var(--container-max)] px-[var(--page-gutter)] py-20">
-        <div className="grid gap-12 lg:grid-cols-5">
+      <div className="mx-auto max-w-[var(--container-max)] px-[var(--page-gutter)] py-10 md:py-20">
+        <div className="grid gap-8 md:gap-12 lg:grid-cols-5">
           <div className="lg:col-span-1">
             <Logo linked={false} imgClassName="h-16 md:h-20 w-auto" />
-            <p className="mt-6 max-w-sm text-sm leading-relaxed text-muted-foreground">
+            <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted-foreground md:mt-6">
               {COMPANY.legalName} provides premium chauffeured transportation across{" "}
               {CONTACT.serviceRegion}. Discretion, punctuality, and professional service.
             </p>
-            <SocialLinks className="mt-8 flex gap-3" />
+            <SocialLinks className="mt-5 flex gap-3 md:mt-8" />
           </div>
 
           {/* 2-column on mobile (per explicit instruction — a single stacked
               wall of links reads poorly on small screens), 4 across on
               desktop alongside the brand block. */}
-          <div className="grid grid-cols-2 gap-x-8 gap-y-12 sm:grid-cols-4 lg:col-span-4">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-4 md:gap-x-8 md:gap-y-12 lg:col-span-4">
             <FooterColumn title="Explore" links={EXPLORE_LINKS} />
             <FooterColumn title="Services" links={SERVICES_LINKS} />
             <div>
-              <div className="eyebrow mb-5">Book & Contact</div>
-              <ul className="space-y-3 text-sm text-foreground/70">
+              <div className="eyebrow mb-3 md:mb-5">Book & Contact</div>
+              <ul className="space-y-2 text-sm text-foreground/70 md:space-y-3">
                 <li>
                   <Link to="/book" className="transition hover:text-champagne">
                     Book Your Ride
@@ -151,7 +151,7 @@ export function SiteFooter() {
         {/* Verified contact details — a dedicated, generously-spaced panel
             (not crammed into a link column) so phone/hours stay easy to
             read on every breakpoint. */}
-        <div className="mt-16 grid gap-8 border-t border-border/60 pt-10 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-10 grid grid-cols-2 gap-x-6 gap-y-6 border-t border-border/60 pt-8 md:mt-16 md:gap-8 md:pt-10 lg:grid-cols-4">
           <div>
             <div className="eyebrow text-[0.6rem]">Phone</div>
             <a
@@ -198,7 +198,7 @@ export function SiteFooter() {
             enough to sit directly under the fixed WhatsApp/phone FABs at the
             true bottom of the page (measured overlap, not assumed) — this
             clears it without touching the FAB stack itself. */}
-        <div className="mt-16 flex flex-col items-start justify-between gap-4 border-t border-border pb-24 pt-8 text-xs text-muted-foreground md:flex-row md:items-center md:pb-0">
+        <div className="mt-10 flex flex-col items-start justify-between gap-3 border-t border-border pb-24 pt-6 md:mt-16 md:gap-4 md:pt-8 text-xs text-muted-foreground md:flex-row md:items-center md:pb-0">
           <div>
             © {new Date().getFullYear()} {COMPANY.legalName}. All rights reserved.
           </div>
