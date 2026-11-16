@@ -6,7 +6,7 @@ import { SectionHeading } from "@/components/section-heading";
 import { LeadForm } from "@/components/lead-form";
 import { AIRLINE_PARTNER_KINDS, BOOKING_VEHICLE_OPTIONS, CONTACT } from "@/lib/site-data";
 import { PartnersBoard } from "@/components/partners-board";
-import { PartnerRibbons } from "@/components/partner-ribbons";
+import { TrustedBy } from "@/components/trusted-by";
 import { IMAGES } from "@/lib/image-map";
 import { ensureGsap, prefersReducedMotion } from "@/lib/motion";
 import { pageMeta } from "@/lib/seo";
@@ -156,7 +156,7 @@ function Airport() {
         eyebrow="How an airport pickup works"
         id="airport-steps"
       />
-      <PartnerRibbons />
+      <TrustedBy />
       <PartnersBoard kinds={AIRLINE_PARTNER_KINDS} tone="black" />
 
       <section className="border-t border-border bg-onyx py-24">

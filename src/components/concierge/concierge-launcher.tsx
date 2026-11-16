@@ -2,6 +2,7 @@ import { lazy, Suspense, useCallback, useEffect, useId, useRef, useState, useSyn
 import { useRouterState } from "@tanstack/react-router";
 import { MessageCircle, X } from "lucide-react";
 import { track } from "@/lib/tracking";
+import { dockShownOn, OPEN_CONCIERGE_EVENT } from "@/lib/mobile-dock";
 import {
   getMobileMenuOpenServerSnapshot,
   getMobileMenuOpenSnapshot,
@@ -32,10 +33,18 @@ export function ConciergeLauncher() {
     requestAnimationFrame(() => launcherRef.current?.focus());
   }, []);
 
-  const openPanel = () => {
+  const openPanel = useCallback(() => {
     setOpen(true);
     track.aiConciergeOpen(pathname);
-  };
+  }, [pathname]);
+
+  // The phone dock's chat button opens the panel from outside.
+  useEffect(() => {
+    window.addEventListener(OPEN_CONCIERGE_EVENT, openPanel);
+    return () => window.removeEventListener(OPEN_CONCIERGE_EVENT, openPanel);
+  }, [openPanel]);
+  // On phones the dock carries the launcher wherever the dock shows.
+  const phoneHidden = dockShownOn(pathname) && !open ? "max-lg:hidden " : "";
 
   // Hide the launcher (and close the panel, if a visitor somehow had it
   // open) while the mobile nav menu is open — the two must never compete
@@ -56,9 +65,10 @@ export function ConciergeLauncher() {
         aria-controls={dialogId}
         aria-label={open ? "Close AI Concierge" : "Open AI Concierge"}
         className={
-          onFleet
+          phoneHidden +
+          (onFleet
             ? "fixed bottom-[calc(64px+env(safe-area-inset-bottom)+0.75rem)] left-4 z-[45] flex h-14 w-14 items-center justify-center rounded-full border border-gold/40 bg-[color:var(--surface-elevated)] text-gold shadow-[var(--shadow-gold)] transition hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring lg:bottom-[calc(64px+0.75rem)]"
-            : "fixed bottom-[calc(52px+env(safe-area-inset-bottom)+0.75rem)] left-4 z-[45] flex h-14 w-14 items-center justify-center rounded-full border border-gold/40 bg-[color:var(--surface-elevated)] text-gold shadow-[var(--shadow-gold)] transition hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring lg:bottom-6"
+            : "fixed bottom-[calc(52px+env(safe-area-inset-bottom)+0.75rem)] left-4 z-[45] flex h-14 w-14 items-center justify-center rounded-full border border-gold/40 bg-[color:var(--surface-elevated)] text-gold shadow-[var(--shadow-gold)] transition hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring lg:bottom-6")
         }
       >
         {open ? <X className="h-5 w-5" aria-hidden /> : <MessageCircle className="h-5 w-5" aria-hidden />}

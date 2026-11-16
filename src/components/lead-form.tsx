@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect, type ReactNode } from "react";
 import { CheckCircle2, AlertTriangle, Loader2 } from "lucide-react";
 import { submitFormClient } from "@/lib/forms/submissions.client";
 import { FORM_TYPE_LABELS, type FormType, type SubmissionInput } from "@/lib/forms/types";
-import { CONTACT } from "@/lib/site-data";
+import { errorMessageFor, randomToken } from "@/lib/forms/form-helpers";
 import { track } from "@/lib/tracking";
 
 export interface FieldSpec {
@@ -54,24 +54,6 @@ export interface LeadFormProps {
 
 const successMessage =
   "Thank you for contacting LCT Universal Executive Transports. Your request has been securely received and saved. A member of our reservation team will review it and contact you shortly.";
-
-function errorMessageFor(code: string | undefined): string {
-  switch (code) {
-    case "duplicate_submission":
-      return "It looks like this request was already submitted. If you don't hear back soon, please call us directly.";
-    case "rate_limited":
-      return "Please wait a moment before submitting again.";
-    case "validation_failed":
-      return "Please check the highlighted fields and try again.";
-    default:
-      return `We could not save your request right now. Please try again shortly or call ${CONTACT.phoneDisplay}.`;
-  }
-}
-
-function randomToken() {
-  if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID();
-  return Math.random().toString(36).slice(2) + Date.now().toString(36);
-}
 
 export function LeadForm({
   formType,

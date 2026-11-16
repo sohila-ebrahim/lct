@@ -6,12 +6,10 @@ import { IMAGES, type ImageKey } from "@/lib/image-map";
 import { EASE, ensureGsap, prefersReducedMotion } from "@/lib/motion";
 
 /*
- * Home page scroll sections for the 2026-11 editorial redesign. Native
+ * Shared scroll sections for the 2026-11 editorial redesign. Native
  * scrolling throughout (no pinning, no smooth-scroll library):
  *
  * - StatsBand: real figures count up once when they enter the view.
- * - FleetStack: vehicle cards are sticky and stack; each new card slides
- *   over the previous one, which recedes and dims.
  * - ServiceStories: a sticky photo beside scrolling text; the photo
  *   cross-fades to match the story being read.
  *
@@ -101,7 +99,7 @@ export function StatsBand({ stats = STATS }: { stats?: Stat[] }) {
 
   return (
     <section ref={rootRef} className="band-dark bg-[color:var(--band)] py-[var(--section-space)]">
-      <dl className="mx-auto grid max-w-[var(--container-max)] gap-x-8 gap-y-14 px-[var(--page-gutter)] sm:grid-cols-2 lg:grid-cols-4">
+      <dl className="mx-auto grid max-w-[var(--container-max)] grid-cols-2 gap-x-4 gap-y-7 px-[var(--page-gutter)] md:gap-x-8 md:gap-y-14 lg:grid-cols-4">
         {stats.map((s) => {
           const max = dialMax(s);
           const ratio = Math.min(1, s.value / max);
@@ -113,7 +111,7 @@ export function StatsBand({ stats = STATS }: { stats?: Stat[] }) {
               data-ratio={ratio}
             >
               <dt className="sr-only">{s.label}</dt>
-              <dd className="relative w-full max-w-[240px]">
+              <dd className="relative w-full max-w-[120px] md:max-w-[240px]">
                 <svg viewBox="0 0 200 180" className="w-full" aria-hidden>
                   <defs>
                     <linearGradient id="gauge-gold" x1="0" y1="0" x2="1" y2="0">
@@ -195,7 +193,7 @@ export function StatsBand({ stats = STATS }: { stats?: Stat[] }) {
                     strokeWidth="2"
                   />
                 </svg>
-                <div className="absolute inset-x-0 top-[83%] -translate-y-1/2 font-display text-[clamp(2rem,3.4vw,2.75rem)] font-extrabold leading-none tracking-[-0.03em] text-white">
+                <div className="absolute inset-x-0 top-[83%] -translate-y-1/2 font-display text-[clamp(1.15rem,3.4vw,2.75rem)] font-medium leading-none tracking-[-0.03em] text-white">
                   {s.prefix}
                   <span data-count={s.value}>{s.value}</span>
                   <span className="text-[0.55em] text-[color:var(--gold-light)]">{s.suffix}</span>
@@ -203,7 +201,7 @@ export function StatsBand({ stats = STATS }: { stats?: Stat[] }) {
               </dd>
               <dd
                 aria-hidden
-                className="mt-2 max-w-[15rem] text-base leading-snug text-muted-foreground"
+                className="mt-1 max-w-[15rem] text-xs leading-snug text-muted-foreground md:mt-2 md:text-base"
               >
                 {s.label}
               </dd>
@@ -211,135 +209,6 @@ export function StatsBand({ stats = STATS }: { stats?: Stat[] }) {
           );
         })}
       </dl>
-    </section>
-  );
-}
-
-const vehicle = (id: string) => FLEET_VEHICLES.find((v) => v.id === id)!;
-const FLEET_CARDS: { id: string; title: string; desc: string; meta: string; imageKey: ImageKey }[] =
-  [
-    {
-      id: "sedan",
-      title: "Executive Sedan",
-      desc: "Mercedes-Benz S-Class for discreet business travel and private arrivals.",
-      meta: `${vehicle("sedan").pax} passengers · ${vehicle("sedan").bags} bags · ${vehicle("sedan").priceLabel}`,
-      imageKey: "fleetSedan",
-    },
-    {
-      id: "suv",
-      title: "Executive SUV",
-      desc: "Cadillac Escalade with captain seating, extended legroom and room for luggage.",
-      meta: `${vehicle("suv").pax} passengers · ${vehicle("suv").bags} bags · ${vehicle("suv").priceLabel}`,
-      imageKey: "fleetSuv",
-    },
-    {
-      id: "sprinter",
-      title: "Executive Sprinter",
-      desc: "Mercedes-Benz Sprinter for corporate groups, delegations and VIP parties.",
-      meta: `${vehicle("sprinter").pax} passengers · ${vehicle("sprinter").bags} bags · ${vehicle("sprinter").priceLabel}`,
-      imageKey: "fleetSprinter",
-    },
-    {
-      id: "coach",
-      title: "Executive Mini Coach",
-      desc: "Right-sized group transportation for weddings, shuttles and corporate parties.",
-      meta: `${vehicle("coachMini").pax} passengers · ${vehicle("coachMini").priceLabel}`,
-      imageKey: "fleetCoachJourney",
-    },
-  ];
-
-export function FleetStack() {
-  const rootRef = useRef<HTMLElement>(null);
-
-  useLayoutEffect(() => {
-    const root = rootRef.current;
-    if (!root || prefersReducedMotion()) return;
-    const { gsap } = ensureGsap();
-    const ctx = gsap.context(() => {
-      const cards = gsap.utils.toArray<HTMLElement>(".stack-card", root);
-      cards.forEach((card, i) => {
-        const next = cards[i + 1];
-        if (!next) return;
-        // As the next card slides up over this one, this one recedes.
-        gsap
-          .timeline({
-            scrollTrigger: { trigger: next, start: "top bottom", end: "top 20%", scrub: true },
-          })
-          .to(card.querySelector(".stack-inner"), { scale: 0.92, ease: "none" }, 0)
-          .to(card.querySelector(".stack-dim"), { opacity: 0.6, ease: "none" }, 0);
-      });
-    }, root);
-    return () => ctx.revert();
-  }, []);
-
-  return (
-    <section
-      ref={rootRef}
-      id="fleet-journey"
-      className="relative bg-[color:var(--surface-black)] pb-[var(--section-space)] pt-[var(--section-space)]"
-    >
-      <div className="mx-auto mb-12 flex max-w-[var(--container-max)] flex-col gap-6 px-[var(--page-gutter)] md:flex-row md:items-end md:justify-between">
-        <h2 className="font-display text-[clamp(2.75rem,6.5vw,6rem)] leading-[0.9] tracking-[-0.05em] text-foreground">
-          The fleet.
-          <span className="block text-gold-gradient">Chosen for the trip.</span>
-        </h2>
-        <Link
-          to="/fleet"
-          className="group inline-flex min-h-[48px] items-center gap-2 self-start rounded-full border border-foreground/25 px-6 py-3 text-[0.95rem] font-semibold text-foreground transition-colors duration-200 hover:border-foreground md:self-auto"
-        >
-          See every vehicle
-          <ArrowRight className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" />
-        </Link>
-      </div>
-
-      <ol className="mx-auto max-w-[var(--container-max)] px-[var(--page-gutter)]">
-        {FLEET_CARDS.map((c, i) => {
-          const img = IMAGES[c.imageKey];
-          return (
-            <li
-              key={c.id}
-              className="stack-card sticky mb-6 h-[min(76svh,720px)] last:mb-0"
-              style={{ top: `calc(var(--header-height) + 1rem + ${i * 14}px)` }}
-            >
-              <div className="stack-inner relative h-full origin-top overflow-hidden">
-                <img
-                  src={img.src}
-                  alt={img.alt}
-                  loading="lazy"
-                  decoding="async"
-                  className="absolute inset-0 h-full w-full object-cover"
-                  style={{ objectPosition: img.objectPositionDesktop }}
-                />
-                <div
-                  className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/75 to-transparent"
-                  aria-hidden
-                />
-                <div
-                  className="stack-dim pointer-events-none absolute inset-0 bg-black opacity-0"
-                  aria-hidden
-                />
-                <div className="absolute inset-x-0 bottom-0 grid gap-4 p-6 text-white md:grid-cols-[1fr_auto] md:items-end md:p-10">
-                  <div>
-                    <p className="text-sm font-semibold text-white/70">
-                      {String(i + 1).padStart(2, "0")} /{" "}
-                      {String(FLEET_CARDS.length).padStart(2, "0")}
-                    </p>
-                    <h3 className="mt-2 font-display text-[clamp(2.25rem,5vw,4.5rem)] leading-[0.92] tracking-[-0.045em]">
-                      {c.title}
-                    </h3>
-                    <p className="mt-3 max-w-lg text-base leading-relaxed text-white/80 md:text-lg">
-                      {c.desc}
-                    </p>
-                  </div>
-                  <p className="text-sm font-semibold uppercase tracking-[0.12em] text-[color:var(--gold-light)]">
-                    {c.meta}
-                  </p>
-                </div>
-              </div>
-            </li>
-          );
-        })}
-      </ol>
     </section>
   );
 }

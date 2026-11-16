@@ -18,7 +18,7 @@ import { pageMeta } from "@/lib/seo";
 import { track } from "@/lib/tracking";
 import { StatsBand } from "@/components/home/editorial";
 import { FLEET_STATS } from "@/lib/page-editorial";
-import { PartnerRibbons } from "@/components/partner-ribbons";
+import { TrustedBy } from "@/components/trusted-by";
 
 const FLEET_INQUIRY_ID = "fleet-inquiry";
 
@@ -183,7 +183,7 @@ function FleetConversionBar({
 
   return (
     <div
-      className="fixed inset-x-0 bottom-0 z-30 h-16 border-t border-border bg-background/95 backdrop-blur-md pb-[env(safe-area-inset-bottom)]"
+      className="fixed inset-x-0 bottom-0 z-30 h-16 border-t border-border bg-background/95 backdrop-blur-md pb-[env(safe-area-inset-bottom)] max-lg:hidden"
       style={{ boxShadow: "0 -8px 24px -8px rgba(0,0,0,0.35)" }}
     >
       <div className="mx-auto flex h-16 max-w-[var(--container-max)] items-center justify-between gap-3 px-4 lg:px-10">
@@ -303,7 +303,10 @@ function Fleet() {
           <h2 className="font-display text-[clamp(2.5rem,5.5vw,5rem)] leading-[0.95]">
             Choose your vehicle.
           </h2>
-          <nav aria-label="Jump to a vehicle" className="flex flex-wrap gap-2">
+          <nav
+            aria-label="Jump to a vehicle"
+            className="scrollbar-none -mx-[var(--page-gutter)] flex gap-2 overflow-x-auto px-[var(--page-gutter)] max-lg:[&>a]:shrink-0 max-lg:[&>a]:whitespace-nowrap lg:mx-0 lg:flex-wrap lg:px-0"
+          >
             {FLEET_VEHICLES.map((v) => (
               <a
                 key={v.id}
@@ -336,7 +339,7 @@ function Fleet() {
                 style={{ top: `calc(var(--header-height) + 1rem + ${i * 12}px)` } as CSSProperties}
               >
                 <div className="stack-inner relative grid origin-top overflow-hidden rounded-[28px] bg-[#111215] ring-1 ring-white/10 lg:h-[min(80svh,740px)] lg:grid-cols-[1.45fr_1fr]">
-                  <div className="relative aspect-[16/10] lg:aspect-auto">
+                  <div className="relative aspect-[2/1] md:aspect-[16/10] lg:aspect-auto">
                     <img
                       src={img.src}
                       alt={img.alt}
@@ -368,7 +371,7 @@ function Fleet() {
                     <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/55">
                       {v.model}
                     </p>
-                    <h3 className="mt-3 bg-[image:var(--logo-gradient)] bg-[length:10em_100%] bg-clip-text font-display text-[clamp(2rem,3.4vw,3.25rem)] font-extrabold leading-[0.95] tracking-[-0.02em] text-transparent">
+                    <h3 className="mt-3 bg-[image:var(--logo-gradient)] bg-[length:10em_100%] bg-clip-text font-display text-[clamp(1.9rem,3.4vw,3.25rem)] font-normal leading-[0.95] tracking-[-0.02em] text-transparent">
                       {v.name}
                     </h3>
                     <p className="mt-4 max-w-md text-base leading-relaxed text-white/75 md:text-lg">
@@ -394,7 +397,7 @@ function Fleet() {
                       ))}
                     </dl>
                     {v.features.length > 0 && (
-                      <ul className="mt-6 grid gap-2 text-sm text-white/75">
+                      <ul className="mt-6 hidden gap-2 text-sm text-white/75 md:grid">
                         {v.features.slice(0, 3).map((f) => (
                           <li key={f} className="flex items-start gap-2">
                             <CheckCircle2
@@ -419,7 +422,7 @@ function Fleet() {
         </ol>
       </section>
 
-      <PartnerRibbons />
+      <TrustedBy />
 
       <section id={FLEET_INQUIRY_ID} className="scroll-mt-24 border-t border-border py-24">
         <div className="mx-auto max-w-3xl px-[var(--page-gutter)]">

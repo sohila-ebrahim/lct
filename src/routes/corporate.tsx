@@ -9,7 +9,7 @@ import { ensureGsap, prefersReducedMotion } from "@/lib/motion";
 import { pageMeta } from "@/lib/seo";
 import { CONTACT } from "@/lib/site-data";
 import { PartnersBoard } from "@/components/partners-board";
-import { PartnerRibbons } from "@/components/partner-ribbons";
+import { TrustedBy } from "@/components/trusted-by";
 import { ServiceStories, StatsBand } from "@/components/home/editorial";
 import { CORPORATE_STORIES } from "@/lib/page-editorial";
 
@@ -177,7 +177,7 @@ function Corporate() {
 
       <ServiceStories stories={CORPORATE_STORIES} eyebrow="Corporate travel" id="corporate-uses" />
       <StatsBand />
-      <PartnerRibbons />
+      <TrustedBy />
       <PartnersBoard tone="black" />
 
       <section

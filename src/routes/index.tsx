@@ -2,12 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useLayoutEffect } from "react";
 import { SiteLayout } from "@/components/site-layout";
 import { CinematicHero } from "@/components/home/cinematic-hero";
-import { ValueEditorial, ChauffeurSection } from "@/components/home/value-chauffeur";
-import { ServiceAvailability } from "@/components/home/service-availability";
-import { FleetStack, ServiceStories, StatsBand } from "@/components/home/editorial";
-import { PartnerRibbons } from "@/components/partner-ribbons";
-import { FinalCta } from "@/components/home/booking-experience";
-import { PartnersBoard } from "@/components/partners-board";
+import { TrustedBy } from "@/components/trusted-by";
+import { Capabilities } from "@/components/home/capabilities";
+import { PillarsSlider } from "@/components/home/pillars-slider";
 import { IMAGES } from "@/lib/image-map";
 import { CONTACT } from "@/lib/site-data";
 import { ensureGsap, prefersReducedMotion, refreshScrollTriggers } from "@/lib/motion";
@@ -63,15 +60,9 @@ function Home() {
   return (
     <SiteLayout>
       <CinematicHero />
-      <PartnerRibbons />
-      <ValueEditorial />
-      <ServiceAvailability />
-      <StatsBand />
-      <FleetStack />
-      <ServiceStories />
-      <PartnersBoard />
-      <ChauffeurSection />
-      <FinalCta />
+      <TrustedBy />
+      <Capabilities />
+      <PillarsSlider />
     </SiteLayout>
   );
 }
