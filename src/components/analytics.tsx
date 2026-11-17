@@ -95,7 +95,12 @@ export function Analytics() {
     const onMessage = (event: MessageEvent) => {
       if (!event.origin.includes("mylimobiz.com")) return;
       if (typeof event.data !== "string") return;
-      if (!bookingFired && event.data.includes("widget-booking-data")) {
+      // The home page Quick Reservation form sends the same marker when it
+      // hands the trip to /book: that starts a booking, it doesn't finish one.
+      const fromQuickRes = Array.from(
+        document.querySelectorAll<HTMLIFrameElement>('iframe[src*="quickReservation"]'),
+      ).some((f) => f.contentWindow === event.source);
+      if (!bookingFired && !fromQuickRes && event.data.includes("widget-booking-data")) {
         bookingFired = true;
         track.bookingComplete();
       }
