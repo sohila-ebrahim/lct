@@ -36,12 +36,3 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <RouterProvider router={router} />
   </React.StrictMode>,
 );
-
-// The first-load waiting arrows (index.html) go once the site has painted,
-// after at least three blinks (about 2s from the start of the page load).
-requestAnimationFrame(() =>
-  window.setTimeout(
-    () => document.getElementById("boot-signal")?.remove(),
-    Math.max(0, 1980 - performance.now()),
-  ),
-);
