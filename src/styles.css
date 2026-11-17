@@ -1106,52 +1106,6 @@
 }
 
 /*
- * Turn-signal "waiting" arrows (src/components/turn-signal.tsx; the first
- * load uses the #boot-signal copy inlined in index.html). Gold block arrows
- * at both screen edges blink on the relay beat (0.66s).
- */
-.turn-signal {
-  position: fixed;
-  inset: 0;
-  z-index: 90;
-  pointer-events: none;
-  visibility: hidden;
-  view-transition-name: turn-signal;
-}
-.turn-signal[data-on] {
-  visibility: visible;
-}
-.turn-signal i {
-  position: absolute;
-  top: 50%;
-  left: 14px;
-  width: 44px;
-  height: 36px;
-  margin-top: -18px;
-  background: #b8862b;
-  clip-path: polygon(0 50%, 55% 0, 55% 28%, 100% 28%, 100% 72%, 55% 72%, 55% 100%);
-  animation: signal-blink 0.66s steps(1, end) infinite;
-}
-.turn-signal i + i {
-  left: auto;
-  right: 14px;
-  transform: scaleX(-1);
-}
-@keyframes signal-blink {
-  0% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.12;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .turn-signal {
-    display: none;
-  }
-}
-
-/*
  * Dark mode (html[data-theme="dark"], set before first paint by the inline
  * script in index.html and by <ThemeToggle>). The page becomes near-black;
  * dark bands become a step lighter so sections still alternate.
@@ -1347,60 +1301,6 @@ main :is(h1, h2).is-typing > :not(.type-clone) {
   }
 }
 
-/* Turn-signal light: amber lamps with a glow, and a wash of light at each edge. */
-.turn-signal::before,
-.turn-signal::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 22vw;
-  max-width: 260px;
-  animation: signal-blink 0.66s steps(1, end) infinite;
-  pointer-events: none;
-}
-.turn-signal::before {
-  left: 0;
-  background: radial-gradient(60% 45% at 0% 50%, rgb(255 176 32 / 0.38), transparent 70%);
-}
-.turn-signal::after {
-  right: 0;
-  background: radial-gradient(60% 45% at 100% 50%, rgb(255 176 32 / 0.38), transparent 70%);
-}
-.turn-signal i {
-  background: #ffb020 !important;
-  filter: drop-shadow(0 0 10px rgb(255 176 32 / 0.95)) drop-shadow(0 0 22px rgb(255 140 0 / 0.6));
-}
-
-/* Hero reservation card: underline fields on dark glass. */
-.hb-input {
-  display: block;
-  width: 100%;
-  height: 2.6rem;
-  margin-top: 0.3rem;
-  border: 0;
-  border-bottom: 1px solid rgb(255 255 255 / 0.25);
-  border-radius: 0;
-  background: transparent;
-  color: #fff;
-  font-size: 0.95rem;
-  outline: none;
-  color-scheme: dark;
-  transition: border-color 0.2s ease;
-}
-.hb-input::placeholder {
-  color: rgb(255 255 255 / 0.35);
-}
-.hb-input:focus {
-  border-bottom-color: var(--gold-light);
-}
-.hb-input[aria-invalid="true"] {
-  border-bottom-color: #f87171;
-}
-.hb-input option {
-  background: #111215;
-  color: #fff;
-}
 
 /* Home pillars slider: photo cross-fade, words rise, rail progress. */
 .pillar-photo {

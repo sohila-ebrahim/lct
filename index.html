@@ -49,18 +49,6 @@
          (staticCrawlerContent in vite.config.ts), including the no-JavaScript
          fallback that used to be a <noscript> block here. React replaces it
          on its first render. -->
-    <!-- First-load "waiting" arrows (same look as the turn-signal shown
-         between pages). Fades in only if the page is still loading after
-         0.3s; main.tsx removes it once the site has rendered. -->
-    <div id="boot-signal" aria-hidden="true"><i></i><i></i></div>
-    <style>
-      #boot-signal{position:fixed;inset:0;z-index:90;pointer-events:none;opacity:0;animation:boot-in .15s .05s forwards}
-      #boot-signal i{position:absolute;top:50%;left:14px;width:44px;height:36px;margin-top:-18px;background:#ffb020;filter:drop-shadow(0 0 10px rgba(255,176,32,.95)) drop-shadow(0 0 22px rgba(255,140,0,.6));clip-path:polygon(0 50%,55% 0,55% 28%,100% 28%,100% 72%,55% 72%,55% 100%);animation:boot-blink .66s steps(1,end) infinite}
-      #boot-signal i+i{left:auto;right:14px;transform:scaleX(-1)}
-      @keyframes boot-in{to{opacity:1}}
-      @keyframes boot-blink{50%{opacity:.12}}
-      @media (prefers-reduced-motion:reduce){#boot-signal{display:none}}
-    </style>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

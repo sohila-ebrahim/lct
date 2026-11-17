@@ -6,22 +6,10 @@ import { CONTACT } from "@/lib/site-data";
 import { EASE, ensureGsap, prefersReducedMotion } from "@/lib/motion";
 import { typeHeadline } from "@/lib/typing";
 
-/** The intro plays once per full page load (not on in-site navigation back home). */
-let introPlayed = false;
-
-function canRunIntro() {
-  if (introPlayed || prefersReducedMotion()) return false;
-  const conn = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
-  return !conn?.saveData;
-}
-
 /**
  * Cinematic hero: the headline types in (caret, then letter by letter) in
- * the logo's gold and the reservation card rises in beside it. On the first
- * open of the site, on tablets and up, the fleet's real black Escalade (a
- * studio photograph with the background removed, src/lib/drive-by-photo.ts)
- * drives small along a gold line at the bottom of the hero. Reduced motion
- * and Save-Data get the finished hero straight away.
+ * the logo's gold and the booking card rises in beside it. Reduced motion
+ * gets the finished hero straight away.
  */
 export function CinematicHero() {
   const rootRef = useRef<HTMLElement>(null);
@@ -38,12 +26,6 @@ export function CinematicHero() {
       return;
     }
     const { gsap } = ensureGsap();
-    let cancelDrive: (() => void) | null = null;
-    let layer: HTMLDivElement | null = null;
-    let disposed = false;
-    // Decided before anything runs: the car only plays on the first open of
-    // the site, never on phones (it would cross the booking form there).
-    const runCar = canRunIntro() && window.matchMedia("(min-width: 768px)").matches;
 
     const ctx = gsap.context(() => {
       gsap.fromTo(
@@ -62,37 +44,7 @@ export function CinematicHero() {
     }, root);
     void typeHeadline(title);
 
-    const dropLayer = () => {
-      layer?.remove();
-      layer = null;
-    };
-
-    if (runCar) {
-      import("@/lib/drive-by-photo")
-        .then(async ({ preloadDriveByCar, runPhotoDriveBy }) => {
-          const ready = await preloadDriveByCar(2500);
-          if (!ready || disposed) return;
-          // Marked only once the car really starts (dev StrictMode runs this
-          // effect twice; the first, cancelled run must not use up the intro).
-          introPlayed = true;
-          layer = document.createElement("div");
-          layer.setAttribute("aria-hidden", "true");
-          // Inside the hero, under the words and the card: the car passes
-          // behind them along the bottom edge.
-          layer.style.cssText =
-            "position:absolute;left:0;right:0;bottom:0;height:200px;z-index:1;pointer-events:none;overflow:hidden";
-          root.appendChild(layer);
-          cancelDrive = runPhotoDriveBy(layer, { onDone: dropLayer });
-        })
-        .catch(() => {});
-    }
-
-    return () => {
-      disposed = true;
-      cancelDrive?.();
-      dropLayer();
-      ctx.revert();
-    };
+    return () => ctx.revert();
   }, []);
 
   return (

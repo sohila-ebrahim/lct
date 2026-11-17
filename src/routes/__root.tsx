@@ -8,7 +8,6 @@ import {
   useRouter,
 } from "@tanstack/react-router";
 import { RouteTransition } from "@/components/route-transition";
-import { TurnSignal } from "@/components/turn-signal";
 import { HeadlineTyping } from "@/components/headline-typing";
 import { MyLimoBizWidgetHost } from "@/components/booking/mylimobiz-widget";
 import { Analytics } from "@/components/analytics";
@@ -137,7 +136,6 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <HeadContent />
       <RouteTransition />
-      <TurnSignal />
       <HeadlineTyping />
       <MyLimoBizWidgetHost />
       <Analytics />
