@@ -96,7 +96,7 @@ function About() {
           />
           <div ref={missionRef}>
             <div className="eyebrow">Mission</div>
-            <h2 className="about-mission-title mt-4 font-display text-4xl leading-[1.05] text-foreground md:text-6xl">
+            <h2 className="about-mission-title mt-4 font-display text-3xl leading-[1.05] text-foreground md:text-[2.85rem]">
               The private mode of travel.
             </h2>
             <p className="about-mission-desc mt-6 max-w-md text-base leading-relaxed text-muted-foreground md:text-lg">

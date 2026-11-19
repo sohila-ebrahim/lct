@@ -102,7 +102,7 @@ function Rates() {
 
       <section className="border-t border-border bg-onyx py-24">
         <div className="mx-auto max-w-2xl px-6 text-center lg:px-10">
-          <h2 className="font-display text-3xl leading-tight text-off-white md:text-5xl">
+          <h2 className="font-display text-2xl leading-tight text-off-white md:text-4xl">
             Get your exact rate.
           </h2>
           <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-off-white/70 md:text-base">

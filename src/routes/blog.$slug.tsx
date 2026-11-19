@@ -157,7 +157,7 @@ function BlogArticlePage() {
           <div className="article-meta flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-widest text-gold">
             <span>{article.category}</span>
           </div>
-          <h1 className="article-title mt-4 font-display text-4xl leading-[1.08] text-foreground md:text-6xl">
+          <h1 className="article-title mt-4 font-display text-3xl leading-[1.08] text-foreground md:text-[2.85rem]">
             {article.title}
           </h1>
           <p className="article-meta mt-5 text-lg leading-relaxed text-muted-foreground">

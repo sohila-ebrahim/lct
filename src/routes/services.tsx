@@ -197,7 +197,7 @@ function Services() {
           <div className="mb-5 flex items-center justify-center gap-3">
             <span className="eyebrow">Services</span>
           </div>
-          <h1 className="font-display text-4xl leading-[1.05] text-foreground md:text-6xl">
+          <h1 className="font-display text-3xl leading-[1.05] text-foreground md:text-[2.85rem]">
             One standard, six occasions.
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">
@@ -231,7 +231,7 @@ function Services() {
                   className="mb-6 aspect-[3/2] w-full rounded-sm object-cover lg:hidden"
                   style={{ objectPosition: c.image.position }}
                 />
-                <h2 className="service-chapter-title font-display text-3xl leading-tight transition-colors duration-500 md:text-5xl">
+                <h2 className="service-chapter-title font-display text-2xl leading-tight transition-colors duration-500 md:text-4xl">
                   {c.title}
                 </h2>
                 <p className="mt-5 max-w-md text-sm leading-relaxed text-muted-foreground md:text-base">

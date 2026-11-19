@@ -92,7 +92,7 @@ export function PageHero({
       <div className="mx-auto grid max-w-[var(--container-max)] gap-6 px-[var(--page-gutter)] lg:grid-cols-12 lg:items-end lg:gap-10">
         <div className="lg:col-span-8">
           <p className="pagehero-eyebrow eyebrow">{eyebrow}</p>
-          <h1 className="pagehero-title mt-4 font-display text-[clamp(2.75rem,6.2vw,6rem)] leading-[0.92] tracking-[-0.045em] text-foreground">
+          <h1 className="pagehero-title mt-4 font-display text-[clamp(2rem,3.8vw,3.6rem)] leading-[0.92] tracking-[-0.045em] text-foreground">
             {title}
           </h1>
         </div>

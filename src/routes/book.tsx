@@ -75,7 +75,7 @@ function BookPage() {
           <div className="mb-5 flex items-center justify-center gap-3">
             <span className="eyebrow">Reservations</span>
           </div>
-          <h1 className="font-display text-4xl leading-[1.05] text-foreground md:text-6xl">
+          <h1 className="font-display text-3xl leading-[1.05] text-foreground md:text-[2.85rem]">
             Reserve your ride.
           </h1>
           <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">

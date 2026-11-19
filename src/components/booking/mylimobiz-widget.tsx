@@ -181,13 +181,23 @@ export function MyLimoBizWidgetHost() {
     }
 
     ensureScriptRequested();
-    // The slot div commits in the same render pass as this route; querying
-    // on the next frame is a cheap, reliable way to avoid a mount-order race
-    // without coupling this component to the route's internals.
-    const raf = window.requestAnimationFrame(() => {
-      document.getElementById(MYLIMOBIZ_SLOT_ID)?.appendChild(container);
+    // Wait for the /book slot to exist, however long that takes. With view
+    // transitions on, the new route's DOM is committed only after the old
+    // page has been captured, so on in-site navigation the slot is not there
+    // yet on the next frame (a single deferred lookup missed it and left the
+    // booking window parked off-screen until a full reload).
+    const place = () => {
+      const slot = document.getElementById(MYLIMOBIZ_SLOT_ID);
+      if (!slot) return false;
+      if (container.parentElement !== slot) slot.appendChild(container);
+      return true;
+    };
+    if (place()) return;
+    const observer = new MutationObserver(() => {
+      if (place()) observer.disconnect();
     });
-    return () => window.cancelAnimationFrame(raf);
+    observer.observe(document.body, { childList: true, subtree: true });
+    return () => observer.disconnect();
   }, [pathname]);
 
   return null;
