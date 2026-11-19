@@ -193,7 +193,7 @@ export function StatsBand({ stats = STATS }: { stats?: Stat[] }) {
                     strokeWidth="2"
                   />
                 </svg>
-                <div className="absolute inset-x-0 top-[83%] -translate-y-1/2 font-display text-[clamp(1.15rem,3.4vw,2.75rem)] font-medium leading-none tracking-[-0.03em] text-white">
+                <div className="absolute inset-x-0 top-[83%] -translate-y-1/2 font-display text-[clamp(1.1rem,2.6vw,2.25rem)] font-medium leading-none tracking-[-0.03em] text-white">
                   {s.prefix}
                   <span data-count={s.value}>{s.value}</span>
                   <span className="text-[0.55em] text-[color:var(--gold-light)]">{s.suffix}</span>
@@ -288,7 +288,7 @@ export function ServiceStories({
                   }`}
                 >
                   <p className="text-sm font-semibold text-muted-foreground">0{i + 1}</p>
-                  <h2 className="mt-3 font-display text-[clamp(2.4rem,4.6vw,4.25rem)] leading-[0.92] tracking-[-0.045em] text-foreground">
+                  <h2 className="mt-3 font-display text-[clamp(1.75rem,3vw,2.85rem)] leading-[0.92] tracking-[-0.045em] text-foreground">
                     {s.title}
                   </h2>
                   <p className="mt-5 max-w-md text-lg leading-[1.6] text-muted-foreground">

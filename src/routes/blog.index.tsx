@@ -125,7 +125,7 @@ function BlogIndex() {
           <div className="blog-hero-eyebrow mb-5 flex items-center justify-center gap-3">
             <span className="eyebrow">Insights From the Road</span>
           </div>
-          <h1 className="blog-hero-title font-display text-5xl leading-[1.05] text-foreground md:text-7xl">
+          <h1 className="blog-hero-title font-display text-4xl leading-[1.05] text-foreground md:text-[3.6rem]">
             Executive travel, explained.
           </h1>
           <p className="blog-hero-desc mx-auto mt-6 max-w-xl text-base leading-relaxed text-muted-foreground md:text-lg">

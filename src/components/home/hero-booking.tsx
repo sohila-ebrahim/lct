@@ -4,7 +4,8 @@ import { SiWhatsapp } from "react-icons/si";
 import { BOOKING, CONTACT } from "@/lib/site-data";
 
 /**
- * The hero's reservation card: MyLimoBiz's own Quick Reservation form, so
+ * The hero's reservation card: MyLimoBiz's own Quick Reservation form (shown
+ * inverted and see-through on the hero photo, see .qr-frame), so
  * what a visitor enters goes into the company's reservation system, not a
  * separate inbox. Service type, date, time, pickup, drop-off, passengers and
  * luggage are filled in here; "Select Vehicle" carries them to /book, where
@@ -100,7 +101,7 @@ export function HeroBooking() {
   };
 
   return (
-    <div className="hero-booking relative w-full overflow-hidden rounded-[20px] bg-[#0d0e10]/75 p-5 shadow-[0_30px_80px_-20px_rgb(0_0_0/0.6)] ring-1 ring-[#c9a24f]/30 backdrop-blur-xl md:p-6">
+    <div className="hero-booking relative w-full overflow-hidden rounded-[20px] bg-[#0d0e10]/20 p-5 shadow-[0_30px_80px_-20px_rgb(0_0_0/0.5)] ring-1 ring-[#c9a24f]/30 backdrop-blur-[3px] md:p-6">
       <span
         className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[#e2c27a] to-transparent"
         aria-hidden
@@ -108,14 +109,14 @@ export function HeroBooking() {
       <p className="text-[0.65rem] font-medium uppercase tracking-[0.3em] text-[color:var(--gold-light)]">
         Reservations
       </p>
-      <p className="mt-2 font-display text-[1.3rem] font-normal leading-tight tracking-[-0.01em] text-white md:text-[1.5rem]">
+      <p className="mt-2 font-display text-[1.15rem] font-normal leading-tight tracking-[-0.01em] text-white md:text-[1.25rem]">
         Reserve in under 60 seconds.
       </p>
 
-      <div className="relative mt-4 overflow-hidden rounded-[14px] bg-[#fcf9f6]">
+      <div className="relative mt-4 overflow-hidden rounded-[14px]">
         {!loaded ? (
           <div
-            className="absolute inset-0 grid place-items-center text-sm text-[#45474d]"
+            className="absolute inset-0 grid place-items-center text-sm text-white/70"
             aria-hidden
           >
             Loading reservations…
@@ -128,7 +129,7 @@ export function HeroBooking() {
           onLoad={onLoad}
           scrolling="no"
           allow="geolocation"
-          className="block h-[640px] w-full border-0"
+          className="qr-frame block h-[640px] w-full border-0"
         />
       </div>
 

@@ -159,7 +159,7 @@ export function PillarsSlider() {
               </p>
               <h2
                 data-no-type
-                className="mt-4 font-display text-[clamp(2.6rem,6vw,5.25rem)] font-normal leading-[0.95] tracking-[-0.025em]"
+                className="mt-4 font-display text-[clamp(1.9rem,3.6vw,3.4rem)] font-normal leading-[0.95] tracking-[-0.025em]"
               >
                 {s.title[0]}
                 <br />

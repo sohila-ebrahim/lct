@@ -1302,6 +1302,22 @@ main :is(h1, h2).is-typing > :not(.type-clone) {
 }
 
 
+/*
+ * Hero Quick Reservation (the MyLimoBiz iframe in hero-booking.tsx): their
+ * form is ivory with dark text and can't be restyled from this site
+ * (cross-origin), so it is shown inverted, with the hue turned back so the
+ * gold stays gold, and slightly transparent so the hero photo shows through.
+ */
+.qr-frame {
+  filter: invert(1) hue-rotate(180deg);
+  opacity: 0.72;
+  transition: opacity 0.3s ease;
+}
+.qr-frame:hover,
+.qr-frame:focus {
+  opacity: 0.86;
+}
+
 /* Home pillars slider: photo cross-fade, words rise, rail progress. */
 .pillar-photo {
   opacity: 0;

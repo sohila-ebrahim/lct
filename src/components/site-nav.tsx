@@ -245,7 +245,7 @@ export function SiteNav() {
                       <span className="w-7 shrink-0 text-xs font-semibold text-muted-foreground">
                         {String(i + 1).padStart(2, "0")}
                       </span>
-                      <span className="font-display text-[clamp(2rem,5.2vw,4.25rem)] leading-[0.95] tracking-[-0.045em]">
+                      <span className="font-display text-[clamp(1.35rem,2.4vw,2.1rem)] leading-[0.95] tracking-[-0.045em]">
                         {m.label}
                       </span>
                       <ArrowUpRight

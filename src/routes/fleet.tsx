@@ -300,7 +300,7 @@ function Fleet() {
 
       <section className="band-dark bg-[color:var(--band)] pb-[var(--section-space)] pt-[var(--section-space)]">
         <div className="mx-auto flex max-w-[var(--container-max)] flex-col gap-8 px-[var(--page-gutter)] lg:flex-row lg:items-end lg:justify-between">
-          <h2 className="font-display text-[clamp(2.5rem,5.5vw,5rem)] leading-[0.95]">
+          <h2 className="font-display text-[clamp(1.9rem,3.4vw,3.1rem)] leading-[0.95]">
             Choose your vehicle.
           </h2>
           <nav
@@ -371,7 +371,7 @@ function Fleet() {
                     <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/55">
                       {v.model}
                     </p>
-                    <h3 className="mt-3 bg-[image:var(--logo-gradient)] bg-[length:10em_100%] bg-clip-text font-display text-[clamp(1.9rem,3.4vw,3.25rem)] font-normal leading-[0.95] tracking-[-0.02em] text-transparent">
+                    <h3 className="mt-3 bg-[image:var(--logo-gradient)] bg-[length:10em_100%] bg-clip-text font-display text-[clamp(1.6rem,2.5vw,2.4rem)] font-normal leading-[0.95] tracking-[-0.02em] text-transparent">
                       {v.name}
                     </h3>
                     <p className="mt-4 max-w-md text-base leading-relaxed text-white/75 md:text-lg">

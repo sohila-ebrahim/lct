@@ -52,7 +52,7 @@ export function SectionHeading({
       className={align === "center" ? "mx-auto max-w-3xl text-center" : "max-w-2xl"}
     >
       {eyebrow && <p className="sh-eyebrow eyebrow mb-4">{eyebrow}</p>}
-      <h2 className="sh-title font-display text-[clamp(2.25rem,4.6vw,4.25rem)] leading-[0.95] tracking-[-0.04em] text-foreground">
+      <h2 className="sh-title font-display text-[clamp(1.75rem,3vw,2.85rem)] leading-[0.95] tracking-[-0.04em] text-foreground">
         {title}
       </h2>
       {description && (

@@ -88,13 +88,13 @@ export function CinematicHero() {
           <h1
             ref={titleRef}
             data-no-type
-            className="font-display text-[clamp(2.3rem,7.4vw,7.6rem)] font-normal leading-[0.92] tracking-[-0.04em] md:mt-5"
+            className="font-display text-[clamp(2rem,4.4vw,4.25rem)] font-normal leading-[0.92] tracking-[-0.04em] md:mt-5"
           >
             One fleet.
             <br />
             Every occasion.
           </h1>
-          <p className="hero-rise mt-6 hidden max-w-md text-lg leading-[1.6] text-white/75 md:block">
+          <p className="hero-rise mt-5 hidden max-w-sm text-[0.95rem] leading-[1.65] text-white/75 md:block">
             Sedans, SUVs, Sprinters and coaches with professional chauffeurs, dispatched around the
             clock from our Irving office.
           </p>
