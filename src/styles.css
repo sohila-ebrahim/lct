@@ -1307,15 +1307,19 @@ main :is(h1, h2).is-typing > :not(.type-clone) {
  * form is ivory with dark text and can't be restyled from this site
  * (cross-origin), so it is shown inverted, with the hue turned back so the
  * gold stays gold, and slightly transparent so the hero photo shows through.
+ * Zoomed out a step so its type is smaller and the card shorter; the frame
+ * still fills the card's width (its inner viewport grows to match).
  */
 .qr-frame {
-  filter: invert(1) hue-rotate(180deg);
-  opacity: 0.72;
+  zoom: 0.84;
+  /* contrast + brightness keep the inverted labels white, not grey */
+  filter: invert(1) hue-rotate(180deg) contrast(1.2) brightness(1.08);
+  opacity: 0.8;
   transition: opacity 0.3s ease;
 }
 .qr-frame:hover,
 .qr-frame:focus {
-  opacity: 0.86;
+  opacity: 0.9;
 }
 
 /* Home pillars slider: photo cross-fade, words rise, rail progress. */
