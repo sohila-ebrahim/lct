@@ -35,9 +35,9 @@ export function TrustedBy() {
           <strong className="font-semibold text-[#0d0e10]">airlines &amp; companies</strong>
         </p>
 
-        <ul className="mt-8 grid grid-cols-3 items-center justify-items-center gap-x-6 gap-y-8 md:mt-10 md:grid-cols-6 md:gap-x-10">
+        <ul className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-8 md:mt-10 md:gap-x-12">
           {PARTNERS.map((p) => (
-            <li key={p.name} className="flex h-14 items-center justify-center">
+            <li key={p.name} className="flex h-14 w-[28%] items-center justify-center md:w-auto">
               <img
                 src={p.logo}
                 alt={p.name}
