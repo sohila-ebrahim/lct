@@ -81,29 +81,48 @@ export function CinematicHero() {
       </div>
 
       <div className="relative z-[2] mx-auto grid min-h-[100svh] max-w-[var(--container-max)] items-end gap-6 px-[var(--page-gutter)] pb-[calc(env(safe-area-inset-bottom)+5.5rem)] pt-24 md:gap-10 md:pb-10 md:pt-32 lg:grid-cols-[minmax(0,1fr)_minmax(360px,430px)] lg:items-center lg:gap-14 lg:pb-16">
-        <div>
-          <p className="hero-rise hidden text-[0.7rem] font-medium uppercase tracking-[0.3em] text-[color:var(--gold-light)] md:block">
-            Executive chauffeured transportation · Dallas–Fort Worth
+        <div className="relative">
+          {/* A soft shade behind the words, so they sit clear of the busy photo. */}
+          <span
+            className="pointer-events-none absolute -inset-x-16 -inset-y-12 -z-10 hidden bg-[radial-gradient(closest-side,rgb(0_0_0/0.55),transparent)] md:block"
+            aria-hidden
+          />
+          <p className="hero-rise hidden items-center gap-2.5 text-[0.66rem] font-medium uppercase tracking-[0.24em] text-white/70 md:flex">
+            <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--gold-light)]" aria-hidden />
+            Executive chauffeured transportation
+            <span className="text-white/35" aria-hidden>
+              ·
+            </span>
+            Dallas–Fort Worth
           </p>
           <h1
             ref={titleRef}
             data-no-type
-            className="font-display text-[clamp(2rem,4.4vw,4.25rem)] font-normal leading-[0.92] tracking-[-0.04em] md:mt-5"
+            className="font-display text-[clamp(2rem,4.2vw,4rem)] font-normal leading-[0.96] tracking-[-0.035em] md:mt-4"
           >
             One fleet.
             <br />
             Every occasion.
           </h1>
-          <p className="hero-rise mt-5 hidden max-w-sm text-[0.95rem] leading-[1.65] text-white/75 md:block">
+          <p className="hero-rise mt-5 hidden max-w-[25rem] text-[0.95rem] font-light leading-[1.75] text-white/75 md:block">
             Sedans, SUVs, Sprinters and coaches with professional chauffeurs, dispatched around the
             clock from our Irving office.
           </p>
           <a
             href={CONTACT.phoneTel}
-            className="hero-rise mt-6 hidden items-center gap-2 text-base md:inline-flex font-semibold text-white/85 transition-colors duration-200 hover:text-[color:var(--gold-light)]"
+            className="hero-rise group mt-7 hidden items-center gap-3.5 md:inline-flex"
           >
-            <Phone className="h-4 w-4 text-[color:var(--gold-light)]" aria-hidden />
-            {CONTACT.phoneDisplay} · 24/7
+            <span className="grid h-11 w-11 place-items-center rounded-full ring-1 ring-[#c9a24f]/60 transition-colors duration-200 group-hover:bg-[#c9a24f]/15">
+              <Phone className="h-4 w-4 text-[color:var(--gold-light)]" aria-hidden />
+            </span>
+            <span className="flex flex-col">
+              <span className="text-[0.6rem] font-medium uppercase tracking-[0.24em] text-white/55">
+                Dispatch · 24/7
+              </span>
+              <span className="mt-1 font-display text-lg font-normal tracking-[-0.01em] text-white transition-colors duration-200 group-hover:text-[color:var(--gold-light)]">
+                {CONTACT.phoneDisplay}
+              </span>
+            </span>
           </a>
         </div>
 
