@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-display: "Montserrat Variable", "Montserrat", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Cormorant Garamond Variable", "Cormorant Garamond", Georgia, "Times New Roman", serif;
   --font-sans: "Inter Variable", "Inter", ui-sans-serif, system-ui, sans-serif;
 
   /* Proportional, not subtractive — with the site's deliberately tiny 0.2rem
@@ -192,12 +192,14 @@
     text-rendering: optimizeLegibility;
     overflow-x: clip;
   }
-  /* Display voice: large, light and quietly spaced. Explicit weight,
-     tracking and leading utilities on an element still win. */
+  /* Display voice: a classic serif, regular weight, natural spacing.
+     Explicit weight and leading utilities on an element still win. */
   h1, h2, h3, h4, .font-display {
     font-family: var(--font-display);
-    font-weight: 500;
-    letter-spacing: -0.025em;
+    font-weight: 400;
+    letter-spacing: -0.005em;
+    /* Lining figures: phone numbers, prices and counters at cap height. */
+    font-variant-numeric: lining-nums;
     line-height: 1;
   }
   :focus-visible {
@@ -1205,25 +1207,15 @@ html.theme-switching * {
 }
 
 /*
- * Headlines in the logo's metallic gold, lit from within. On dark surfaces
- * the gold is bright with a near-white core; on light surfaces it is a
- * deeper, richer gold (a white core would vanish on white) with a hairline
- * shadow underneath to define the letters. The gradient repeats every 10em
- * (symmetric stops, so the repeat is seamless) so the sheen shows on short
- * and long lines alike.
+ * Headlines: ivory on dark surfaces, warm ink on light ones, in the serif.
+ * Gold is kept for accents only: wrap a word in .accent-serif for the
+ * champagne italic (the home hero's "Every occasion.").
  */
 :root,
 .band-light {
-  --logo-gradient: linear-gradient(
-    100deg,
-    #7a5410 0%,
-    #b47f22 24%,
-    #dca848 50%,
-    #b47f22 76%,
-    #7a5410 100%
-  );
-  --headline-shadow: drop-shadow(0 1px 1px rgb(60 40 10 / 0.35));
-  --caret: #b47f22;
+  --headline: #16140f;
+  --accent-ink: #8f6f37;
+  --caret: #8f6f37;
 }
 :root[data-theme="dark"],
 .band-dark,
@@ -1231,31 +1223,22 @@ html.theme-switching * {
 [class*="bg-[color:var(--surface-black)]"],
 [class*="bg-[color:var(--surface-elevated)]"],
 [class*="bg-[color:var(--onyx)]"] {
-  --logo-gradient: linear-gradient(
-    100deg,
-    #c39436 0%,
-    #f2d27e 24%,
-    #fff7de 50%,
-    #f2d27e 76%,
-    #c39436 100%
-  );
-  --headline-shadow: none;
-  --caret: #f2d27e;
+  --headline: #f4efe6;
+  --accent-ink: #d9bf8f;
+  --caret: #d9bf8f;
 }
 :root[data-theme="dark"] .band-light {
-  --logo-gradient: linear-gradient(100deg, #7a5410 0%, #b47f22 24%, #dca848 50%, #b47f22 76%, #7a5410 100%);
-  --headline-shadow: drop-shadow(0 1px 1px rgb(60 40 10 / 0.35));
-  --caret: #b47f22;
+  --headline: #16140f;
+  --accent-ink: #8f6f37;
+  --caret: #8f6f37;
 }
 main h1,
-main h2,
-.type-clone {
-  background-image: var(--logo-gradient);
-  background-size: 10em 100%;
-  background-repeat: repeat-x;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+main h2 {
+  color: var(--headline);
+}
+.accent-serif {
+  font-style: italic;
+  color: var(--accent-ink);
 }
 
 /*
@@ -1381,31 +1364,13 @@ main :is(h1, h2).is-typing > :not(.type-clone) {
 }
 
 /*
- * Luminous headlines: the letters themselves are lit, with a sheen
- * travelling along the gradient (it repeats every 10em, so moving it 10em
- * loops seamlessly). No outline and no halo around the type.
+ * Serif display spacing. Unlayered, so it also settles the tighter
+ * tracking utilities that were tuned for the earlier sans headlines.
  */
-main h1,
-main h2 {
-  filter: var(--headline-shadow);
-}
-main h1,
-main h2,
+main :is(h1, h2, h3),
+.font-display,
 .type-clone {
-  letter-spacing: -0.02em;
-  animation: headline-sheen 7s linear infinite;
-}
-@keyframes headline-sheen {
-  to {
-    background-position: 10em 0;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  main h1,
-  main h2,
-  .type-clone {
-    animation: none;
-  }
+  letter-spacing: -0.005em;
 }
 
 /* Floating actions (floating-actions.tsx): icon-only WhatsApp and handset. */

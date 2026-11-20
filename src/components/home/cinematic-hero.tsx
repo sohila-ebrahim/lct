@@ -87,22 +87,18 @@ export function CinematicHero() {
             className="pointer-events-none absolute -inset-x-16 -inset-y-12 -z-10 hidden bg-[radial-gradient(closest-side,rgb(0_0_0/0.55),transparent)] md:block"
             aria-hidden
           />
-          <p className="hero-rise hidden items-center gap-2.5 text-[0.66rem] font-medium uppercase tracking-[0.24em] text-white/70 md:flex">
-            <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--gold-light)]" aria-hidden />
-            Executive chauffeured transportation
-            <span className="text-white/35" aria-hidden>
-              ·
-            </span>
-            Dallas–Fort Worth
+          <p className="hero-rise hidden text-[0.66rem] font-medium uppercase tracking-[0.3em] text-[#c8ad86] md:block">
+            Executive chauffeured transportation · Dallas–Fort Worth
           </p>
+          <span className="hero-rise mt-4 hidden h-px w-10 bg-[#c8ad86] md:block" aria-hidden />
           <h1
             ref={titleRef}
             data-no-type
-            className="font-display text-[clamp(2rem,4.2vw,4rem)] font-normal leading-[0.96] tracking-[-0.035em] md:mt-4"
+            className="font-display text-[clamp(2.4rem,4.8vw,4.6rem)] font-light leading-[1] md:mt-5"
           >
             One fleet.
             <br />
-            Every occasion.
+            <span className="accent-serif">Every occasion.</span>
           </h1>
           <p className="hero-rise mt-5 hidden max-w-[25rem] text-[0.95rem] font-light leading-[1.75] text-white/75 md:block">
             Sedans, SUVs, Sprinters and coaches with professional chauffeurs, dispatched around the
