@@ -9,7 +9,8 @@ import { getRouter } from "./router";
 // fully blank page in headless Chromium with fonts.googleapis.com dropped.
 // Montserrat (display headlines) + Inter (body), one variable file
 // each, Latin subsets loaded on demand by unicode-range.
-import "@fontsource-variable/montserrat/wght.css";
+import "@fontsource-variable/cormorant-garamond/wght.css";
+import "@fontsource-variable/cormorant-garamond/wght-italic.css";
 import "@fontsource-variable/inter/wght.css";
 import "./styles.css";
 import { forwardMyLimoBizReturnToBook } from "./lib/mylimobiz-return-routing";

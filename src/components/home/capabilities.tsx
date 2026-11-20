@@ -110,7 +110,7 @@ function FigureTile() {
     >
       <p
         key={i}
-        className="cap-figure bg-[image:var(--logo-gradient)] bg-clip-text font-display text-[clamp(2.2rem,4.2vw,4rem)] font-light leading-none tracking-[-0.03em] text-transparent tabular-nums"
+        className="cap-figure font-display text-[#d9bf8f] text-[clamp(2.2rem,4.2vw,4rem)] font-light leading-none tracking-[-0.03em] tabular-nums"
         aria-live="off"
       >
         {shown}
