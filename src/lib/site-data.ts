@@ -594,6 +594,14 @@ export const PARTNERS = [
     h: 160,
   },
   {
+    name: "Lufthansa",
+    board: "LUFTHANSA",
+    kind: "airline",
+    logo: "/assets/partners/lufthansa.webp",
+    w: 440,
+    h: 84,
+  },
+  {
     name: "FedEx",
     board: "FEDEX",
     kind: "corporate",
