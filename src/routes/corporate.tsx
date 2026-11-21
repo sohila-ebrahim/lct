@@ -3,7 +3,7 @@ import { useLayoutEffect, useRef } from "react";
 import { SiteLayout, PageHero } from "@/components/site-layout";
 import { SectionHeading } from "@/components/section-heading";
 import { ArrowRight, Briefcase, TrendingUp, Users, Building2 } from "lucide-react";
-import { LeadForm } from "@/components/lead-form";
+import { ContactOptions } from "@/components/contact-options";
 import { IMAGES } from "@/lib/image-map";
 import { ensureGsap, prefersReducedMotion } from "@/lib/motion";
 import { pageMeta } from "@/lib/seo";
@@ -193,42 +193,12 @@ function Corporate() {
                 Open a <span className="italic text-gold-gradient">corporate account.</span>
               </>
             }
-            description="Submit a request and a dedicated LCT account manager will contact you to design your program."
+            description="Talk to our team directly. An LCT account manager sets up your program and consolidated billing with you."
           />
           <div className="mt-12">
-            <LeadForm
-              formType="corporate"
-              submitLabel="Request Corporate Account"
-              fields={[
-                { name: "companyName", label: "Company", required: true, colSpan: 1 },
-                { name: "customerName", label: "Full Name", required: true, colSpan: 1 },
-                {
-                  name: "customerEmail",
-                  label: "Business Email",
-                  type: "email",
-                  required: true,
-                  colSpan: 1,
-                },
-                { name: "phone", label: "Phone", type: "tel", colSpan: 1 },
-                {
-                  name: "passengers",
-                  label: "Estimated Monthly Rides",
-                  type: "number",
-                  colSpan: 1,
-                },
-                { name: "pickupAddress", label: "Primary Cities", colSpan: 1 },
-                {
-                  name: "specialRequests",
-                  label: "Notes",
-                  type: "textarea",
-                  rows: 3,
-                  colSpan: 2,
-                  placeholder: "Tell us about your travel program and requirements.",
-                },
-              ]}
-              toggles={[
-                { name: "corporateBooking", label: "Yes, we operate a formal travel program" },
-              ]}
+            <ContactOptions
+              subject="Corporate account request"
+              note="Send your company name, how many people travel and a billing contact, or call dispatch to start."
             />
           </div>
         </div>
