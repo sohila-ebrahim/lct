@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { SiteLayout, PageHero } from "@/components/site-layout";
 import { Icon3D } from "@/components/icon3d/Icon3D";
 import type { Icon3DName } from "@/components/icon3d/registry";
-import { LeadForm } from "@/components/lead-form";
+import { ContactOptions } from "@/components/contact-options";
 import { Logo } from "@/components/logo";
 import { CONTACT } from "@/lib/site-data";
 import { IMAGES } from "@/lib/image-map";
@@ -170,38 +170,15 @@ function Contact() {
         </div>
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-[1.2fr_1fr]">
           <div ref={formWrapRef}>
-            <LeadForm
-              formType="contact"
-              title="Send us a message"
-              description="A member of our reservation team will contact you shortly. For instant confirmation, use Book Your Ride above."
-              submitLabel="Send Message"
-              fields={[
-                { name: "customerName", label: "Full Name", required: true, colSpan: 1 },
-                {
-                  name: "customerEmail",
-                  label: "Email",
-                  type: "email",
-                  required: true,
-                  colSpan: 1,
-                },
-                { name: "phone", label: "Phone", type: "tel", colSpan: 1 },
-                { name: "companyName", label: "Company (optional)", colSpan: 1 },
-                {
-                  name: "pickupDateTime",
-                  label: "Preferred Date & Time",
-                  type: "datetime-local",
-                  colSpan: 2,
-                },
-                {
-                  name: "specialRequests",
-                  label: "Message / Special Requests",
-                  type: "textarea",
-                  rows: 4,
-                  colSpan: 2,
-                  placeholder: "Passenger count, luggage, vehicle preference, occasion…",
-                },
-              ]}
-            />
+            <div>
+              <p className="font-display text-3xl text-foreground md:text-4xl">Send us a message</p>
+              <div className="mt-6">
+                <ContactOptions
+                  subject="Website message"
+                  note="Call, WhatsApp or email and our reservations team answers you directly. To book a ride now, use Book Your Ride."
+                />
+              </div>
+            </div>
           </div>
 
           <div ref={cardsRef} className="space-y-5 overflow-x-hidden">

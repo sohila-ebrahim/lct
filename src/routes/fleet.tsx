@@ -1,7 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   useLayoutEffect,
-  useMemo,
   useRef,
   useState,
   type CSSProperties,
@@ -12,7 +11,7 @@ import { SectionHeading } from "@/components/section-heading";
 import { CheckCircle2, ArrowRight, Phone } from "lucide-react";
 import { FLEET_VEHICLES, CONTACT, type FleetVehicle } from "@/lib/site-data";
 import { IMAGES } from "@/lib/image-map";
-import { LeadForm } from "@/components/lead-form";
+import { ReservationPanel } from "@/components/booking/reservation-panel";
 import { ensureGsap, prefersReducedMotion } from "@/lib/motion";
 import { pageMeta } from "@/lib/seo";
 import { track } from "@/lib/tracking";
@@ -53,13 +52,11 @@ function ctaLabel(v: FleetVehicle) {
 /**
  * Shared CTA behavior for both the in-chapter buttons and the sticky bar.
  * Bookable vehicles go straight to /book (MyLimoBiz). Quote-only vehicles
- * never claim to be directly bookable — they scroll to and prefill the
- * existing on-page Supabase fleet-inquiry form instead of navigating away,
- * so the vehicle context isn't lost.
+ * never claim to be directly bookable — they scroll to the on-page
+ * reservation block, which also offers call, WhatsApp and email for quotes.
  */
-function useVehicleQuote(onQuote: (vehicleName: string) => void) {
+function useVehicleQuote() {
   return (v: FleetVehicle) => {
-    onQuote(v.name);
     track.fleetVehicleQuoteClick(v.id);
     document
       .getElementById(FLEET_INQUIRY_ID)
@@ -222,12 +219,7 @@ function FleetConversionBar({
 function Fleet() {
   const heroImg = IMAGES.fleetHero;
 
-  const [inquiryVehicle, setInquiryVehicle] = useState<string | undefined>();
-  const inquiryInitialValues = useMemo(
-    () => (inquiryVehicle ? { vehiclePreference: inquiryVehicle } : undefined),
-    [inquiryVehicle],
-  );
-  const handleQuote = useVehicleQuote(setInquiryVehicle);
+  const handleQuote = useVehicleQuote();
 
   const [activeId, setActiveId] = useState<string>(FLEET_VEHICLES[0].id);
   const rootRef = useRef<HTMLOListElement>(null);
@@ -428,43 +420,12 @@ function Fleet() {
         <div className="mx-auto max-w-3xl px-[var(--page-gutter)]">
           <SectionHeading
             align="center"
-            eyebrow="Fleet Inquiry"
-            title="Ask about a specific vehicle."
-            description="Questions about a particular vehicle, group capacity, or availability? Send us an inquiry."
+            eyebrow="Reservations"
+            title="Reserve a vehicle."
+            description="Start here and choose your vehicle on the next step. For Sprinters and coaches, talk to dispatch for a quote."
           />
           <div className="mt-12">
-            <LeadForm
-              formType="fleet"
-              submitLabel="Send Fleet Inquiry"
-              initialValues={inquiryInitialValues}
-              fields={[
-                { name: "customerName", label: "Full Name", required: true, colSpan: 1 },
-                {
-                  name: "customerEmail",
-                  label: "Email",
-                  type: "email",
-                  required: true,
-                  colSpan: 1,
-                },
-                { name: "phone", label: "Phone", type: "tel", colSpan: 2 },
-                {
-                  name: "vehiclePreference",
-                  label: "Vehicle of Interest",
-                  type: "select",
-                  colSpan: 2,
-                  options: FLEET_VEHICLES.map((f) => f.name),
-                },
-                { name: "passengers", label: "Passengers", type: "number", colSpan: 1 },
-                { name: "luggage", label: "Luggage", type: "number", colSpan: 1 },
-                {
-                  name: "specialRequests",
-                  label: "Your Question",
-                  type: "textarea",
-                  rows: 4,
-                  colSpan: 2,
-                },
-              ]}
-            />
+            <ReservationPanel subject="Fleet enquiry" />
           </div>
         </div>
       </section>

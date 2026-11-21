@@ -1304,6 +1304,10 @@ main :is(h1, h2).is-typing > :not(.type-clone) {
 .qr-frame:focus {
   opacity: 0.9;
 }
+/* The same form in MyLimoBiz's own ivory look, on the inner pages. */
+.qr-frame-plain {
+  zoom: 0.9;
+}
 
 /* Home pillars slider: photo cross-fade, words rise, rail progress. */
 .pillar-photo {

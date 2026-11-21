@@ -3,7 +3,7 @@ import { useLayoutEffect, useRef } from "react";
 import { ArrowRight, Plane, UserCheck, Luggage, DoorOpen } from "lucide-react";
 import { SiteLayout, PageHero } from "@/components/site-layout";
 import { SectionHeading } from "@/components/section-heading";
-import { LeadForm } from "@/components/lead-form";
+import { ReservationPanel } from "@/components/booking/reservation-panel";
 import { AIRLINE_PARTNER_KINDS, BOOKING_VEHICLE_OPTIONS, CONTACT } from "@/lib/site-data";
 import { PartnersBoard } from "@/components/partners-board";
 import { TrustedBy } from "@/components/trusted-by";
@@ -163,80 +163,16 @@ function Airport() {
         <div className="mx-auto max-w-3xl px-[var(--page-gutter)]">
           <SectionHeading
             align="center"
-            eyebrow="Flight Details"
+            eyebrow="Reservations"
             title={
               <>
-                Send your <span className="italic text-gold-gradient">flight details.</span>
+                Reserve your <span className="italic text-gold-gradient">airport transfer.</span>
               </>
             }
+            description="Choose From Airport or To Airport, then pick your vehicle on the next step in our booking system."
           />
           <div className="mt-12">
-            <LeadForm
-              formType="airport"
-              submitLabel="Request Airport Transfer"
-              description={
-                <>
-                  For live pricing and instant confirmation with your exact pickup and drop-off
-                  addresses, use{" "}
-                  <Link to="/book" className="text-gold underline underline-offset-2">
-                    Book Now
-                  </Link>
-                  . This form is for flight-detail requests our team will confirm by phone or email.
-                </>
-              }
-              fields={[
-                { name: "customerName", label: "Full Name", required: true, colSpan: 1 },
-                {
-                  name: "customerEmail",
-                  label: "Email",
-                  type: "email",
-                  required: true,
-                  colSpan: 1,
-                },
-                { name: "phone", label: "Phone", type: "tel", colSpan: 2 },
-                {
-                  name: "tripType",
-                  label: "Direction",
-                  type: "select",
-                  colSpan: 2,
-                  options: [
-                    "Airport Pickup (arrival)",
-                    "Airport Drop-off (departure)",
-                    "Round Trip",
-                  ],
-                },
-                {
-                  name: "flightNumber",
-                  label: "Flight Number",
-                  colSpan: 1,
-                  placeholder: "e.g. AA100",
-                },
-                { name: "airline", label: "Airline", colSpan: 1 },
-                {
-                  name: "pickupDateTime",
-                  label: "Pickup Date & Time",
-                  type: "datetime-local",
-                  colSpan: 2,
-                },
-                { name: "passengers", label: "Passengers", type: "number", colSpan: 1 },
-                { name: "luggage", label: "Luggage", type: "number", colSpan: 1 },
-                {
-                  name: "vehiclePreference",
-                  label: "Vehicle Preference",
-                  type: "select",
-                  colSpan: 2,
-                  options: [...BOOKING_VEHICLE_OPTIONS],
-                },
-                {
-                  name: "specialRequests",
-                  label: "Notes for the Chauffeur",
-                  type: "textarea",
-                  rows: 3,
-                  colSpan: 2,
-                },
-              ]}
-              toggles={[{ name: "meetAndGreet", label: "Add meet & greet at baggage claim" }]}
-            />
+            <ReservationPanel subject="Airport transfer" />
           </div>
         </div>
       </section>

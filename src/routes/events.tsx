@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { SiteLayout, PageHero } from "@/components/site-layout";
 import { SectionHeading } from "@/components/section-heading";
 import { IMAGES } from "@/lib/image-map";
-import { LeadForm } from "@/components/lead-form";
+import { ReservationPanel } from "@/components/booking/reservation-panel";
 import { ensureGsap, prefersReducedMotion } from "@/lib/motion";
 import { pageMeta } from "@/lib/seo";
 import { ServiceStories } from "@/components/home/editorial";
@@ -148,86 +148,10 @@ function Events() {
                 Plan your <span className="italic text-gold-gradient">event transportation.</span>
               </>
             }
+            description="Start your reservation here, or talk to dispatch for hourly service, groups and multiple vehicles."
           />
           <div className="mt-12">
-            <LeadForm
-              formType="event"
-              submitLabel="Request Event Transportation"
-              description={
-                <>
-                  For live pricing and instant confirmation with an exact pickup address, use{" "}
-                  <Link to="/book" className="text-gold underline underline-offset-2">
-                    Book Now
-                  </Link>
-                  . This form is for multi-stop or multi-day event programs our team will design
-                  with you directly.
-                </>
-              }
-              fields={[
-                { name: "customerName", label: "Full Name", required: true, colSpan: 1 },
-                {
-                  name: "customerEmail",
-                  label: "Email",
-                  type: "email",
-                  required: true,
-                  colSpan: 1,
-                },
-                { name: "phone", label: "Phone", type: "tel", colSpan: 1 },
-                { name: "companyName", label: "Company / Organization", colSpan: 1 },
-                {
-                  name: "tripType",
-                  label: "Event Type",
-                  type: "select",
-                  colSpan: 2,
-                  options: [
-                    "Wedding",
-                    "Gala / Premiere",
-                    "Corporate Event",
-                    "Multi-day Program",
-                    "Other",
-                  ],
-                },
-                {
-                  name: "pickupDateTime",
-                  label: "Event Date & Time",
-                  type: "datetime-local",
-                  colSpan: 2,
-                },
-                {
-                  name: "additionalStops",
-                  label: "Venue(s) / Stops",
-                  type: "textarea",
-                  rows: 3,
-                  colSpan: 2,
-                  placeholder: "Primary venue plus any additional stops.",
-                },
-                { name: "passengers", label: "Total Passengers", type: "number", colSpan: 1 },
-                {
-                  name: "vehiclePreference",
-                  label: "Vehicle Preference",
-                  type: "select",
-                  colSpan: 1,
-                  options: [
-                    "Executive Sedan",
-                    "Executive SUV",
-                    "Luxury SUV",
-                    "Executive Sprinter",
-                    "Mini Coach",
-                    "Motor Coach",
-                    "Mixed Fleet",
-                    "No preference",
-                  ],
-                },
-                {
-                  name: "specialRequests",
-                  label: "Details of the Program",
-                  type: "textarea",
-                  rows: 4,
-                  colSpan: 2,
-                  placeholder: "Run of show, guest counts, staged arrivals…",
-                },
-              ]}
-            />
+            <ReservationPanel subject="Event transportation" />
           </div>
         </div>
       </section>

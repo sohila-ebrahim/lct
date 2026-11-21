@@ -4,7 +4,7 @@ import { SiteLayout } from "@/components/site-layout";
 import { SectionHeading } from "@/components/section-heading";
 import { ArrowRight } from "lucide-react";
 import { IMAGES } from "@/lib/image-map";
-import { LeadForm } from "@/components/lead-form";
+import { ReservationPanel } from "@/components/booking/reservation-panel";
 import { ensureGsap, prefersReducedMotion } from "@/lib/motion";
 import { pageMeta } from "@/lib/seo";
 import { CONTACT } from "@/lib/site-data";
@@ -275,50 +275,16 @@ function Services() {
         <div className="mx-auto max-w-3xl px-6 lg:px-10">
           <SectionHeading
             align="center"
-            eyebrow="Service Inquiry"
+            eyebrow="Reservations"
             title={
               <>
-                Ask about a <span className="italic text-gold-gradient">specific service.</span>
+                Reserve <span className="italic text-gold-gradient">any service.</span>
               </>
             }
-            description="Not sure which service fits? Send us the details and our concierge will guide you."
+            description="Pick the service, date and route, then choose your vehicle on the next step in our booking system."
           />
           <div className="mt-12">
-            <LeadForm
-              formType="service_inquiry"
-              submitLabel="Send Service Inquiry"
-              fields={[
-                { name: "customerName", label: "Full Name", required: true, colSpan: 1 },
-                {
-                  name: "customerEmail",
-                  label: "Email",
-                  type: "email",
-                  required: true,
-                  colSpan: 1,
-                },
-                { name: "phone", label: "Phone", type: "tel", colSpan: 2 },
-                {
-                  name: "tripType",
-                  label: "Service of Interest",
-                  type: "select",
-                  colSpan: 2,
-                  options: CHAPTERS.map((s) => s.title),
-                },
-                {
-                  name: "pickupDateTime",
-                  label: "Preferred Date & Time (if known)",
-                  type: "datetime-local",
-                  colSpan: 2,
-                },
-                {
-                  name: "specialRequests",
-                  label: "Tell us about your needs",
-                  type: "textarea",
-                  rows: 4,
-                  colSpan: 2,
-                },
-              ]}
-            />
+            <ReservationPanel subject="Service enquiry" />
           </div>
         </div>
       </section>
