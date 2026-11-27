@@ -9,7 +9,7 @@ import { CONTACT } from "@/lib/site-data";
  */
 export function HeroBooking() {
   return (
-    <div className="hero-booking relative w-full overflow-hidden rounded-[20px] bg-[#0d0e10]/20 p-5 shadow-[0_30px_80px_-20px_rgb(0_0_0/0.5)] ring-1 ring-[#c9a24f]/30 backdrop-blur-[3px] md:p-6">
+    <div className="hero-booking relative w-full overflow-hidden rounded-[20px] bg-[#0d0e10]/50 p-5 shadow-[0_30px_80px_-20px_rgb(0_0_0/0.5)] ring-1 ring-[#c9a24f]/30 md:p-6">
       <span
         className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[#e2c27a] to-transparent"
         aria-hidden

@@ -105,6 +105,15 @@ export const IMAGES = {
     notes:
       "Activated 2026-08-08 for the newly-published Luxury SUV class (verified live 2026-08-08 via MyLimoBiz — a second, higher-tier 6-passenger SUV class alongside the standard SUV). Per explicit client instruction: no distinct Luxury SUV vehicle photo exists in the project, so the same verified Escalade is used, but in its OTHER real photograph (rear 3/4, previously unreferenced) rather than reusing `fleetSuv`'s exact front 3/4 crop — the two classes never render the identical image.",
   },
+  pillarFleetCoach: {
+    src: "/assets/official/fleet-coach-lct-branded.jpg",
+    alt: "LCT Universal branded executive coach in black and gold, parked at a hotel entrance",
+    objectPositionDesktop: "50% 62%",
+    objectPositionMobile: "62% 60%",
+    aspectRatio: "4 / 3",
+    notes:
+      "Added 2026-11-27, client-supplied photo (IMG_4093) - the black-and-gold LCT Universal branded coach at a hotel porte-cochere. Used only by the homepage PillarsSlider 'The fleet' slide, replacing fleetLuxurySuv there; fleetLuxurySuv keeps the Escalade for the fleet card.",
+  },
   fleetSprinter: {
     src: "/assets/official/sprinter-exterior.jpg",
     alt: "Executive Sprinter — Mercedes-Benz Sprinter van, exterior",
@@ -359,7 +368,8 @@ export const IMAGES = {
     objectPositionDesktop: "50% 48%",
     objectPositionMobile: "50% 50%",
     aspectRatio: "880 / 2134",
-    notes: "Replaces round 1's chauffeur-sclass-portrait.jpg, disqualified for having already been used in the round-1 Join Our Team pass.",
+    notes:
+      "Replaces round 1's chauffeur-sclass-portrait.jpg, disqualified for having already been used in the round-1 Join Our Team pass.",
   },
   joinTeamPartner: {
     // Media replacement 2026-08-11 (round 2) — see joinTeamDriver's note for
@@ -379,7 +389,8 @@ export const IMAGES = {
     objectPositionDesktop: "48% 55%",
     objectPositionMobile: "46% 55%",
     aspectRatio: "3 / 2",
-    notes: "Replaces round 1's fleet-lineup-dusk.jpg, disqualified for reuse within the same Join Our Team section.",
+    notes:
+      "Replaces round 1's fleet-lineup-dusk.jpg, disqualified for reuse within the same Join Our Team section.",
   },
   joinTeamReferral: {
     // Media replacement 2026-08-11 (round 2) — see joinTeamDriver's note.
@@ -403,7 +414,8 @@ export const IMAGES = {
     objectPositionDesktop: "50% 68%",
     objectPositionMobile: "50% 70%",
     aspectRatio: "2 / 3",
-    notes: "Replaces round 1's hero-sclass-chauffeur.jpg, disqualified for reuse within the same Join Our Team section.",
+    notes:
+      "Replaces round 1's hero-sclass-chauffeur.jpg, disqualified for reuse within the same Join Our Team section.",
   },
   /** Blog hero/card imagery — added 2026-08-12 for the Insights section. Wide 3:2 sources chosen for a 16:9-ish editorial hero + 4:3 index card, each used by exactly one article so no two posts share a hero. */
   blogAirport: {
@@ -412,7 +424,8 @@ export const IMAGES = {
     objectPositionDesktop: "50% 45%",
     objectPositionMobile: "50% 42%",
     aspectRatio: "3 / 2",
-    notes: "Previously unused (superseded by airport-dfw-sign-silver.jpg for the /airport page). Used for the DFW Airport Transportation article.",
+    notes:
+      "Previously unused (superseded by airport-dfw-sign-silver.jpg for the /airport page). Used for the DFW Airport Transportation article.",
   },
   blogLoveField: {
     src: "/assets/official/airport-dfw-sign-red.jpg",
@@ -420,7 +433,8 @@ export const IMAGES = {
     objectPositionDesktop: "50% 45%",
     objectPositionMobile: "60% 42%",
     aspectRatio: "3 / 2",
-    notes: "Reused from airportGateway (a distinct DFW sign photo from the one used on /airport itself) for the Love Field vs. DFW article — airport-themed but a different composition from blogAirport.",
+    notes:
+      "Reused from airportGateway (a distinct DFW sign photo from the one used on /airport itself) for the Love Field vs. DFW article — airport-themed but a different composition from blogAirport.",
   },
   blogExecutiveCar: {
     src: "/assets/official/hero-sclass-chauffeur.jpg",
@@ -428,7 +442,8 @@ export const IMAGES = {
     objectPositionDesktop: "38% 45%",
     objectPositionMobile: "40% 42%",
     aspectRatio: "3 / 2",
-    notes: "Orphaned after the Join Our Team round-2 media swap (previously joinTeamReferral) — reused here for the Executive Car Service article.",
+    notes:
+      "Orphaned after the Join Our Team round-2 media swap (previously joinTeamReferral) — reused here for the Executive Car Service article.",
   },
   blogBooking: {
     src: "/assets/official/sedan-front-grille.jpg",
@@ -444,7 +459,8 @@ export const IMAGES = {
     objectPositionDesktop: "50% 50%",
     objectPositionMobile: "50% 50%",
     aspectRatio: "2651 / 1103",
-    notes: "Orphaned after the Join Our Team round-2 media swap (previously joinTeamPartner) — reused here for the Corporate Transportation Planning article.",
+    notes:
+      "Orphaned after the Join Our Team round-2 media swap (previously joinTeamPartner) — reused here for the Corporate Transportation Planning article.",
   },
   blogSprinter: {
     src: "/assets/official/sprinter-exterior.jpg",
@@ -452,7 +468,8 @@ export const IMAGES = {
     objectPositionDesktop: "45% 50%",
     objectPositionMobile: "50% 50%",
     aspectRatio: "3 / 2",
-    notes: "Reused from fleetSprinter for the Sprinter Van group-transportation article — same vehicle class the article is about.",
+    notes:
+      "Reused from fleetSprinter for the Sprinter Van group-transportation article — same vehicle class the article is about.",
   },
   blogCoach: {
     src: "/assets/official/group-coach-bus.jpg",
@@ -476,7 +493,8 @@ export const IMAGES = {
     objectPositionDesktop: "55% 25%",
     objectPositionMobile: "55% 22%",
     aspectRatio: "2 / 3",
-    notes: "Previously unused (the v1 door-service photo — v2 is used elsewhere for the `chauffeur`/`bookingCta` keys). Used for the Chauffeur Service Standards article.",
+    notes:
+      "Previously unused (the v1 door-service photo — v2 is used elsewhere for the `chauffeur`/`bookingCta` keys). Used for the Chauffeur Service Standards article.",
   },
   blogMeetGreet: {
     src: "/assets/official/sedan-virgin-hotels.jpg",

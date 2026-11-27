@@ -4,6 +4,7 @@ import { ArrowUpRight } from "lucide-react";
 import { IMAGES, type ImageKey } from "@/lib/image-map";
 import { FLEET_VEHICLES, PARTNERS, SERVICE_AREA_GROUPS } from "@/lib/site-data";
 import { prefersReducedMotion } from "@/lib/motion";
+import { useParallax } from "@/lib/parallax";
 
 /**
  * "Our capabilities": the services as photo tiles in a bento grid, with one
@@ -149,14 +150,16 @@ function PhotoTile({ t }: { t: Tile }) {
         t.wide ? "md:col-span-2" : ""
       }`}
     >
-      <img
-        src={img.src}
-        alt=""
-        loading="lazy"
-        decoding="async"
-        className="absolute inset-0 -z-10 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-        style={{ objectPosition: img.objectPositionDesktop }}
-      />
+      <span data-parallax="12" className="absolute inset-x-0 inset-y-[-8%] -z-10 block">
+        <img
+          src={img.src}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+          style={{ objectPosition: img.objectPositionDesktop }}
+        />
+      </span>
       <span
         className="absolute inset-0 -z-10 bg-gradient-to-t from-black/80 via-black/20 to-transparent"
         aria-hidden
@@ -184,15 +187,15 @@ function PhotoTile({ t }: { t: Tile }) {
 
 export function Capabilities() {
   const [first, ...rest] = TILES;
+  const ref = useRef<HTMLElement>(null);
+  useParallax(ref);
   return (
-    <section className="py-[clamp(4rem,8vw,7rem)]">
+    <section ref={ref} className="py-[clamp(4rem,8vw,7rem)]">
       <div className="mx-auto max-w-[var(--container-max)] px-[var(--page-gutter)]">
-        <div className="flex items-stretch gap-4">
-          <span className="w-[3px] rounded-full bg-[color:var(--gold-light)]" aria-hidden />
-          <h2 className="font-display text-[clamp(1.75rem,3vw,2.85rem)] font-normal leading-[0.95]">
-            Our capabilities.
-          </h2>
-        </div>
+        <p className="section-index">01 · Capabilities</p>
+        <h2 className="mt-5 font-display text-[clamp(1.75rem,3vw,2.85rem)] font-normal leading-[0.95]">
+          Our capabilities.
+        </h2>
 
         <div className="mt-10 grid gap-4 md:grid-cols-3 md:auto-rows-[minmax(240px,30vh)] md:gap-5">
           <PhotoTile t={first} />

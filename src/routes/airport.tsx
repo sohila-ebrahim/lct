@@ -6,6 +6,7 @@ import { SectionHeading } from "@/components/section-heading";
 import { ReservationPanel } from "@/components/booking/reservation-panel";
 import { AIRLINE_PARTNER_KINDS, BOOKING_VEHICLE_OPTIONS, CONTACT } from "@/lib/site-data";
 import { PartnersBoard } from "@/components/partners-board";
+import { FlightPass } from "@/components/airport/flight-pass";
 import { TrustedBy } from "@/components/trusted-by";
 import { IMAGES } from "@/lib/image-map";
 import { ensureGsap, prefersReducedMotion } from "@/lib/motion";
@@ -148,6 +149,25 @@ function Airport() {
             ))}
           </div>
         </div>
+      </section>
+
+      {/* Boarding pass: one sample pickup played through its states */}
+      <section className="mx-auto grid max-w-[var(--container-max)] items-center gap-12 px-[var(--page-gutter)] pb-20 md:grid-cols-[0.9fr_1.1fr] md:pb-28">
+        <div>
+          <p className="section-index">Flight tracking</p>
+          <h2 className="mt-5 font-display text-[clamp(1.9rem,3.2vw,3rem)] font-normal leading-[0.98] tracking-[-0.02em]">
+            Your flight, <span className="italic text-gold-gradient">watched for you.</span>
+          </h2>
+          <p className="mt-5 max-w-md text-base leading-relaxed text-muted-foreground">
+            Give us your flight number when you book. If you land early or late, the pickup moves
+            with you, and the first 60 minutes of waiting are included.
+          </p>
+          <hr className="hairline-gold mt-8 max-w-sm" />
+          <p className="mt-4 text-xs uppercase tracking-[0.24em] text-muted-foreground">
+            Illustration · sample flight
+          </p>
+        </div>
+        <FlightPass />
       </section>
 
       <StatsBand stats={AIRPORT_STATS} />

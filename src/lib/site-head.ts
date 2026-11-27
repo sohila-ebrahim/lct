@@ -1,4 +1,11 @@
-import { COMPANY, CONTACT, NAV_LINKS, SERVICE_AREA_GROUPS, SERVICES_VERIFIED } from "./site-data";
+import {
+  COMPANY,
+  CONTACT,
+  FLEET_VEHICLES,
+  NAV_LINKS,
+  SERVICE_AREA_GROUPS,
+  SERVICES_VERIFIED,
+} from "./site-data";
 
 /**
  * Sitewide head metadata and structured data, shared by two consumers:
@@ -98,6 +105,22 @@ export const ROOT_JSON_LD = [
     // site-wide; schema.org's priceRange accepts this "$"-style
     // symbolic form specifically for cases like this.
     priceRange: "$$$",
+    // Added 2026-11-27: the seven vehicle classes as an offer catalog so
+    // search and AI answers can name the fleet. Capacities come straight
+    // from FLEET_VEHICLES; no prices are restated here.
+    hasOfferCatalog: {
+      "@type": "OfferCatalog",
+      name: "Chauffeured vehicle classes",
+      itemListElement: FLEET_VEHICLES.map((v) => ({
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          serviceType: "Chauffeured transportation",
+          name: `${v.name} (${v.model})`,
+          description: `Up to ${v.pax} passengers${v.bags ? `, ${v.bags} bags` : ""}. ${v.features.join(", ")}.`,
+        },
+      })),
+    },
     sameAs: [
       CONTACT.facebookUrl,
       CONTACT.instagramUrl,
