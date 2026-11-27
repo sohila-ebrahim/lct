@@ -5,6 +5,7 @@ import { CinematicHero } from "@/components/home/cinematic-hero";
 import { TrustedBy } from "@/components/trusted-by";
 import { Capabilities } from "@/components/home/capabilities";
 import { PillarsSlider } from "@/components/home/pillars-slider";
+import { Showroom } from "@/components/home/showroom";
 import { IMAGES } from "@/lib/image-map";
 import { CONTACT } from "@/lib/site-data";
 import { ensureGsap, prefersReducedMotion, refreshScrollTriggers } from "@/lib/motion";
@@ -62,6 +63,7 @@ function Home() {
       <CinematicHero />
       <TrustedBy />
       <Capabilities />
+      <Showroom />
       <PillarsSlider />
     </SiteLayout>
   );

@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { IMAGES, type ImageKey } from "@/lib/image-map";
 import { prefersReducedMotion } from "@/lib/motion";
+import { useParallax } from "@/lib/parallax";
 
 /**
  * One full-screen band with four slides (the fleet, the chauffeur, the
@@ -26,7 +27,7 @@ const SLIDES: Slide[] = [
     title: ["Seven classes.", "One standard."],
     copy: "From the Executive Sedan to the 56-seat motor coach, every vehicle is maintained and prepared before dispatch.",
     cta: { label: "Explore the fleet", to: "/fleet" },
-    imageKey: "fleetLuxurySuv",
+    imageKey: "pillarFleetCoach",
   },
   {
     kicker: "The chauffeur",
@@ -60,6 +61,7 @@ export function PillarsSlider() {
   const [hold, setHold] = useState(false);
   const ref = useRef<HTMLElement>(null);
   const still = useRef(false);
+  useParallax(ref);
 
   useEffect(() => {
     still.current = prefersReducedMotion();
@@ -89,22 +91,24 @@ export function PillarsSlider() {
       onBlurCapture={() => setHold(false)}
       className="band-dark relative isolate flex min-h-[480px] overflow-hidden md:min-h-[min(100svh,860px)] bg-[#0d0e10]"
     >
-      {SLIDES.map((s, i) => {
-        const img = IMAGES[s.imageKey];
-        return (
-          <img
-            key={s.imageKey}
-            src={img.src}
-            alt=""
-            loading="lazy"
-            decoding="async"
-            className={`pillar-photo absolute inset-0 -z-20 h-full w-full object-cover ${
-              i === active ? "is-on" : ""
-            }`}
-            style={{ objectPosition: img.objectPositionDesktop }}
-          />
-        );
-      })}
+      <div data-parallax="10" className="absolute inset-x-0 inset-y-[-7%] -z-20">
+        {SLIDES.map((s, i) => {
+          const img = IMAGES[s.imageKey];
+          return (
+            <img
+              key={s.imageKey}
+              src={img.src}
+              alt=""
+              loading="lazy"
+              decoding="async"
+              className={`pillar-photo absolute inset-0 h-full w-full object-cover ${
+                i === active ? "is-on" : ""
+              }`}
+              style={{ objectPosition: img.objectPositionDesktop }}
+            />
+          );
+        })}
+      </div>
       <div
         className="absolute inset-0 -z-10 bg-gradient-to-r from-black/90 via-black/55 to-black/10 max-md:bg-gradient-to-t max-md:from-black/95 max-md:via-black/60 max-md:to-black/20"
         aria-hidden

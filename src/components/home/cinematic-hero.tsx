@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef, type CSSProperties } from "react";
 import { Phone } from "lucide-react";
 import { HeroBooking } from "@/components/home/hero-booking";
+import { HeroVideo } from "@/components/home/hero-video";
 import { IMAGES } from "@/lib/image-map";
 import { CONTACT } from "@/lib/site-data";
 import { EASE, ensureGsap, prefersReducedMotion } from "@/lib/motion";
@@ -70,6 +71,7 @@ export function CinematicHero() {
             decoding="async"
           />
         </picture>
+        <HeroVideo />
         <div
           className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/45 to-black/10"
           aria-hidden
